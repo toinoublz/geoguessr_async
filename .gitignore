@@ -161,3 +161,5 @@ cython_debug/
 
 *test*
 .vscode
+BLACKBOX_README.md
+.gitignore
