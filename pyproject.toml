@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "geoguessr_api"
-version = "0.0.1"
+name = "geoguessr_async"
+version = "1.0.0"
 authors = [
   { name="Antoine BLAISE", email="antoine.blaise34@gmail.com" },
 ]

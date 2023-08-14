@@ -15,6 +15,9 @@ class Geoguessr:
             "cookie": f"_ncfa={self._ncfa}",
         }
         self.session = aiohttp.ClientSession(headers=self.headers)
+        self.me = None
+        self.me_stats = None
+        self.friends = None
 
     async def get_all_my_infos(self):
         """Add some infos about your profile :
@@ -49,7 +52,9 @@ class Geoguessr:
         async with self.session.get(
             f"https://www.geoguessr.com/api/v3/users/{userId}"
         ) as r:
-            return GeoguessrProfile(await r.json())
+            user = GeoguessrProfile(await r.json())
+            user.add_stats(await self.get_user_stats(user.id))
+            return user
 
     async def get_user_stats(self, userId: str) -> GeoguessrStats:
         """Give you all Geoguessr stats about a player with the player's id
@@ -184,6 +189,10 @@ class Geoguessr:
             f"https://www.geoguessr.com/api/maps/{map_token}"
         ) as r:
             js = await r.json()
+        async with self.session.get(
+            f"https://www.geoguessr.com/api/v3/search/map?q={map_token}"
+        ) as r:    
+            js['coordinateCount'] = (await r.json())[0]["coordinateCount"]
 
         return GeoguessrMap(js)
 

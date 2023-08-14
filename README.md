@@ -3,13 +3,13 @@ This is a Geoguessr API client written in Python. It allows you to interact with
 To install the package, run the following command:
 
 ```
-pip install geoguessr-api
+pip install geoguessr-async
 ```
 
 Once the package is installed, you can create a client object by passing your NCFA cookie to the constructor:
 
 ```
-from geoguessr_api import Geoguessr
+from geoguessr_async import Geoguessr
 
 client = Geoguessr("your_ncf_a_cookie")
 ```
