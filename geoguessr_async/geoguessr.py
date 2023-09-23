@@ -63,8 +63,6 @@ class Geoguessr:
                 user = GeoguessrProfile(await r.json())
                 user.add_stats(await self.get_user_stats(user.id))
                 return user
-            elif r.status == 404:
-                raise NonExistingUser(userId)
 
     async def get_user_stats(self, userId: str) -> GeoguessrStats:
         """Give you all Geoguessr stats about a player with the player's id
