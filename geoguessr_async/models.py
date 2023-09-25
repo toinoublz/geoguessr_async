@@ -1,7 +1,7 @@
 import datetime
 from typing import Any, Optional
 
-import geo_utils as gu
+import geoguessr_async.geo_utils as gu
 
 
 class GeoguessrStats:
