@@ -259,7 +259,7 @@ class GeoguessrProfile:
         self.isBotUser: bool = datas["isBotUser"]
         self.suspendedUntil: Optional[datetime.datetime] = datas["suspendedUntil"]
         self.walletCoins: int = datas["walletCoins"]
-        self.hasEliteFlair: bool = datas["hasEliteFlair"]
+        self.Flair: int = datas["flair"]
         self.stats: Optional[GeoguessrStats] = None
 
     def add_stats(self, stats: GeoguessrStats) -> None:
