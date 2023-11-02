@@ -181,8 +181,6 @@ class GeoguessrProfile:
         self.url: str = datas["url"]
         self.id: str = datas["id"]
         self.countryCode: str = datas["countryCode"]
-        self.onboardingTutorialtoken: Optional[str] = datas["onboardingTutorialtoken"]
-        self.onboardingTutorialstate: str = datas["onboardingTutorialstate"]
         self.brLevel: int = datas["brLevel"]
         self.brDivision: int = datas["brDivision"]
         self.brStreak: int = datas["brStreak"]
@@ -258,7 +256,7 @@ class GeoguessrProfile:
         self.avatarFullbodypath: Optional[str] = datas["avatarFullbodypath"]
         self.isBotUser: bool = datas["isBotUser"]
         self.suspendedUntil: Optional[datetime.datetime] = datas["suspendedUntil"]
-        self.walletCoins: int = datas["walletCoins"]
+        self.wallet: int = datas["wallet"]
         self.Flair: int = datas["flair"]
         self.stats: Optional[GeoguessrStats] = None
 

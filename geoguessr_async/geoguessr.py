@@ -140,7 +140,7 @@ class Geoguessr:
 
             results += js["items"]
             pagination_token = js["paginationToken"]
-            
+
         print(results)
 
         return [GeoguessrScore(result) for result in results]
@@ -198,10 +198,13 @@ class Geoguessr:
             f"https://www.geoguessr.com/api/maps/{map_token}"
         ) as r:
             js = await r.json()
-        async with self.session.get(
-            f"https://www.geoguessr.com/api/v3/search/map?q={map_token}"
-        ) as r:
-            js['coordinateCount'] = (await r.json())[0]["coordinateCount"]
+        try:
+            async with self.session.get(
+                f"https://www.geoguessr.com/api/v3/search/map?q={map_token}"
+            ) as r:
+                js['coordinateCount'] = (await r.json())[0]["coordinateCount"]
+        except:
+            js['coordinateCount'] = 0
 
         return GeoguessrMap(js)
 
@@ -242,7 +245,7 @@ class Geoguessr:
             await self.play_challenge(challenge_link)
 
         return challenge_link
-    
+
     async def get_duel_info(self, duel_url: str):
         pass
 
