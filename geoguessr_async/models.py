@@ -7,158 +7,80 @@ import geoguessr_async.geo_utils as gu
 class GeoguessrStats:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        self.battleRoyaleRankRank: int = datas["battleRoyaleRankRank"]
-        self.battleRoyaleRankRating: int = datas["battleRoyaleRankRating"]
-        self.battleRoyaleRankGamesleftbeforeranked: int = datas[
-            "battleRoyaleRankGamesleftbeforeranked"
-        ]
-        self.battleRoyaleRankDivisionId: int = datas["battleRoyaleRankDivisionId"]
-        self.battleRoyaleRankDivisionDivisionid: int = datas[
-            "battleRoyaleRankDivisionDivisionid"
-        ]
-        self.battleRoyaleRankDivisionTierid: int = datas[
-            "battleRoyaleRankDivisionTierid"
-        ]
-        self.battleRoyaleRankDivisionName: str = datas["battleRoyaleRankDivisionName"]
-        self.battleRoyaleRankDivisionMinimumrank: int = datas[
-            "battleRoyaleRankDivisionMinimumrank"
-        ]
-        self.battleRoyaleDistanceNumgamesplayed: int = datas[
-            "battleRoyaleDistanceNumgamesplayed"
-        ]
-        self.battleRoyaleDistanceAvgposition: float = datas[
-            "battleRoyaleDistanceAvgposition"
-        ]
-        self.battleRoyaleDistanceNumwins: int = datas["battleRoyaleDistanceNumwins"]
-        self.battleRoyaleDistanceWinratio: float = datas["battleRoyaleDistanceWinratio"]
-        self.battleRoyaleDistanceAvgguessdistance: float = datas[
-            "battleRoyaleDistanceAvgguessdistance"
-        ]
-        self.battleRoyaleDistanceNumguesses: int = datas[
-            "battleRoyaleDistanceNumguesses"
-        ]
-        self.battleRoyaleDistanceStreak: int = datas["battleRoyaleDistanceStreak"]
-        self.battleRoyaleCountryNumgamesplayed: int = datas[
-            "battleRoyaleCountryNumgamesplayed"
-        ]
-        self.battleRoyaleCountryAvgposition: float = datas[
-            "battleRoyaleCountryAvgposition"
-        ]
-        self.battleRoyaleCountryNumwins: int = datas["battleRoyaleCountryNumwins"]
-        self.battleRoyaleCountryWinratio: float = datas["battleRoyaleCountryWinratio"]
-        self.battleRoyaleCountryNumguesses: int = datas["battleRoyaleCountryNumguesses"]
-        self.battleRoyaleCountryAvgcorrectguesses: float = datas[
-            "battleRoyaleCountryAvgcorrectguesses"
-        ]
-        self.battleRoyaleCountryStreak: int = datas["battleRoyaleCountryStreak"]
-        self.battleRoyaleMedalsMedalcountgold: int = datas[
-            "battleRoyaleMedalsMedalcountgold"
-        ]
-        self.battleRoyaleMedalsMedalcountsilver: int = datas[
-            "battleRoyaleMedalsMedalcountsilver"
-        ]
-        self.battleRoyaleMedalsMedalcountbronze: int = datas[
-            "battleRoyaleMedalsMedalcountbronze"
-        ]
-        self.competitiveCityStreaksNumgamesplayed: int = datas[
-            "competitiveCityStreaksNumgamesplayed"
-        ]
-        self.competitiveCityStreaksAvgposition: float = datas[
-            "competitiveCityStreaksAvgposition"
-        ]
-        self.competitiveCityStreaksNumwins: int = datas["competitiveCityStreaksNumwins"]
-        self.competitiveCityStreaksWinratio: float = datas[
-            "competitiveCityStreaksWinratio"
-        ]
-        self.competitiveCityStreaksNumguesses: int = datas[
-            "competitiveCityStreaksNumguesses"
-        ]
-        self.competitiveCityStreaksAvgcorrectguesses: float = datas[
-            "competitiveCityStreaksAvgcorrectguesses"
-        ]
-        self.competitiveCityStreaksStreak: int = datas["competitiveCityStreaksStreak"]
-        self.competitiveStreaksRankRank: int = datas["competitiveStreaksRankRank"]
-        self.competitiveStreaksRankRating: int = datas["competitiveStreaksRankRating"]
-        self.competitiveStreaksRankGamesleftbeforeranked: int = datas[
-            "competitiveStreaksRankGamesleftbeforeranked"
-        ]
-        self.competitiveStreaksRankDivisionId: int = datas[
-            "competitiveStreaksRankDivisionId"
-        ]
-        self.competitiveStreaksRankDivisionDivisionid: int = datas[
-            "competitiveStreaksRankDivisionDivisionid"
-        ]
-        self.competitiveStreaksRankDivisionTierid: int = datas[
-            "competitiveStreaksRankDivisionTierid"
-        ]
-        self.competitiveStreaksRankDivisionName: str = datas[
-            "competitiveStreaksRankDivisionName"
-        ]
-        self.competitiveStreaksRankDivisionMinimumrank: int = datas[
-            "competitiveStreaksRankDivisionMinimumrank"
-        ]
-        self.competitiveStreaksMedalsMedalcountgold: int = datas[
-            "competitiveStreaksMedalsMedalcountgold"
-        ]
-        self.competitiveStreaksMedalsMedalcountsilver: int = datas[
-            "competitiveStreaksMedalsMedalcountsilver"
-        ]
-        self.competitiveStreaksMedalsMedalcountbronze: int = datas[
-            "competitiveStreaksMedalsMedalcountbronze"
-        ]
-        self.duelsNumgamesplayed: int = datas["duelsNumgamesplayed"]
-        self.duelsAvgposition: float = datas["duelsAvgposition"]
-        self.duelsNumwins: int = datas["duelsNumwins"]
-        self.duelsWinratio: float = datas["duelsWinratio"]
-        self.duelsAvgguessdistance: float = datas["duelsAvgguessdistance"]
-        self.duelsNumguesses: int = datas["duelsNumguesses"]
-        self.duelsNumflawlesswins: int = datas["duelsNumflawlesswins"]
-        self.duelsStreak: int = datas["duelsStreak"]
-        self.duelsRankRank: int = datas["duelsRankRank"]
-        self.duelsRankRating: int = datas["duelsRankRating"]
-        self.duelsRankGamesleftbeforeranked: int = datas[
-            "duelsRankGamesleftbeforeranked"
-        ]
-        self.duelsRankDivisionId: int = datas["duelsRankDivisionId"]
-        self.duelsRankDivisionDivisionid: int = datas["duelsRankDivisionDivisionid"]
-        self.duelsRankDivisionTierid: int = datas["duelsRankDivisionTierid"]
-        self.duelsRankDivisionName: str = datas["duelsRankDivisionName"]
-        self.duelsRankDivisionMinimumrank: int = datas["duelsRankDivisionMinimumrank"]
-        self.duelsMedalsMedalcountgold: int = datas["duelsMedalsMedalcountgold"]
-        self.duelsMedalsMedalcountsilver: int = datas["duelsMedalsMedalcountsilver"]
-        self.duelsMedalsMedalcountbronze: int = datas["duelsMedalsMedalcountbronze"]
-        self.lifeTimeXpProgressionXp: int = datas["lifeTimeXpProgressionXp"]
-        self.lifeTimeXpProgressionCurrentlevelLevel: int = datas[
-            "lifeTimeXpProgressionCurrentlevelLevel"
-        ]
-        self.lifeTimeXpProgressionCurrentlevelXpstart: int = datas[
-            "lifeTimeXpProgressionCurrentlevelXpstart"
-        ]
-        self.lifeTimeXpProgressionNextlevelLevel: int = datas[
-            "lifeTimeXpProgressionNextlevelLevel"
-        ]
-        self.lifeTimeXpProgressionNextlevelXpstart: int = datas[
-            "lifeTimeXpProgressionNextlevelXpstart"
-        ]
-        self.lifeTimeXpProgressionCurrenttitleId: int = datas[
-            "lifeTimeXpProgressionCurrenttitleId"
-        ]
-        self.lifeTimeXpProgressionCurrenttitleTierid: int = datas[
-            "lifeTimeXpProgressionCurrenttitleTierid"
-        ]
-        self.lifeTimeXpProgressionCurrenttitleMinimumlevel: int = datas[
-            "lifeTimeXpProgressionCurrenttitleMinimumlevel"
-        ]
-        self.lifeTimeXpProgressionCurrenttitleName: str = datas[
-            "lifeTimeXpProgressionCurrenttitleName"
-        ]
-        self.totalMedalsMedalcountgold: int = datas["totalMedalsMedalcountgold"]
-        self.totalMedalsMedalcountsilver: int = datas["totalMedalsMedalcountsilver"]
-        self.totalMedalsMedalcountbronze: int = datas["totalMedalsMedalcountbronze"]
-        self.teamDuelsNumgamesplayed: int = datas["teamDuelsNumgamesplayed"]
-        self.teamDuelsNumwins: int = datas["teamDuelsNumwins"]
-        self.teamDuelsWinratio: float = datas["teamDuelsWinratio"]
-        self.perfectRounds: int = datas["perfectRounds"]
+        self.battleRoyaleRankRank: int = datas.get("battleRoyaleRankRank")
+        self.battleRoyaleRankRating: int = datas.get("battleRoyaleRankRating")
+        self.battleRoyaleRankGamesleftbeforeranked: int = datas.get("battleRoyaleRankGamesleftbeforeranked")
+        self.battleRoyaleRankDivisionId: int = datas.get("battleRoyaleRankDivisionId")
+        self.battleRoyaleRankDivisionDivisionid: int = datas.get("battleRoyaleRankDivisionDivisionid")
+        self.battleRoyaleRankDivisionTierid: int = datas.get("battleRoyaleRankDivisionTierid")
+        self.battleRoyaleRankDivisionName: str = datas.get("battleRoyaleRankDivisionName")
+        self.battleRoyaleRankDivisionMinimumrank: int = datas.get("battleRoyaleRankDivisionMinimumrank")
+        self.battleRoyaleDistanceNumgamesplayed: int = datas.get("battleRoyaleDistanceNumgamesplayed")
+        self.battleRoyaleDistanceAvgposition: float = datas.get("battleRoyaleDistanceAvgposition")
+        self.battleRoyaleDistanceNumwins: int = datas.get("battleRoyaleDistanceNumwins")
+        self.battleRoyaleDistanceWinratio: float = datas.get("battleRoyaleDistanceWinratio")
+        self.battleRoyaleDistanceAvgguessdistance: float = datas.get("battleRoyaleDistanceAvgguessdistance")
+        self.battleRoyaleDistanceNumguesses: int = datas.get("battleRoyaleDistanceNumguesses")
+        self.battleRoyaleCountryNumgamesplayed: int = datas.get("battleRoyaleCountryNumgamesplayed")
+        self.battleRoyaleCountryAvgposition: float = datas.get("battleRoyaleCountryAvgposition")
+        self.battleRoyaleCountryNumwins: int = datas.get("battleRoyaleCountryNumwins")
+        self.battleRoyaleCountryWinratio: float = datas.get("battleRoyaleCountryWinratio")
+        self.battleRoyaleCountryNumguesses: int = datas.get("battleRoyaleCountryNumguesses")
+        self.battleRoyaleCountryAvgcorrectguesses: float = datas.get("battleRoyaleCountryAvgcorrectguesses")
+        self.battleRoyaleMedalsMedalcountgold: int = datas.get("battleRoyaleMedalsMedalcountgold")
+        self.battleRoyaleMedalsMedalcountsilver: int = datas.get("battleRoyaleMedalsMedalcountsilver")
+        self.battleRoyaleMedalsMedalcountbronze: int = datas.get("battleRoyaleMedalsMedalcountbronze")
+        self.competitiveCityStreaksNumgamesplayed: int = datas.get("competitiveCityStreaksNumgamesplayed")
+        self.competitiveCityStreaksAvgposition: float = datas.get("competitiveCityStreaksAvgposition")
+        self.competitiveCityStreaksNumwins: int = datas.get("competitiveCityStreaksNumwins")
+        self.competitiveCityStreaksWinratio: float = datas.get("competitiveCityStreaksWinratio")
+        self.competitiveCityStreaksNumguesses: int = datas.get("competitiveCityStreaksNumguesses")
+        self.competitiveCityStreaksAvgcorrectguesses: float = datas.get("competitiveCityStreaksAvgcorrectguesses")
+        self.competitiveStreaksRankRank: int = datas.get("competitiveStreaksRankRank")
+        self.competitiveStreaksRankRating: int = datas.get("competitiveStreaksRankRating")
+        self.competitiveStreaksRankGamesleftbeforeranked: int = datas.get("competitiveStreaksRankGamesleftbeforeranked")
+        self.competitiveStreaksRankDivisionId: int = datas.get("competitiveStreaksRankDivisionId")
+        self.competitiveStreaksRankDivisionDivisionid: int = datas.get("competitiveStreaksRankDivisionDivisionid")
+        self.competitiveStreaksRankDivisionTierid: int = datas.get("competitiveStreaksRankDivisionTierid")
+        self.competitiveStreaksRankDivisionName: str = datas.get("competitiveStreaksRankDivisionName")
+        self.competitiveStreaksRankDivisionMinimumrank: int = datas.get("competitiveStreaksRankDivisionMinimumrank")
+        self.competitiveStreaksMedalsMedalcountgold: int = datas.get("competitiveStreaksMedalsMedalcountgold")
+        self.competitiveStreaksMedalsMedalcountsilver: int = datas.get("competitiveStreaksMedalsMedalcountsilver")
+        self.competitiveStreaksMedalsMedalcountbronze: int = datas.get("competitiveStreaksMedalsMedalcountbronze")
+        self.duelsNumgamesplayed: int = datas.get("duelsNumgamesplayed")
+        self.duelsAvgposition: float = datas.get("duelsAvgposition")
+        self.duelsNumwins: int = datas.get("duelsNumwins")
+        self.duelsWinratio: float = datas.get("duelsWinratio")
+        self.duelsAvgguessdistance: float = datas.get("duelsAvgguessdistance")
+        self.duelsNumguesses: int = datas.get("duelsNumguesses")
+        self.duelsNumflawlesswins: int = datas.get("duelsNumflawlesswins")
+        self.duelsRankRank: int = datas.get("duelsRankRank")
+        self.duelsRankRating: int = datas.get("duelsRankRating")
+        self.duelsRankGamesleftbeforeranked: int = datas.get("duelsRankGamesleftbeforeranked")
+        self.duelsRankDivisionId: int = datas.get("duelsRankDivisionId")
+        self.duelsRankDivisionDivisionid: int = datas.get("duelsRankDivisionDivisionid")
+        self.duelsRankDivisionTierid: int = datas.get("duelsRankDivisionTierid")
+        self.duelsRankDivisionName: str = datas.get("duelsRankDivisionName")
+        self.duelsRankDivisionMinimumrank: int = datas.get("duelsRankDivisionMinimumrank")
+        self.duelsMedalsMedalcountgold: int = datas.get("duelsMedalsMedalcountgold")
+        self.duelsMedalsMedalcountsilver: int = datas.get("duelsMedalsMedalcountsilver")
+        self.duelsMedalsMedalcountbronze: int = datas.get("duelsMedalsMedalcountbronze")
+        self.lifeTimeXpProgressionXp: int = datas.get("lifeTimeXpProgressionXp")
+        self.lifeTimeXpProgressionCurrentlevelLevel: int = datas.get("lifeTimeXpProgressionCurrentlevelLevel")
+        self.lifeTimeXpProgressionCurrentlevelXpstart: int = datas.get("lifeTimeXpProgressionCurrentlevelXpstart")
+        self.lifeTimeXpProgressionNextlevelLevel: int = datas.get("lifeTimeXpProgressionNextlevelLevel")
+        self.lifeTimeXpProgressionNextlevelXpstart: int = datas.get("lifeTimeXpProgressionNextlevelXpstart")
+        self.lifeTimeXpProgressionCurrenttitleId: int = datas.get("lifeTimeXpProgressionCurrenttitleId")
+        self.lifeTimeXpProgressionCurrenttitleTierid: int = datas.get("lifeTimeXpProgressionCurrenttitleTierid")
+        self.lifeTimeXpProgressionCurrenttitleMinimumlevel: int = datas.get("lifeTimeXpProgressionCurrenttitleMinimumlevel")
+        self.lifeTimeXpProgressionCurrenttitleName: str = datas.get("lifeTimeXpProgressionCurrenttitleName")
+        self.totalMedalsMedalcountgold: int = datas.get("totalMedalsMedalcountgold")
+        self.totalMedalsMedalcountsilver: int = datas.get("totalMedalsMedalcountsilver")
+        self.totalMedalsMedalcountbronze: int = datas.get("totalMedalsMedalcountbronze")
+        self.teamDuelsNumgamesplayed: int = datas.get("teamDuelsNumgamesplayed")
+        self.teamDuelsNumwins: int = datas.get("teamDuelsNumwins")
+        self.teamDuelsWinratio: float = datas.get("teamDuelsWinratio")
+        self.perfectRounds: int = datas.get("perfectRounds")
 
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
@@ -167,97 +89,70 @@ class GeoguessrStats:
 class GeoguessrProfile:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        self.nick: str = datas["nick"]
-        self.created: str = datas["created"]
-        self.isProUser: bool = datas["isProUser"]
-        self.type: str = datas["type"]
-        self.consumedTrial: bool = datas["consumedTrial"]
-        self.isVerified: bool = datas["isVerified"]
-        self.pinUrl: str = datas["pinUrl"]
-        self.pinAnchor: str = datas["pinAnchor"]
-        self.pinIsdefault: bool = datas["pinIsdefault"]
-        self.fullBodyPin: Optional[Any] = datas["fullBodyPin"]
-        self.color: int = datas["color"]
-        self.url: str = datas["url"]
-        self.id: str = datas["id"]
-        self.countryCode: str = datas["countryCode"]
-        self.brLevel: int = datas["brLevel"]
-        self.brDivision: int = datas["brDivision"]
-        self.brStreak: int = datas["brStreak"]
-        self.streakProgress: Optional[Any] = datas["streakProgress"]
-        self.explorerProgress: Optional[Any] = datas["explorerProgress"]
-        self.dailyChallengeProgress: int = datas["dailyChallengeProgress"]
-        self.progressXp: int = datas["progressXp"]
-        self.progressLevel: int = datas["progressLevel"]
-        self.progressLevelxp: int = datas["progressLevelxp"]
-        self.progressNextlevel: int = datas["progressNextlevel"]
-        self.progressNextlevelxp: int = datas["progressNextlevelxp"]
-        self.progressTitleId: int = datas["progressTitleId"]
-        self.progressTitleTierid: int = datas["progressTitleTierid"]
-        self.progressBrrankRating: int = datas["progressBrrankRating"]
-        self.progressBrrankRank: int = datas["progressBrrankRank"]
-        self.progressBrrankGamesleftbeforeranked: int = datas[
-            "progressBrrankGamesleftbeforeranked"
-        ]
-        self.progressBrrankDivisionId: int = datas["progressBrrankDivisionId"]
-        self.progressBrrankDivisionDivisionid: int = datas[
-            "progressBrrankDivisionDivisionid"
-        ]
-        self.progressBrrankDivisionTierid: int = datas["progressBrrankDivisionTierid"]
-        self.progressCsrankRating: int = datas["progressCsrankRating"]
-        self.progressCsrankRank: int = datas["progressCsrankRank"]
-        self.progressCsrankGamesleftbeforeranked: int = datas[
-            "progressCsrankGamesleftbeforeranked"
-        ]
-        self.progressCsrankDivisionId: int = datas["progressCsrankDivisionId"]
-        self.progressCsrankDivisionDivisionid: int = datas[
-            "progressCsrankDivisionDivisionid"
-        ]
-        self.progressCsrankDivisionTierid: int = datas["progressCsrankDivisionTierid"]
-        self.progressDuelsrankRating: int = datas["progressDuelsrankRating"]
-        self.progressDuelsrankRank: int = datas["progressDuelsrankRank"]
-        self.progressDuelsrankGamesleftbeforeranked: int = datas[
-            "progressDuelsrankGamesleftbeforeranked"
-        ]
-        self.progressDuelsrankDivisionId: int = datas["progressDuelsrankDivisionId"]
-        self.progressDuelsrankDivisionDivisionid: int = datas[
-            "progressDuelsrankDivisionDivisionid"
-        ]
-        self.progressDuelsrankDivisionTierid: int = datas[
-            "progressDuelsrankDivisionTierid"
-        ]
-        self.progressCompetitionmedalsBronze: int = datas[
-            "progressCompetitionmedalsBronze"
-        ]
-        self.progressCompetitionmedalsSilver: int = datas[
-            "progressCompetitionmedalsSilver"
-        ]
-        self.progressCompetitionmedalsGold: int = datas["progressCompetitionmedalsGold"]
-        self.progressCompetitionmedalsPlatinum: int = datas[
-            "progressCompetitionmedalsPlatinum"
-        ]
-        self.progressStreaksBrcountries: int = datas["progressStreaksBrcountries"]
-        self.progressStreaksBrdistance: int = datas["progressStreaksBrdistance"]
-        self.progressStreaksCscities: int = datas["progressStreaksCscities"]
-        self.progressStreaksDuels: int = datas["progressStreaksDuels"]
-        self.competitiveElo: int = datas["competitiveElo"]
-        self.competitiveRating: int = datas["competitiveRating"]
-        self.competitiveLastratingchange: int = datas["competitiveLastratingchange"]
-        self.competitiveDivisionType: int = datas["competitiveDivisionType"]
-        self.competitiveDivisionStartrating: int = datas[
-            "competitiveDivisionStartrating"
-        ]
-        self.competitiveDivisionEndrating: int = datas["competitiveDivisionEndrating"]
-        self.lastNameChange: str = datas["lastNameChange"]
-        self.isBanned: bool = datas["isBanned"]
-        self.nameChangeAvailableAt: Optional[datetime.datetime] = datas[
-            "nameChangeAvailableAt"
-        ]
-        self.avatarFullbodypath: Optional[str] = datas["avatarFullbodypath"]
-        self.isBotUser: bool = datas["isBotUser"]
-        self.suspendedUntil: Optional[datetime.datetime] = datas["suspendedUntil"]
-        self.wallet: int = datas["wallet"]
-        self.Flair: int = datas["flair"]
+        self.nick: str = datas.get("nick")
+        self.created: str = datas.get("created")
+        self.isProUser: bool = datas.get("isProUser")
+        self.type: str = datas.get("type")
+        self.consumedTrial: bool = datas.get("consumedTrial")
+        self.isVerified: bool = datas.get("isVerified")
+        self.pinUrl: str = datas.get("pinUrl")
+        self.pinAnchor: str = datas.get("pinAnchor")
+        self.pinIsdefault: bool = datas.get("pinIsdefault")
+        self.fullBodyPin: Optional[Any] = datas.get("fullBodyPin")
+        self.color: int = datas.get("color")
+        self.url: str = datas.get("url")
+        self.id: str = datas.get("id")
+        self.countryCode: str = datas.get("countryCode")
+        self.brLevel: int = datas.get("brLevel")
+        self.brDivision: int = datas.get("brDivision")
+        self.brStreak: int = datas.get("brStreak")
+        self.streakProgress: Optional[Any] = datas.get("streakProgress")
+        self.explorerProgress: Optional[Any] = datas.get("explorerProgress")
+        self.dailyChallengeProgress: int = datas.get("dailyChallengeProgress")
+        self.progressXp: int = datas.get("progressXp")
+        self.progressLevel: int = datas.get("progressLevel")
+        self.progressLevelxp: int = datas.get("progressLevelxp")
+        self.progressNextlevel: int = datas.get("progressNextlevel")
+        self.progressNextlevelxp: int = datas.get("progressNextlevelxp")
+        self.progressTitleId: int = datas.get("progressTitleId")
+        self.progressTitleTierid: int = datas.get("progressTitleTierid")
+        self.progressBrrankRating: int = datas.get("progressBrrankRating")
+        self.progressBrrankRank: int = datas.get("progressBrrankRank")
+        self.progressBrrankGamesleftbeforeranked: int = datas.get("progressBrrankGamesleftbeforeranked")
+        self.progressBrrankDivisionId: int = datas.get("progressBrrankDivisionId")
+        self.progressBrrankDivisionDivisionid: int = datas.get("progressBrrankDivisionDivisionid")
+        self.progressBrrankDivisionTierid: int = datas.get("progressBrrankDivisionTierid")
+        self.progressCsrankRating: int = datas.get("progressCsrankRating")
+        self.progressCsrankRank: int = datas.get("progressCsrankRank")
+        self.progressCsrankGamesleftbeforeranked: int = datas.get("progressCsrankGamesleftbeforeranked")
+        self.progressCsrankDivisionId: int = datas.get("progressCsrankDivisionId")
+        self.progressCsrankDivisionDivisionid: int = datas.get("progressCsrankDivisionDivisionid")
+        self.progressCsrankDivisionTierid: int = datas.get("progressCsrankDivisionTierid")
+        self.progressDuelsrankRating: int = datas.get("progressDuelsrankRating")
+        self.progressDuelsrankRank: int = datas.get("progressDuelsrankRank")
+        self.progressDuelsrankGamesleftbeforeranked: int = datas.get("progressDuelsrankGamesleftbeforeranked")
+        self.progressDuelsrankDivisionId: int = datas.get("progressDuelsrankDivisionId")
+        self.progressDuelsrankDivisionDivisionid: int = datas.get("progressDuelsrankDivisionDivisionid")
+        self.progressDuelsrankDivisionTierid: int = datas.get("progressDuelsrankDivisionTierid")
+        self.progressCompetitionmedalsBronze: int = datas.get("progressCompetitionmedalsBronze")
+        self.progressCompetitionmedalsSilver: int = datas.get("progressCompetitionmedalsSilver")
+        self.progressCompetitionmedalsGold: int = datas.get("progressCompetitionmedalsGold")
+        self.progressCompetitionmedalsPlatinum: int = datas.get("progressCompetitionmedalsPlatinum")
+        self.competitiveElo: int = datas.get("competitiveElo")
+        self.competitiveRating: int = datas.get("competitiveRating")
+        self.competitiveLastratingchange: int = datas.get("competitiveLastratingchange")
+        self.competitiveDivisionType: int = datas.get("competitiveDivisionType")
+        self.competitiveDivisionStartrating: int = datas.get("competitiveDivisionStartrating")
+        self.competitiveDivisionEndrating: int = datas.get("competitiveDivisionEndrating")
+        self.lastNameChange: str = datas.get("lastNameChange")
+        self.isBanned: bool = datas.get("isBanned")
+        self.nameChangeAvailableAt: Optional[datetime.datetime] = datas.get("nameChangeAvailableAt")
+        self.avatarFullbodypath: Optional[str] = datas.get("avatarFullbodypath")
+        self.isBotUser: bool = datas.get("isBotUser")
+        self.suspendedUntil: Optional[datetime.datetime] = datas.get("suspendedUntil")
+        self.wallet: int = datas.get("wallet")
+        self.Flair: int = datas.get("flair")
+        self.isCreator: bool = datas.get("isCreator")
         self.stats: Optional[GeoguessrStats] = None
 
     def add_stats(self, stats: GeoguessrStats) -> None:
@@ -270,22 +165,22 @@ class GeoguessrProfile:
 class GeoguessrChallenge:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        self.challengeToken: str = datas["challengeToken"]
-        self.challengeMapslug: str = datas["challengeMapslug"]
-        self.challengeRoundcount: int = datas["challengeRoundcount"]
-        self.challengeTimelimit: int = datas["challengeTimelimit"]
-        self.challengeForbidmoving: bool = datas["challengeForbidmoving"]
-        self.challengeForbidzooming: bool = datas["challengeForbidzooming"]
-        self.challengeForbidrotating: bool = datas["challengeForbidrotating"]
-        self.challengeNumberofparticipants: int = datas["challengeNumberofparticipants"]
-        self.challengeGamemode: str = datas["challengeGamemode"]
-        self.challengeChallengetype: int = datas["challengeChallengetype"]
-        self.challengeStreaktype: str = datas["challengeStreaktype"]
-        self.challengeStr_timelimit: str = datas["challengeStr_timelimit"]
-        self.mapId: str = datas["mapId"]
-        self.creatorNick: str = datas["creatorNick"]
-        self.creatorId: str = datas["creatorId"]
-        self.mode: str = datas["mode"]
+        self.challengeToken: str = datas.get("challengeToken")
+        self.challengeMapslug: str = datas.get("challengeMapslug")
+        self.challengeRoundcount: int = datas.get("challengeRoundcount")
+        self.challengeTimelimit: int = datas.get("challengeTimelimit")
+        self.challengeForbidmoving: bool = datas.get("challengeForbidmoving")
+        self.challengeForbidzooming: bool = datas.get("challengeForbidzooming")
+        self.challengeForbidrotating: bool = datas.get("challengeForbidrotating")
+        self.challengeNumberofparticipants: int = datas.get("challengeNumberofparticipants")
+        self.challengeGamemode: str = datas.get("challengeGamemode")
+        self.challengeChallengetype: int = datas.get("challengeChallengetype")
+        self.challengeStreaktype: str = datas.get("challengeStreaktype")
+        self.challengeStr_timelimit: str = datas.get("challengeStr_timelimit")
+        self.mapId: str = datas.get("mapId")
+        self.creatorNick: str = datas.get("creatorNick")
+        self.creatorId: str = datas.get("creatorId")
+        self.mode: str = datas.get("mode")
 
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
@@ -294,106 +189,92 @@ class GeoguessrChallenge:
 class GeoguessrScore:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        self.gameToken: str = datas["gameToken"]
-        self.playerName: str = datas["playerName"]
-        self.userId: str = datas["userId"]
-        self.totalScore: int = datas["totalScore"]
-        self.isLeader: bool = datas["isLeader"]
-        self.pinUrl: str = datas["pinUrl"]
-        self.gameType: str = datas["gameType"]
-        self.gameMode: str = datas["gameMode"]
-        self.gameState: str = datas["gameState"]
-        self.gameRoundcount: int = datas["gameRoundcount"]
-        self.gameStreaktype: str = datas["gameStreaktype"]
-        self.gameMap: str = datas["gameMap"]
-        self.gameMapname: str = datas["gameMapname"]
-        self.gamePanoramaprovider: int = datas["gamePanoramaprovider"]
-        self.gameBoundsMinLat: float = datas["gameBoundsMinLat"]
-        self.gameBoundsMinLng: float = datas["gameBoundsMinLng"]
-        self.gameBoundsMaxLat: float = datas["gameBoundsMaxLat"]
-        self.gameBoundsMaxLng: float = datas["gameBoundsMaxLng"]
-        self.gameRound: int = datas["gameRound"]
+        self.gameToken: str = datas.get("gameToken")
+        self.playerName: str = datas.get("playerName")
+        self.userId: str = datas.get("userId")
+        self.totalScore: int = datas.get("totalScore")
+        self.isLeader: bool = datas.get("isLeader")
+        self.pinUrl: str = datas.get("pinUrl")
+        self.gameType: str = datas.get("gameType")
+        self.gameMode: str = datas.get("gameMode")
+        self.gameState: str = datas.get("gameState")
+        self.gameRoundcount: int = datas.get("gameRoundcount")
+        self.gameStreaktype: str = datas.get("gameStreaktype")
+        self.gameMap: str = datas.get("gameMap")
+        self.gameMapname: str = datas.get("gameMapname")
+        self.gamePanoramaprovider: int = datas.get("gamePanoramaprovider")
+        self.gameBoundsMinLat: float = datas.get("gameBoundsMinLat")
+        self.gameBoundsMinLng: float = datas.get("gameBoundsMinLng")
+        self.gameBoundsMaxLat: float = datas.get("gameBoundsMaxLat")
+        self.gameBoundsMaxLng: float = datas.get("gameBoundsMaxLng")
+        self.gameRound: int = datas.get("gameRound")
         self.gameRoundsLats: list[float] = [
-            round["lat"] for round in datas["gameRounds"]
+            round["lat"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsLngs: list[float] = [
-            round["lng"] for round in datas["gameRounds"]
+            round["lng"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsPanoIds: list[str] = [
-            round["panoId"] for round in datas["gameRounds"]
+            round["panoId"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsHeadings: list[float] = [
-            round["heading"] for round in datas["gameRounds"]
+            round["heading"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsPitches: list[float] = [
-            round["pitch"] for round in datas["gameRounds"]
+            round["pitch"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsZoomes: list[float] = [
-            round["zoom"] for round in datas["gameRounds"]
+            round["zoom"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsStreakLocationCodes: list[str] = [
-            round["streakLocationCode"] for round in datas["gameRounds"]
+            round["streakLocationCode"] for round in datas.get("gameRounds") if round != None
         ]
         self.gameRoundsStartTime: list[datetime.datetime] = [
-            round["startTime"] for round in datas["gameRounds"]
+            round["startTime"] for round in datas.get("gameRounds") if round != None
         ]
-        self.gamePlayerTotalscoreAmount: str = datas["gamePlayerTotalscoreAmount"]
-        self.gamePlayerTotalscoreUnit: str = datas["gamePlayerTotalscoreUnit"]
-        self.gamePlayerTotalscorePercentage: float = datas[
-            "gamePlayerTotalscorePercentage"
-        ]
-        self.gamePlayerTotalDistanceMetersAmount: str = datas[
-            "gamePlayerTotaldistanceMetersAmount"
-        ]
-        self.gamePlayerTotalDistanceMetersUnit: str = datas[
-            "gamePlayerTotaldistanceMetersUnit"
-        ]
-        self.gamePlayerTotalDistanceMilesAmount: str = datas[
-            "gamePlayerTotaldistanceMilesAmount"
-        ]
-        self.gamePlayerTotalDistanceMilesUnit: str = datas[
-            "gamePlayerTotaldistanceMilesUnit"
-        ]
-        self.gamePlayerTotalDistanceInMeters: float = datas[
-            "gamePlayerTotaldistanceinmeters"
-        ]
-        self.gamePlayerTotaltime: int = datas["gamePlayerTotaltime"]
-        self.gamePlayerTotalstreak: int = datas["gamePlayerTotalstreak"]
+        self.gamePlayerTotalscoreAmount: str = datas.get("gamePlayerTotalscoreAmount")
+        self.gamePlayerTotalscoreUnit: str = datas.get("gamePlayerTotalscoreUnit")
+        self.gamePlayerTotalscorePercentage: float = datas.get("gamePlayerTotalscorePercentage")
+        self.gamePlayerTotalDistanceMetersAmount: str = datas.get("gamePlayerTotaldistanceMetersAmount")
+        self.gamePlayerTotalDistanceMetersUnit: str = datas.get("gamePlayerTotaldistanceMetersUnit")
+        self.gamePlayerTotalDistanceMilesAmount: str = datas.get("gamePlayerTotaldistanceMilesAmount")
+        self.gamePlayerTotalDistanceMilesUnit: str = datas.get("gamePlayerTotaldistanceMilesUnit")
+        self.gamePlayerTotalDistanceInMeters: float = datas.get("gamePlayerTotaldistanceinmeters")
+        self.gamePlayerTotaltime: int = datas.get("gamePlayerTotaltime")
+        self.gamePlayerTotalstreak: int = datas.get("gamePlayerTotalstreak")
         self.gamePlayerGuessesLats: list[float] = [
-            guess["lat"] for guess in datas["gamePlayerGuesses"]
+            guess["lat"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesLngs: list[float] = [
-            guess["lng"] for guess in datas["gamePlayerGuesses"]
+            guess["lng"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesTimedOut: list[bool] = [
-            guess["timedOut"] for guess in datas["gamePlayerGuesses"]
+            guess["timedOut"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesTimedOutWithGuess: list[bool] = [
-            guess["timedOutWithGuess"] for guess in datas["gamePlayerGuesses"]
+            guess["timedOutWithGuess"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesSkippedRound: list[bool] = [
-            guess["skippedRound"] for guess in datas["gamePlayerGuesses"]
+            guess["skippedRound"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesRoundScoreInPercentage: list[float] = [
-            guess["roundScoreInPercentage"] for guess in datas["gamePlayerGuesses"]
+            guess["roundScoreInPercentage"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesRoundScoreInPoints: list[int] = [
-            guess["roundScoreInPoints"] for guess in datas["gamePlayerGuesses"]
+            guess["roundScoreInPoints"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesDistanceInMeters: list[float] = [
-            guess["distanceInMeters"] for guess in datas["gamePlayerGuesses"]
+            guess["distanceInMeters"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesStreakLocationCode: list[str] = [
-            guess["streakLocationCode"] for guess in datas["gamePlayerGuesses"]
+            guess["streakLocationCode"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
         self.gamePlayerGuessesTime: list[int] = [
-            guess["time"] for guess in datas["gamePlayerGuesses"]
+            guess["time"] for guess in datas.get("gamePlayerGuesses") if guess != None
         ]
-        self.gamePlayerId: str = datas["gamePlayerId"]
-        self.gamePlayerNick: str = datas["gamePlayerNick"]
-        self.gameProgresschangeAwardedXp: int = datas[
-            "gameProgresschangeAwardedxpTotalawardedxp"
-        ]
+        self.gamePlayerId: str = datas.get("gamePlayerId")
+        self.gamePlayerNick: str = datas.get("gamePlayerNick")
+        self.gameProgresschangeAwardedXp: int = datas.get("gameProgresschangeAwardedxpTotalawardedxp")
 
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
@@ -402,45 +283,45 @@ class GeoguessrScore:
 class GeoguessrMap:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        self.id: str = datas["id"]
-        self.name: str = datas["name"]
-        self.slug: str = datas["slug"]
-        self.description: Optional[str] = datas["description"]
-        self.url: str = datas["url"]
-        self.playUrl: str = datas["playUrl"]
-        self.published: bool = datas["published"]
-        self.banned: bool = datas["banned"]
-        self.imagesBackgroundlarge: Optional[Any] = datas["imagesBackgroundlarge"]
-        self.imagesIncomplete: bool = datas["imagesIncomplete"]
-        self.boundsMinLat: float = datas["boundsMinLat"]
-        self.boundsMinLng: float = datas["boundsMinLng"]
-        self.boundsMaxLat: float = datas["boundsMaxLat"]
-        self.boundsMaxLng: float = datas["boundsMaxLng"]
-        self.customCoordinates: Optional[Any] = datas["customCoordinates"]
-        self.coordinateCount: int = datas["coordinateCount"]
-        self.regions: Optional[Any] = datas["regions"]
-        self.creatorNick: str = datas["creatorNick"]
-        self.creatorId: str = datas["creatorId"]
-        self.createdAt: str = datas["createdAt"]
-        self.updatedAt: str = datas["updatedAt"]
-        self.numFinishedGames: int = datas["numFinishedGames"]
-        self.likedByUser: Optional[Any] = datas["likedByUser"]
-        self.averageScore: int = datas["averageScore"]
-        self.avatarBackground: str = datas["avatarBackground"]
-        self.avatarDecoration: str = datas["avatarDecoration"]
-        self.avatarGround: str = datas["avatarGround"]
-        self.avatarLandscape: str = datas["avatarLandscape"]
-        self.difficulty: str = datas["difficulty"]
-        self.difficultyLevel: int = datas["difficultyLevel"]
-        self.highscore: Optional[Any] = datas["highscore"]
-        self.isUserMap: bool = datas["isUserMap"]
-        self.highlighted: bool = datas["highlighted"]
-        self.free: bool = datas["free"]
-        self.panoramaProvider: str = datas["panoramaProvider"]
-        self.inExplorerMode: bool = datas["inExplorerMode"]
-        self.maxErrorDistance: int = datas["maxErrorDistance"]
-        self.likes: int = datas["likes"]
-        self.locationSelectionMode: int = datas["locationSelectionMode"]
+        self.id: str = datas.get("id")
+        self.name: str = datas.get("name")
+        self.slug: str = datas.get("slug")
+        self.description: Optional[str] = datas.get("description")
+        self.url: str = datas.get("url")
+        self.playUrl: str = datas.get("playUrl")
+        self.published: bool = datas.get("published")
+        self.banned: bool = datas.get("banned")
+        self.imagesBackgroundlarge: Optional[Any] = datas.get("imagesBackgroundlarge")
+        self.imagesIncomplete: bool = datas.get("imagesIncomplete")
+        self.boundsMinLat: float = datas.get("boundsMinLat")
+        self.boundsMinLng: float = datas.get("boundsMinLng")
+        self.boundsMaxLat: float = datas.get("boundsMaxLat")
+        self.boundsMaxLng: float = datas.get("boundsMaxLng")
+        self.customCoordinates: Optional[Any] = datas.get("customCoordinates")
+        self.coordinateCount: int = datas.get("coordinateCount")
+        self.regions: Optional[Any] = datas.get("regions")
+        self.creatorNick: str = datas.get("creatorNick")
+        self.creatorId: str = datas.get("creatorId")
+        self.createdAt: str = datas.get("createdAt")
+        self.updatedAt: str = datas.get("updatedAt")
+        self.numFinishedGames: int = datas.get("numFinishedGames")
+        self.likedByUser: Optional[Any] = datas.get("likedByUser")
+        self.averageScore: int = datas.get("averageScore")
+        self.avatarBackground: str = datas.get("avatarBackground")
+        self.avatarDecoration: str = datas.get("avatarDecoration")
+        self.avatarGround: str = datas.get("avatarGround")
+        self.avatarLandscape: str = datas.get("avatarLandscape")
+        self.difficulty: str = datas.get("difficulty")
+        self.difficultyLevel: int = datas.get("difficultyLevel")
+        self.highscore: Optional[Any] = datas.get("highscore")
+        self.isUserMap: bool = datas.get("isUserMap")
+        self.highlighted: bool = datas.get("highlighted")
+        self.free: bool = datas.get("free")
+        self.panoramaProvider: str = datas.get("panoramaProvider")
+        self.inExplorerMode: bool = datas.get("inExplorerMode")
+        self.maxErrorDistance: int = datas.get("maxErrorDistance")
+        self.likes: int = datas.get("likes")
+        self.locationSelectionMode: int = datas.get("locationSelectionMode")
 
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
