@@ -247,7 +247,15 @@ class Geoguessr:
         return challenge_link
 
     async def get_duel_info(self, duel_url: str):
-        pass
+        duel_token = (
+            duel_url.split("/")[-2] if "/" in duel_url else duel_url
+        )
+        async with self.session.get(
+            f"https://game-server.geoguessr.com/api/duels/{duel_token}"
+        ) as r:
+            js = await r.json()
+
+        return GeoguessrDuel(js)
 
     def __del__(self):
         asyncio.ensure_future(self.session.close())
