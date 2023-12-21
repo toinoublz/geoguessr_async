@@ -287,7 +287,7 @@ class Geoguessr:
                 payload = json.loads(payload)
                 for game in payload:
                     if game["payload"]["gameMode"] == "Duels":
-                        time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d/%m/%Y %H:%M:%S')
+                        time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
                         gameURL = f'https://www.geoguessr.com/duels/{game["payload"]["gameId"]}/summary'
                         duelList.append((time, gameURL))
         return duelList
