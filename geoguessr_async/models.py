@@ -7,7 +7,6 @@ import geoguessr_async.geo_utils as gu
 class GeoguessrStats:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
-        print(datas)
         self.battleRoyaleRankRank: int = datas.get("battleRoyaleRankRank")
         self.battleRoyaleRankRating: int = datas.get("battleRoyaleRankRating")
         self.battleRoyaleRankGamesleftbeforeranked: int = datas.get("battleRoyaleRankGamesleftbeforeranked")
@@ -376,5 +375,12 @@ class GeoguessrDuel:
         self.resultWinningteamid: str = datas.get("resultWinningteamid")
         self.resultWinnerstyle: str = datas.get("resultWinnerstyle")
     
+    def __repr__(self) -> str:
+        return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
+    
+class GeoguessrActivities:
+    def __init__(self, entries) -> None:
+        self.entries = entries
+        
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])

@@ -1,6 +1,8 @@
 from urllib import parse
 import aiohttp
 import asyncio
+import datetime
+import json
 from .models import *
 
 class Geoguessr:
@@ -17,6 +19,7 @@ class Geoguessr:
         self.me = None
         self.me_stats = None
         self.friends = None
+        self.activities = None
 
     async def get_all_my_infos(self):
         """
@@ -39,6 +42,23 @@ class Geoguessr:
         self.me = await self.get_user_infos(self.id)
         self.me_stats = await self.get_user_stats(self.id)
         self.friends = await self.__get_my_friends_list()
+        self.activities = await self.__get_activities()
+
+    async def __get_activities(self):
+        r = await self.session.get("https://geoguessr.com/api/v4/feed/private")
+        js = await r.json()
+        
+        entries = js["entries"]
+        pagination_token = js["paginationToken"]
+
+        while pagination_token is not None:
+            link = f"https://geoguessr.com/api/v4/feed/private?count=1000&paginationToken={pagination_token}"
+            async with self.session.get(link) as r:
+                js = await r.json()
+
+            entries += js["entries"]
+            pagination_token = js["paginationToken"]
+        return GeoguessrActivities(entries)
 
     async def __get_my_friends_list(self):
         async with self.session.get(
@@ -256,6 +276,20 @@ class Geoguessr:
             js = await r.json()
 
         return GeoguessrDuel(js)
+    
+    async def get_ranked_duel_activity(self):
+        if not self.activities:
+            self.activities = await self.__get_activities()
+        duelList = []
+        for entry in self.activities.entries:
+            payload = json.loads(entry["payload"])
+            if payload["type"] == 6: # Type 6 = Ranked
+                for game in payload:
+                    if game["payload"]["gameMode"] == "Duels":
+                        time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+                        gameURL = f'https://www.geoguessr.com/duels/{game["payload"]["gameId"]}/summary'
+                        duelList.append((time, gameURL))
+        return duelList
 
     def __del__(self):
         asyncio.ensure_future(self.session.close())
