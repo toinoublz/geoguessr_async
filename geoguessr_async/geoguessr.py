@@ -282,9 +282,8 @@ class Geoguessr:
             self.activities = await self.__get_activities()
         duelList = []
         for entry in self.activities.entries:
-            payload = entry["payload"]
-            if payload[3:10] == 'type":6': # Type 6 = Ranked
-                payload = json.loads(payload)
+            payload = json.loads(entry["payload"])
+            if payload["type"] == 6: # Type 6 = Ranked
                 for game in payload:
                     if game["payload"]["gameMode"] == "Duels":
                         time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
