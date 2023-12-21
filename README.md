@@ -15,7 +15,7 @@ from geoguessr_async import Geoguessr
 client = Geoguessr("your_ncfa_cookie")
 ```
 
-*To get your NCFA cookie, login to geoguessr, open your dev tools (`Ctrl+Shift+I`), go to Storage/Cookies and copy the value of `_ncfa`.*
+*To get your NCFA cookie, login to geoguessr, open your dev tools (`Ctrl+Shift+I`), go to Application/Storage/Cookies and copy the value of `_ncfa`.*
 
 You can then use the client object to get information about users, challenges, maps, and scores. For example, to get information about an user with his ID, you can use the following code:
 
