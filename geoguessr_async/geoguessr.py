@@ -283,12 +283,12 @@ class Geoguessr:
         duelList = []
         for entry in self.activities.entries:
             payload = json.loads(entry["payload"])
-            if payload["type"] == 6: # Type 6 = Ranked
+            if type(payload) == list:
                 for game in payload:
-                    if game["payload"]["gameMode"] == "Duels":
-                        time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
-                        gameURL = f'https://www.geoguessr.com/duels/{game["payload"]["gameId"]}/summary'
-                        duelList.append((time, gameURL))
+                    if (game["type"] == 6 and game["payload"]["gameMode"] == "Duels"): # Type 6 = Ranked
+                            time = datetime.datetime.strptime(game["time"][:19], '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+                            gameURL = f'https://www.geoguessr.com/duels/{game["payload"]["gameId"]}/summary'
+                            duelList.append((time, gameURL))
         return duelList
 
     def __del__(self):
