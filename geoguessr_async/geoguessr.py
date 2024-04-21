@@ -1,9 +1,11 @@
 from urllib import parse
 import aiohttp
 import asyncio
-import datetime
 import json
+import logging
 from .models import *
+
+logger = logging.getLogger(__name__)
 
 class Geoguessr:
     """Represents a geoguessr connection that connects to the Geoguessr API.
@@ -161,7 +163,7 @@ class Geoguessr:
             results += js["items"]
             pagination_token = js["paginationToken"]
 
-        print(results)
+        logger.debug("Retrieved challenge scores: %s", results)
 
         return [GeoguessrScore(result) for result in results]
 
