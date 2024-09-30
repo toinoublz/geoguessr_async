@@ -384,3 +384,17 @@ class GeoguessrActivities:
         
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
+    
+class GeoguessrUserELO:
+    def __init__(self, datas) -> None:
+        datas = gu.flatten_dict(datas)
+        self.divisionNumber: int = datas.get("divisionNumber")
+        self.divisionName: str = datas.get("divisionName")
+        self.rating: int = datas.get("rating")
+        self.tier: str = datas.get("tier")
+        self.gameModeRatingsStandardduels: int = datas.get("gameModeRatingsStandardduels")
+        self.gameModeRatingsNmpzduels: int = datas.get("gameModeRatingsNmpzduels")
+        self.gameModeRatingsNomoveduels: int = datas.get("gameModeRatingsNomoveduels")
+        
+    def __repr__(self) -> str:
+        return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
