@@ -45,6 +45,7 @@ class Geoguessr:
         self.me_stats = await self.get_user_stats(self.id)
         self.friends = await self.__get_my_friends_list()
         self.activities = await self.__get_activities()
+        self.me_elo = await self.get_user_ELO(self.id)
 
     async def __get_activities(self):
         r = await self.session.get("https://geoguessr.com/api/v4/feed/private")
@@ -85,7 +86,31 @@ class Geoguessr:
                 user = GeoguessrProfile(await r.json())
                 user.add_stats(await self.get_user_stats(user.id))
                 return user
-
+            
+    async def get_user_ELO(self, userId: str) -> GeoguessrUserELO:
+        """Get the different ELOs of a player with geoguessr ID as input
+        
+        Args:
+            userId (str): The Geoguessr Id of the player you want the stats of
+        
+        Returns:
+            GeoguessrUserELO: All the ELOs of the player
+            None if the page doesn't exist.
+        """
+        
+        try:
+            async with self.session.get(
+                f"https://www.geoguessr.com/api/v4/ranked-system/progress/{userId}"
+            ) as r:
+                content_type = r.headers.get('Content-Type')
+                if 'application/json' in content_type:
+                    return GeoguessrUserELO(await r.json())
+                else:
+                    raise ValueError('Content-Type for JSON response not acceptable.')
+        except:
+            print("The player doesn't have his Geoguessr ELO stats page initialised, only a 'global ELO'.")
+            return None
+        
     async def get_user_stats(self, userId: str) -> GeoguessrStats:
         """Give you all Geoguessr stats about a player with the player's id
 
