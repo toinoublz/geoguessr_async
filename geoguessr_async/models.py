@@ -190,11 +190,11 @@ class GeoguessrScore:
     def __init__(self, datas: dict) -> None:
         datas = gu.flatten_dict(datas)
         self.gameToken: str = datas.get("gameToken")
-        self.playerName: str = datas.get("playerName")
-        self.userId: str = datas.get("userId")
-        self.totalScore: int = datas.get("totalScore")
-        self.isLeader: bool = datas.get("isLeader")
-        self.pinUrl: str = datas.get("pinUrl")
+        self.playerName: str = datas.get("gamePlayerNick")
+        self.userId: str = datas.get("gamePlayerId")
+        self.totalScore: int = datas.get("gamePlayerTotalScoreAmount")
+        self.isLeader: bool = datas.get("gamePlayerIsleader")
+        self.pinUrl: str = datas.get("gamePlayerPinUrl")
         self.gameType: str = datas.get("gameType")
         self.gameMode: str = datas.get("gameMode")
         self.gameState: str = datas.get("gameState")
@@ -274,6 +274,8 @@ class GeoguessrScore:
         ]
         self.gamePlayerId: str = datas.get("gamePlayerId")
         self.gamePlayerNick: str = datas.get("gamePlayerNick")
+        self.gamePlayerIsLeader: bool = datas.get("gamePlayerIsleader")
+        self.gamePlayerPinUrl: str = datas.get("gamePlayerPinUrl")
         self.gameProgresschangeAwardedXp: int = datas.get("gameProgresschangeAwardedxpTotalawardedxp")
 
     def __repr__(self) -> str:
