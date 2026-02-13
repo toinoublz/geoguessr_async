@@ -72,7 +72,9 @@ class GeoguessrStats:
         self.lifeTimeXpProgressionNextlevelXpstart: int = datas.get("lifeTimeXpProgressionNextlevelXpstart")
         self.lifeTimeXpProgressionCurrenttitleId: int = datas.get("lifeTimeXpProgressionCurrenttitleId")
         self.lifeTimeXpProgressionCurrenttitleTierid: int = datas.get("lifeTimeXpProgressionCurrenttitleTierid")
-        self.lifeTimeXpProgressionCurrenttitleMinimumlevel: int = datas.get("lifeTimeXpProgressionCurrenttitleMinimumlevel")
+        self.lifeTimeXpProgressionCurrenttitleMinimumlevel: int = datas.get(
+            "lifeTimeXpProgressionCurrenttitleMinimumlevel"
+        )
         self.lifeTimeXpProgressionCurrenttitleName: str = datas.get("lifeTimeXpProgressionCurrenttitleName")
         self.totalMedalsMedalcountgold: int = datas.get("totalMedalsMedalcountgold")
         self.totalMedalsMedalcountsilver: int = datas.get("totalMedalsMedalcountsilver")
@@ -208,29 +210,19 @@ class GeoguessrScore:
         self.gameBoundsMaxLat: float = datas.get("gameBoundsMaxLat")
         self.gameBoundsMaxLng: float = datas.get("gameBoundsMaxLng")
         self.gameRound: int = datas.get("gameRound")
-        self.gameRoundsLats: list[float] = [
-            round["lat"] for round in datas.get("gameRounds") if round != None
-        ]
-        self.gameRoundsLngs: list[float] = [
-            round["lng"] for round in datas.get("gameRounds") if round != None
-        ]
-        self.gameRoundsPanoIds: list[str] = [
-            round["panoId"] for round in datas.get("gameRounds") if round != None
-        ]
-        self.gameRoundsHeadings: list[float] = [
-            round["heading"] for round in datas.get("gameRounds") if round != None
-        ]
-        self.gameRoundsPitches: list[float] = [
-            round["pitch"] for round in datas.get("gameRounds") if round != None
-        ]
-        self.gameRoundsZoomes: list[float] = [
-            round["zoom"] for round in datas.get("gameRounds") if round != None
-        ]
+
+        gameRounds = datas.get("gameRounds", [])
+        self.gameRoundsLats: list[float] = [round["lat"] for round in gameRounds if round != None]
+        self.gameRoundsLngs: list[float] = [round["lng"] for round in gameRounds if round != None]
+        self.gameRoundsPanoIds: list[str] = [round["panoId"] for round in gameRounds if round != None]
+        self.gameRoundsHeadings: list[float] = [round["heading"] for round in gameRounds if round != None]
+        self.gameRoundsPitches: list[float] = [round["pitch"] for round in gameRounds if round != None]
+        self.gameRoundsZoomes: list[float] = [round["zoom"] for round in gameRounds if round != None]
         self.gameRoundsStreakLocationCodes: list[str] = [
-            round["streakLocationCode"] for round in datas.get("gameRounds") if round != None
+            round["streakLocationCode"] for round in gameRounds if round != None
         ]
         self.gameRoundsStartTime: list[datetime.datetime] = [
-            round["startTime"] for round in datas.get("gameRounds") if round != None
+            round["startTime"] for round in gameRounds if round != None
         ]
         self.gamePlayerTotalscoreAmount: str = datas.get("gamePlayerTotalscoreAmount")
         self.gamePlayerTotalscoreUnit: str = datas.get("gamePlayerTotalscoreUnit")
@@ -242,36 +234,29 @@ class GeoguessrScore:
         self.gamePlayerTotalDistanceInMeters: float = datas.get("gamePlayerTotaldistanceinmeters")
         self.gamePlayerTotaltime: int = datas.get("gamePlayerTotaltime")
         self.gamePlayerTotalstreak: int = datas.get("gamePlayerTotalstreak")
-        self.gamePlayerGuessesLats: list[float] = [
-            guess["lat"] for guess in datas.get("gamePlayerGuesses") if guess != None
-        ]
-        self.gamePlayerGuessesLngs: list[float] = [
-            guess["lng"] for guess in datas.get("gamePlayerGuesses") if guess != None
-        ]
-        self.gamePlayerGuessesTimedOut: list[bool] = [
-            guess["timedOut"] for guess in datas.get("gamePlayerGuesses") if guess != None
-        ]
+        gamePlayerGuesses = datas.get("gamePlayerGuesses", [])
+        self.gamePlayerGuessesLats: list[float] = [guess["lat"] for guess in gamePlayerGuesses if guess != None]
+        self.gamePlayerGuessesLngs: list[float] = [guess["lng"] for guess in gamePlayerGuesses if guess != None]
+        self.gamePlayerGuessesTimedOut: list[bool] = [guess["timedOut"] for guess in gamePlayerGuesses if guess != None]
         self.gamePlayerGuessesTimedOutWithGuess: list[bool] = [
-            guess["timedOutWithGuess"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["timedOutWithGuess"] for guess in gamePlayerGuesses if guess != None
         ]
         self.gamePlayerGuessesSkippedRound: list[bool] = [
-            guess["skippedRound"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["skippedRound"] for guess in gamePlayerGuesses if guess != None
         ]
         self.gamePlayerGuessesRoundScoreInPercentage: list[float] = [
-            guess["roundScoreInPercentage"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["roundScoreInPercentage"] for guess in gamePlayerGuesses if guess != None
         ]
         self.gamePlayerGuessesRoundScoreInPoints: list[int] = [
-            guess["roundScoreInPoints"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["roundScoreInPoints"] for guess in gamePlayerGuesses if guess != None
         ]
         self.gamePlayerGuessesDistanceInMeters: list[float] = [
-            guess["distanceInMeters"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["distanceInMeters"] for guess in gamePlayerGuesses if guess != None
         ]
         self.gamePlayerGuessesStreakLocationCode: list[str] = [
-            guess["streakLocationCode"] for guess in datas.get("gamePlayerGuesses") if guess != None
+            guess["streakLocationCode"] for guess in gamePlayerGuesses if guess != None
         ]
-        self.gamePlayerGuessesTime: list[int] = [
-            guess["time"] for guess in datas.get("gamePlayerGuesses") if guess != None
-        ]
+        self.gamePlayerGuessesTime: list[int] = [guess["time"] for guess in gamePlayerGuesses if guess != None]
         self.gamePlayerId: str = datas.get("gamePlayerId")
         self.gamePlayerNick: str = datas.get("gamePlayerNick")
         self.gamePlayerIsLeader: bool = datas.get("gamePlayerIsleader")
@@ -328,6 +313,7 @@ class GeoguessrMap:
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
 
+
 class GeoguessrDuel:
     def __init__(self, datas) -> None:
         datas = gu.flatten_dict(datas)
@@ -376,17 +362,19 @@ class GeoguessrDuel:
         self.resultIsdraw: bool = datas.get("resultIsdraw")
         self.resultWinningteamid: str = datas.get("resultWinningteamid")
         self.resultWinnerstyle: str = datas.get("resultWinnerstyle")
-    
+
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
-    
+
+
 class GeoguessrActivities:
     def __init__(self, entries) -> None:
         self.entries = entries
-        
+
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
-    
+
+
 class GeoguessrUserELO:
     def __init__(self, datas) -> None:
         datas = gu.flatten_dict(datas)
@@ -397,6 +385,6 @@ class GeoguessrUserELO:
         self.gameModeRatingsStandardduels: int = datas.get("gameModeRatingsStandardduels")
         self.gameModeRatingsNmpzduels: int = datas.get("gameModeRatingsNmpzduels")
         self.gameModeRatingsNomoveduels: int = datas.get("gameModeRatingsNomoveduels")
-        
+
     def __repr__(self) -> str:
         return "\n".join([f"{k} : {v}" for k, v in vars(self).items()])
