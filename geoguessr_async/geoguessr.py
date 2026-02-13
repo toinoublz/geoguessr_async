@@ -255,7 +255,7 @@ class Geoguessr:
 
         return GeoguessrMap(js)
 
-    async def generate_challenge(self, map_url: str, move: bool = True, pan: bool = True, zoom: bool = True, timeLimit: int = 120, play_map: bool = True) -> str:
+    async def generate_challenge(self, map_url: str, move: bool = True, pan: bool = True, zoom: bool = True, timeLimit: int = 120, play_map: bool = True, num_rounds: int = 5) -> str:
         """
         Generates a challenge based on a given map URL.
 
@@ -266,7 +266,7 @@ class Geoguessr:
             zoom (bool, optional): Whether zooming is allowed in the challenge. Defaults to True.
             timeLimit (int, optional): The time limit for the challenge in seconds. Defaults to 120.
             play_map (bool, optional): Whether to automatically play the generated challenge. Defaults to True.
-
+            num_rounds (int, optional): The number of locations in the challenge. Must be between 1 and 10. Defaults to 5.
         Returns:
             str: The URL of the generated challenge.
 
@@ -279,7 +279,7 @@ class Geoguessr:
             "forbidRotating": not pan,
             "forbidZooming": not zoom,
             "timeLimit": timeLimit,
-            "rounds": 5
+            "rounds": num_rounds,
         }
 
         async with self.session.post(url, json=data) as response:
