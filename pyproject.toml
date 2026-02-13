@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "geoguessr_async"
-version = "1.0.13"
+version = "1.1.0"
 authors = [
   { name="Antoine BLAISE", email="antoine.blaise34@gmail.com" },
 ]
@@ -22,3 +22,14 @@ dependencies = [
 
 [project.urls]
 "Homepage" = "https://github.com/toinoublz/geoguessr_async"
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+select = ["ASYNC"]
+ignore = []
+
+[tool.flake8]
+ignore = ["E501"]
+max-line-length = 120

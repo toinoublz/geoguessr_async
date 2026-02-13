@@ -1,4 +1,4 @@
-def flatten_dict(d: dict, parent_key: str='', separator: str=''):
+def flatten_dict(d: dict, parentKey: str = "", separator: str = ""):
     """
     Flattens a nested dictionary into a single-level dictionary.
 
@@ -13,9 +13,9 @@ def flatten_dict(d: dict, parent_key: str='', separator: str=''):
     """
     items = []
     for k, v in d.items():
-        new_key = f"{parent_key}{separator}{k.capitalize()}" if parent_key else k
+        newKey = f"{parentKey}{separator}{k.capitalize()}" if parentKey else k
         if isinstance(v, dict):
-            items.extend(flatten_dict(v, new_key, separator).items())
+            items.extend(flatten_dict(v, newKey, separator).items())
         else:
-            items.append((new_key, v))
+            items.append((newKey, v))
     return dict(items)
