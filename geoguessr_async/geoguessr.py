@@ -282,7 +282,7 @@ class Geoguessr:
             "forbidRotating": not pan,
             "forbidZooming": not zoom,
             "timeLimit": timeLimit,
-            "rounds": numRounds,
+            "roundCount": numRounds,
         }
 
         async with self.session.post(url, json=data) as response:
