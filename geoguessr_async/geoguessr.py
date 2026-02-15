@@ -7,13 +7,13 @@ from urllib import parse
 
 import aiohttp
 
-from .models import (
+from geoguessr_async.models import (
     GeoguessrActivities,
     GeoguessrChallenge,
+    GeoguessrChallengeResult,
     GeoguessrDuel,
     GeoguessrMap,
     GeoguessrProfile,
-    GeoguessrScore,
     GeoguessrStats,
     GeoguessrUserELO,
 )
@@ -27,7 +27,7 @@ class Geoguessr:
     """
 
     def __init__(self, ncfa) -> None:
-        self._ncfa  = ncfa
+        self._ncfa = ncfa
         self.headers = {
             "Content-Type": "application/json",
             "cookie": f"_ncfa={self._ncfa }",
@@ -41,7 +41,7 @@ class Geoguessr:
         self.meElo = None
 
     @property
-    async def session(self):
+    async def session(self) -> aiohttp.ClientSession:
         """Get or create the aiohttp ClientSession."""
         if self._session is None or self._session.closed:
             self._session = aiohttp.ClientSession(headers=self.headers)
@@ -68,7 +68,7 @@ class Geoguessr:
         Returns:
             None
         """
-        async with await self.session.get("https://www.geoguessr.com/api/v3/profiles/") as r:
+        async with (await self.session).get("https://www.geoguessr.com/api/v3/profiles/") as r:
             self.meId = (await r.json())["user"]["id"]
         self.me = await self.get_user_infos(self.meId)
         self.meStats = await self.get_user_stats(self.meId)
@@ -77,8 +77,9 @@ class Geoguessr:
         self.meElo = await self.get_user_elo(self.meId)
 
     async def __get_activities(self):
-        r = await (await self.session).get("https://geoguessr.com/api/v4/feed/private")
-        js = await r.json()
+
+        async with (await self.session).get("https://geoguessr.com/api/v4/feed/private") as r:
+            js = await r.json()
 
         entries = js["entries"]
         paginationToken = js["paginationToken"]
@@ -93,7 +94,9 @@ class Geoguessr:
         return GeoguessrActivities(entries)
 
     async def __get_my_friends_list(self):
-        async with (await self.session).get("https://www.geoguessr.com/api/v3/social/friends/summary?page=0&fast=true") as r:
+        async with (await self.session).get(
+            "https://www.geoguessr.com/api/v3/social/friends/summary?page=0&fast=true"
+        ) as r:
             js = await r.json()
             return {friend["nick"]: friend["userId"] for friend in js["friends"]}
 
@@ -124,7 +127,9 @@ class Geoguessr:
         """
 
         try:
-            async with (await self.session).get(f"https://www.geoguessr.com/api/v4/ranked-system/progress/{userId}") as r:
+            async with (await self.session).get(
+                f"https://www.geoguessr.com/api/v4/ranked-system/progress/{userId}"
+            ) as r:
                 contentType = r.headers.get("Content-Type")
                 if contentType and "application/json" in contentType:
                     return GeoguessrUserELO(await r.json())
@@ -164,9 +169,10 @@ class Geoguessr:
     async def __play_round(self, gameToken: str, roundNumber: int):
         requestData = {"token": gameToken, "lat": 0, "lng": 0, "timedOut": True}
 
-        await self.session.post(f"https://www.geoguessr.com/api/v3/games/{gameToken}", json=requestData)
+        # Discard the response object
+        _ = await (await self.session).post(f"https://www.geoguessr.com/api/v3/games/{gameToken}", json=requestData)
         if roundNumber != 4:
-            await self.session.get(f"https://www.geoguessr.com/api/v3/games/{gameToken}?client=web")
+            _ = await (await self.session).get(f"https://www.geoguessr.com/api/v3/games/{gameToken}?client=web")
 
     async def get_challenge_score(self, challengeUrl: str):
         """Get scores on a standard challenge
@@ -180,13 +186,13 @@ class Geoguessr:
         challengeToken = challengeUrl.split("/")[-1] if "/" in challengeUrl else challengeUrl
 
         link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5"
-        r = await (await self.session).get(link)
+        async with (await self.session).get(link) as r:
+            js = await r.json()
 
         if r.status != 200:  # Map not already played
             await self.play_challenge(challengeUrl)
-            r = await (await self.session).get(link)
-
-        js = await r.json()
+            async with (await self.session).get(link) as r:
+                js = await r.json()
 
         results = js["items"]
         paginationToken = js["paginationToken"]
@@ -201,7 +207,7 @@ class Geoguessr:
 
         logger.debug("Retrieved challenge scores: %s", results)
 
-        return [GeoguessrScore(result) for result in results]
+        return [GeoguessrChallengeResult(result) for result in results]
 
     async def get_challenge_infos(self, challengeUrl: str):
         """Get informations about a challenge
@@ -213,6 +219,7 @@ class Geoguessr:
             GeoguessrChallenge: All infos about the challenge
         """
         challengeToken = challengeUrl.split("/")[-1] if "/" in challengeUrl else challengeUrl
+
         async with (await self.session).get(f"https://www.geoguessr.com/api/v3/challenges/{challengeToken}") as r:
             js = await r.json()
 
@@ -359,7 +366,6 @@ class Geoguessr:
             await self._session.close()
 
     def __del__(self):
-        """Attempt to close the session if still open."""
         if self._session and not self._session.closed:
             try:
                 loop = asyncio.get_event_loop()
@@ -368,4 +374,4 @@ class Geoguessr:
                 else:
                     asyncio.run(self._session.close())
             except (RuntimeError, asyncio.CancelledError):
-                pass  # Ignore errors during cleanup
+                pass
