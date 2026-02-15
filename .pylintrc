@@ -54,7 +54,7 @@ variable-rgx=[a-z]+[a-zA-Z0-9]*$
 const-rgx=([A-Z_][A-Z0-9_]*)$
 
 # Attributs (variables d'instance ou de classe) en camelCase
-attr-rgx=[a-z]+[a-zA-Z0-9]*$
+attr-rgx=[a-z_]+[a-zA-Z0-9]*$
 
 # Paramètres de fonction en camelCase (commence par une minuscule, peut avoir majuscules)
 argument-rgx=[a-z]+[a-zA-Z0-9]*$
