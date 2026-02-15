@@ -167,7 +167,7 @@ class Geoguessr:
         """
         challengeToken = challengeUrl.split("/")[-1] if "/" in challengeUrl else challengeUrl
 
-        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5"
+        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=1"
         r = await self.session.get(link)
 
         if r.status != 200:  # Map not already played
@@ -180,7 +180,7 @@ class Geoguessr:
         paginationToken = js["paginationToken"]
 
         while paginationToken is not None:
-            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5&paginationToken={parse.quote(paginationToken)}"
+            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=1&paginationToken={parse.quote(paginationToken)}"
             async with self.session.get(link) as r:
                 js = await r.json()
 
