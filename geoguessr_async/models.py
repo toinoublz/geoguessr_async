@@ -153,11 +153,12 @@ class GeoguessrProfile:
         self.isBotUser: bool = datas.get("isBotUser")
         self.suspendedUntil: Optional[datetime.datetime] = datas.get("suspendedUntil")
         self.wallet: int = datas.get("wallet")
-        self.Flair: int = datas.get("flair")
+        self.flair: int = datas.get("flair")
         self.isCreator: bool = datas.get("isCreator")
         self.stats: Optional[GeoguessrStats] = None
 
     def add_stats(self, stats: GeoguessrStats) -> None:
+        """Add stats to the profile."""
         self.stats = stats
 
     def __repr__(self) -> str:
@@ -178,7 +179,7 @@ class GeoguessrChallenge:
         self.challengeGamemode: str = datas.get("challengeGamemode")
         self.challengeChallengetype: int = datas.get("challengeChallengetype")
         self.challengeStreaktype: str = datas.get("challengeStreaktype")
-        self.challengeStr_timelimit: str = datas.get("challengeStr_timelimit")
+        self.challengeStrTimelimit: str = datas.get("challengeStr_timelimit")
         self.mapId: str = datas.get("mapId")
         self.creatorNick: str = datas.get("creatorNick")
         self.creatorId: str = datas.get("creatorId")
@@ -212,17 +213,17 @@ class GeoguessrScore:
         self.gameRound: int = datas.get("gameRound")
 
         gameRounds = datas.get("gameRounds", [])
-        self.gameRoundsLats: list[float] = [round["lat"] for round in gameRounds if round != None]
-        self.gameRoundsLngs: list[float] = [round["lng"] for round in gameRounds if round != None]
-        self.gameRoundsPanoIds: list[str] = [round["panoId"] for round in gameRounds if round != None]
-        self.gameRoundsHeadings: list[float] = [round["heading"] for round in gameRounds if round != None]
-        self.gameRoundsPitches: list[float] = [round["pitch"] for round in gameRounds if round != None]
-        self.gameRoundsZoomes: list[float] = [round["zoom"] for round in gameRounds if round != None]
+        self.gameRoundsLats: list[float] = [round["lat"] for round in gameRounds if round is not None]
+        self.gameRoundsLngs: list[float] = [round["lng"] for round in gameRounds if round is not None]
+        self.gameRoundsPanoIds: list[str] = [round["panoId"] for round in gameRounds if round is not None]
+        self.gameRoundsHeadings: list[float] = [round["heading"] for round in gameRounds if round is not None]
+        self.gameRoundsPitches: list[float] = [round["pitch"] for round in gameRounds if round is not None]
+        self.gameRoundsZoomes: list[float] = [round["zoom"] for round in gameRounds if round is not None]
         self.gameRoundsStreakLocationCodes: list[str] = [
-            round["streakLocationCode"] for round in gameRounds if round != None
+            round["streakLocationCode"] for round in gameRounds if round is not None
         ]
         self.gameRoundsStartTime: list[datetime.datetime] = [
-            round["startTime"] for round in gameRounds if round != None
+            round["startTime"] for round in gameRounds if round is not None
         ]
         self.gamePlayerTotalscoreAmount: str = datas.get("gamePlayerTotalscoreAmount")
         self.gamePlayerTotalscoreUnit: str = datas.get("gamePlayerTotalscoreUnit")
@@ -235,28 +236,28 @@ class GeoguessrScore:
         self.gamePlayerTotaltime: int = datas.get("gamePlayerTotaltime")
         self.gamePlayerTotalstreak: int = datas.get("gamePlayerTotalstreak")
         gamePlayerGuesses = datas.get("gamePlayerGuesses", [])
-        self.gamePlayerGuessesLats: list[float] = [guess["lat"] for guess in gamePlayerGuesses if guess != None]
-        self.gamePlayerGuessesLngs: list[float] = [guess["lng"] for guess in gamePlayerGuesses if guess != None]
-        self.gamePlayerGuessesTimedOut: list[bool] = [guess["timedOut"] for guess in gamePlayerGuesses if guess != None]
+        self.gamePlayerGuessesLats: list[float] = [guess["lat"] for guess in gamePlayerGuesses if guess is not None]
+        self.gamePlayerGuessesLngs: list[float] = [guess["lng"] for guess in gamePlayerGuesses if guess is not None]
+        self.gamePlayerGuessesTimedOut: list[bool] = [guess["timedOut"] for guess in gamePlayerGuesses if guess is not None]
         self.gamePlayerGuessesTimedOutWithGuess: list[bool] = [
-            guess["timedOutWithGuess"] for guess in gamePlayerGuesses if guess != None
+            guess["timedOutWithGuess"] for guess in gamePlayerGuesses if guess is not None
         ]
         self.gamePlayerGuessesSkippedRound: list[bool] = [
-            guess["skippedRound"] for guess in gamePlayerGuesses if guess != None
+            guess["skippedRound"] for guess in gamePlayerGuesses if guess is not None
         ]
         self.gamePlayerGuessesRoundScoreInPercentage: list[float] = [
-            guess["roundScoreInPercentage"] for guess in gamePlayerGuesses if guess != None
+            guess["roundScoreInPercentage"] for guess in gamePlayerGuesses if guess is not None
         ]
         self.gamePlayerGuessesRoundScoreInPoints: list[int] = [
-            guess["roundScoreInPoints"] for guess in gamePlayerGuesses if guess != None
+            guess["roundScoreInPoints"] for guess in gamePlayerGuesses if guess is not None
         ]
         self.gamePlayerGuessesDistanceInMeters: list[float] = [
-            guess["distanceInMeters"] for guess in gamePlayerGuesses if guess != None
+            guess["distanceInMeters"] for guess in gamePlayerGuesses if guess is not None
         ]
         self.gamePlayerGuessesStreakLocationCode: list[str] = [
-            guess["streakLocationCode"] for guess in gamePlayerGuesses if guess != None
+            guess["streakLocationCode"] for guess in gamePlayerGuesses if guess is not None
         ]
-        self.gamePlayerGuessesTime: list[int] = [guess["time"] for guess in gamePlayerGuesses if guess != None]
+        self.gamePlayerGuessesTime: list[int] = [guess["time"] for guess in gamePlayerGuesses if guess is not None]
         self.gamePlayerId: str = datas.get("gamePlayerId")
         self.gamePlayerNick: str = datas.get("gamePlayerNick")
         self.gamePlayerIsLeader: bool = datas.get("gamePlayerIsleader")
