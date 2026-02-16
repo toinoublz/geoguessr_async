@@ -1,5 +1,6 @@
-from typing import Any, Optional
 from datetime import datetime
+from typing import Any, Optional
+
 
 def flatten_dict(d: dict, parentKey: str = "", separator: str = ""):
     """
@@ -86,6 +87,7 @@ def float_or_none(value: Any) -> Optional[float]:
         return float(value)
     except (ValueError, TypeError):
         return None
+
 
 def datetime_or_none(value: Any) -> Optional[datetime]:
     """

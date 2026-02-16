@@ -42,6 +42,7 @@ class GeoguessrStr:
     def __str__(self):
         return self.to_tree()
 
+
 class GeoguessrStats(GeoguessrStr):
     """Represents Geoguessr user statistics.
 
@@ -58,19 +59,37 @@ class GeoguessrStats(GeoguessrStr):
             datas (dict): Raw stats data from API.
         """
         # Ranked Team Duels
-        self.rankedTeamDuelsStandard: GeoguessrStatsRankedTeamDuelsStandard = GeoguessrStatsRankedTeamDuelsStandard(datas.get("rankedTeamDuelsStandard", {}))
-        self.rankedTeamDuelsNoMove: GeoguessrStatsRankedTeamDuelsNoMove = GeoguessrStatsRankedTeamDuelsNoMove(datas.get("rankedTeamDuelsNoMove", {}))
-        self.rankedTeamDuelsNmpz: GeoguessrStatsRankedTeamDuelsNmpz = GeoguessrStatsRankedTeamDuelsNmpz(datas.get("rankedTeamDuelsNmpz", {}))
-        self.rankedTeamDuelsTotal: GeoguessrStatsRankedTeamDuelsTotal = GeoguessrStatsRankedTeamDuelsTotal(datas.get("rankedTeamDuelsTotal", {}))
+        self.rankedTeamDuelsStandard: GeoguessrStatsRankedTeamDuelsStandard = GeoguessrStatsRankedTeamDuelsStandard(
+            datas.get("rankedTeamDuelsStandard", {})
+        )
+        self.rankedTeamDuelsNoMove: GeoguessrStatsRankedTeamDuelsNoMove = GeoguessrStatsRankedTeamDuelsNoMove(
+            datas.get("rankedTeamDuelsNoMove", {})
+        )
+        self.rankedTeamDuelsNmpz: GeoguessrStatsRankedTeamDuelsNmpz = GeoguessrStatsRankedTeamDuelsNmpz(
+            datas.get("rankedTeamDuelsNmpz", {})
+        )
+        self.rankedTeamDuelsTotal: GeoguessrStatsRankedTeamDuelsTotal = GeoguessrStatsRankedTeamDuelsTotal(
+            datas.get("rankedTeamDuelsTotal", {})
+        )
 
         # Battle Royale
-        self.battleRoyaleDistance: GeoguessrStatsBattleRoyaleDistance = GeoguessrStatsBattleRoyaleDistance(datas.get("battleRoyaleDistance", {}))
-        self.battleRoyaleCountry: GeoguessrStatsBattleRoyaleCountry = GeoguessrStatsBattleRoyaleCountry(datas.get("battleRoyaleCountry", {}))
-        self.battleRoyaleMedals: GeoguessrStatsBattleRoyaleMedals = GeoguessrStatsBattleRoyaleMedals(datas.get("battleRoyaleMedals", {}))
+        self.battleRoyaleDistance: GeoguessrStatsBattleRoyaleDistance = GeoguessrStatsBattleRoyaleDistance(
+            datas.get("battleRoyaleDistance", {})
+        )
+        self.battleRoyaleCountry: GeoguessrStatsBattleRoyaleCountry = GeoguessrStatsBattleRoyaleCountry(
+            datas.get("battleRoyaleCountry", {})
+        )
+        self.battleRoyaleMedals: GeoguessrStatsBattleRoyaleMedals = GeoguessrStatsBattleRoyaleMedals(
+            datas.get("battleRoyaleMedals", {})
+        )
 
         # Competitive
-        self.competitiveCityStreaks: GeoguessrStatsCompetitiveCityStreaks = GeoguessrStatsCompetitiveCityStreaks(datas.get("competitiveCityStreaks", {}))
-        self.competitiveStreaksMedals: GeoguessrStatsCompetitiveStreaksMedals = GeoguessrStatsCompetitiveStreaksMedals(datas.get("competitiveStreaksMedals", {}))
+        self.competitiveCityStreaks: GeoguessrStatsCompetitiveCityStreaks = GeoguessrStatsCompetitiveCityStreaks(
+            datas.get("competitiveCityStreaks", {})
+        )
+        self.competitiveStreaksMedals: GeoguessrStatsCompetitiveStreaksMedals = GeoguessrStatsCompetitiveStreaksMedals(
+            datas.get("competitiveStreaksMedals", {})
+        )
 
         # Duels
         self.duels: GeoguessrStatsDuels = GeoguessrStatsDuels(datas.get("duels", {}))
@@ -81,20 +100,31 @@ class GeoguessrStats(GeoguessrStr):
 
         # Unranked Duels
         self.unrankedDuels: GeoguessrStatsUnrankedDuels = GeoguessrStatsUnrankedDuels(datas.get("unrankedDuels", {}))
-        self.unrankedDuelsNoMove: GeoguessrStatsUnrankedDuelsNoMove = GeoguessrStatsUnrankedDuelsNoMove(datas.get("unrankedDuelsNoMove", {}))
-        self.unrankedDuelsNmpz: GeoguessrStatsUnrankedDuelsNmpz = GeoguessrStatsUnrankedDuelsNmpz(datas.get("unrankedDuelsNmpz", {}))
-        self.unrankedDuelsTotal: GeoguessrStatsUnrankedDuelsTotal = GeoguessrStatsUnrankedDuelsTotal(datas.get("unrankedDuelsTotal", {}))
+        self.unrankedDuelsNoMove: GeoguessrStatsUnrankedDuelsNoMove = GeoguessrStatsUnrankedDuelsNoMove(
+            datas.get("unrankedDuelsNoMove", {})
+        )
+        self.unrankedDuelsNmpz: GeoguessrStatsUnrankedDuelsNmpz = GeoguessrStatsUnrankedDuelsNmpz(
+            datas.get("unrankedDuelsNmpz", {})
+        )
+        self.unrankedDuelsTotal: GeoguessrStatsUnrankedDuelsTotal = GeoguessrStatsUnrankedDuelsTotal(
+            datas.get("unrankedDuelsTotal", {})
+        )
 
         # Progression & Stats
-        self.lifeTimeXpProgression: GeoguessrStatsLifeTimeXpProgression = GeoguessrStatsLifeTimeXpProgression(datas.get("lifeTimeXpProgression", {}))
+        self.lifeTimeXpProgression: GeoguessrStatsLifeTimeXpProgression = GeoguessrStatsLifeTimeXpProgression(
+            datas.get("lifeTimeXpProgression", {})
+        )
         self.totalMedals: GeoguessrStatsTotalMedals = GeoguessrStatsTotalMedals(datas.get("totalMedals", {}))
         self.teamDuels: GeoguessrStatsTeamDuels = GeoguessrStatsTeamDuels(datas.get("teamDuels", {}))
-        self.teamDuelsQuickplay: GeoguessrStatsTeamDuelsQuickplay = GeoguessrStatsTeamDuelsQuickplay(datas.get("teamDuelsQuickplay", {}))
+        self.teamDuelsQuickplay: GeoguessrStatsTeamDuelsQuickplay = GeoguessrStatsTeamDuelsQuickplay(
+            datas.get("teamDuelsQuickplay", {})
+        )
         self.party: GeoguessrStatsParty = GeoguessrStatsParty(datas.get("party", {}))
 
         # Direct stats
         self.quickplayFlawlessVictories: Optional[int] = gu.int_or_none(datas.get("quickplayFlawlessVictories"))
         self.perfectRounds: Optional[int] = gu.int_or_none(datas.get("perfectRounds"))
+
 
 class GeoguessrCompetitionMedals(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -102,6 +132,7 @@ class GeoguessrCompetitionMedals(GeoguessrStr):
         self.silver: Optional[int] = gu.int_or_none(datas.get("silver"))
         self.gold: Optional[int] = gu.int_or_none(datas.get("gold"))
         self.platinum: Optional[int] = gu.int_or_none(datas.get("platinum"))
+
 
 class GeoguessrPin(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -113,20 +144,24 @@ class GeoguessrPin(GeoguessrStr):
         self.fullBody: Optional[str] = gu.str_or_none(datas.get("fullBodyPin"))
         self.borderUrl: Optional[str] = gu.str_or_none(datas.get("borderUrl"))
 
+
 class GeoguessrDivision(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
         self.type: Optional[int] = gu.int_or_none(datas.get("type"))
         self.startRating: Optional[int] = gu.int_or_none(datas.get("startRating"))
         self.endRating: Optional[int] = gu.int_or_none(datas.get("endRating"))
 
+
 class GeoguessrCompetitive(GeoguessrStr):
     """Deprecated"""
+
     def __init__(self, datas: dict) -> None:
         self.elo: Optional[int] = gu.int_or_none(datas.get("elo"))
         self.rating: Optional[int] = gu.int_or_none(datas.get("rating"))
         self.lastRatingChange: Optional[int] = gu.int_or_none(datas.get("lastRatingChange"))
         self.division: GeoguessrDivision = GeoguessrDivision(datas.get("division"))
         self.onLeaderboard: Optional[bool] = gu.bool_or_none(datas.get("onLeaderboard"))
+
 
 class GeoguessrLevelProgress(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -137,6 +172,7 @@ class GeoguessrLevelProgress(GeoguessrStr):
         self.nextLevel: Optional[int] = gu.int_or_none(datas.get("nextLevel"))
         self.title: GeoguessrXpTitle = GeoguessrXpTitle(datas.get("title"))
         self.competitionMedals: GeoguessrCompetitionMedals = GeoguessrCompetitionMedals(datas.get("competitionMedals"))
+
 
 class GeoguessrProfile(GeoguessrStr):
     """Represents a Geoguessr user profile.
@@ -171,14 +207,26 @@ class GeoguessrProfile(GeoguessrStr):
         self.dailyChallengeProgress: Optional[int] = gu.int_or_none(datas.get("dailyChallengeProgress"))
         self.progress: GeoguessrLevelProgress = GeoguessrLevelProgress(datas.get("progress"))
         self.competitive: GeoguessrCompetitive = GeoguessrCompetitive(datas.get("competitive"))
-        self.lastNameChange: datetime = datetime.strptime(datas.get("lastNameChange").split(".")[0], "%Y-%m-%dT%H:%M:%S")
-        self.lastNickOrCountryChange: datetime = datetime.strptime(datas.get("lastNickOrCountryChange").split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        self.lastNameChange: datetime = datetime.strptime(
+            datas.get("lastNameChange").split(".")[0], "%Y-%m-%dT%H:%M:%S"
+        )
+        self.lastNickOrCountryChange: datetime = datetime.strptime(
+            datas.get("lastNickOrCountryChange").split(".")[0], "%Y-%m-%dT%H:%M:%S"
+        )
         self.isBanned: Optional[bool] = gu.bool_or_none(datas.get("isBanned"))
         self.chatBan: Optional[bool] = gu.bool_or_none(datas.get("chatBan"))
-        self.nameChangeAvailableAt: Optional[datetime] = datetime.strptime(datas.get("nameChangeAvailableAt").split(".")[0], "%Y-%m-%dT%H:%M:%S") if datas.get("nameChangeAvailableAt") else None
+        self.nameChangeAvailableAt: Optional[datetime] = (
+            datetime.strptime(datas.get("nameChangeAvailableAt").split(".")[0], "%Y-%m-%dT%H:%M:%S")
+            if datas.get("nameChangeAvailableAt")
+            else None
+        )
         self.avatarUrl: Optional[str] = datas.get("avatar", {}).get("fullbodypath")
         self.isBotUser: Optional[bool] = gu.bool_or_none(datas.get("isBotUser"))
-        self.suspendedUntil: Optional[datetime] = datetime.strptime(datas.get("suspendedUntil").split(".")[0], "%Y-%m-%dT%H:%M:%S") if datas.get("suspendedUntil") else None
+        self.suspendedUntil: Optional[datetime] = (
+            datetime.strptime(datas.get("suspendedUntil").split(".")[0], "%Y-%m-%dT%H:%M:%S")
+            if datas.get("suspendedUntil")
+            else None
+        )
         self.wallet: Optional[int] = gu.int_or_none(datas.get("wallet"))
         self.flair: Optional[int] = gu.int_or_none(datas.get("flair"))
         self.isCreator: Optional[bool] = gu.bool_or_none(datas.get("isCreator"))
@@ -189,6 +237,7 @@ class GeoguessrProfile(GeoguessrStr):
     def add_stats(self, stats: GeoguessrStats) -> None:
         """Add stats to the profile."""
         self.stats = stats
+
 
 class GeoguessrChallenge(GeoguessrStr):
     """Represents a Geoguessr challenge.
@@ -221,6 +270,7 @@ class GeoguessrChallenge(GeoguessrStr):
         self.accessLevel: Optional[int] = gu.int_or_none(datas.get("accessLevel"))
         self.locationOrder: Optional[int] = gu.int_or_none(datas.get("locationOrder"))
 
+
 class GeoguessrChallengeRound(GeoguessrStr):
     """Represents a single round in a Geoguessr challenge.
 
@@ -248,6 +298,7 @@ class GeoguessrChallengeRound(GeoguessrStr):
         self.streakLocationCode: Optional[str] = roundData.get("streakLocationCode")
         self.startTime: datetime = datetime.strptime(roundData.get("startTime", "").split(".")[0], "%Y-%m-%dT%H:%M:%S")
 
+
 class GeoguessrScore(GeoguessrStr):
     """Represents a round score in Geoguessr.
 
@@ -267,6 +318,7 @@ class GeoguessrScore(GeoguessrStr):
         self.unit: Optional[str] = gu.str_or_none(scoreData.get("unit"))
         self.percentage: Optional[float] = gu.float_or_none(scoreData.get("percentage"))
 
+
 class GeoguessrDistance(GeoguessrStr):
     """Represents distance measurements in Geoguessr.
 
@@ -283,9 +335,12 @@ class GeoguessrDistance(GeoguessrStr):
             distanceData (dict): Raw distance data from API.
         """
         metersDistance = distanceData.get("meters", {})
-        self.meters: Optional[float] = gu.float_or_none(metersDistance.get("amount")) * (1000 if metersDistance.get("unit") == "km" else 1)
+        self.meters: Optional[float] = gu.float_or_none(metersDistance.get("amount")) * (
+            1000 if metersDistance.get("unit") == "km" else 1
+        )
         self.kilometers: Optional[float] = self.meters / 1000
         self.miles: Optional[float] = self.meters / 1609.34
+
 
 class GeoguessrTime(GeoguessrStr):
     """Represents time measurements in Geoguessr.
@@ -322,6 +377,7 @@ class GeoguessrTime(GeoguessrStr):
             self.minutes = hours * 60
             self.hours = hours
 
+
 class GeoguessrPlayerGuesses(GeoguessrStr):
     """Represents a player's guess in a round.
 
@@ -355,6 +411,7 @@ class GeoguessrPlayerGuesses(GeoguessrStr):
         self.streakLocationCode: Optional[str] = guessData.get("streakLocationCode")
         self.time: GeoguessrTime = GeoguessrTime(guessData.get("time"))
 
+
 class GeoguessrGameBounds(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
         self.minLat: Optional[float] = gu.float_or_none(datas.get("min", {}).get("lat"))
@@ -362,10 +419,12 @@ class GeoguessrGameBounds(GeoguessrStr):
         self.maxLat: Optional[float] = gu.float_or_none(datas.get("max", {}).get("lat"))
         self.maxLng: Optional[float] = gu.float_or_none(datas.get("max", {}).get("lng"))
 
+
 class GeoguessrLevel(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
         self.level: Optional[int] = gu.int_or_none(datas.get("level"))
         self.xpStart: Optional[int] = gu.int_or_none(datas.get("xpStart"))
+
 
 class GeoguessrXpTitle(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -373,6 +432,7 @@ class GeoguessrXpTitle(GeoguessrStr):
         self.tierId: Optional[int] = gu.int_or_none(datas.get("tierId"))
         self.minimumLevel = gu.int_or_none(datas.get("minimumLevel", None))
         self.name: Optional[str] = gu.str_or_none(datas.get("name"))
+
 
 class GeoguessrScorePlayerInfo(GeoguessrStr):
     def __init__(self, playerDatas: dict, progressionDatas: dict) -> None:
@@ -383,8 +443,12 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
         self.flair: Optional[int] = gu.int_or_none(playerDatas.get("flair"))
         self.countryCode: Optional[str] = gu.str_or_none(playerDatas.get("countryCode"))
         self.pinUrl: Optional[str] = gu.str_or_none(playerDatas.get("pin", {}).get("url"))
-        self.xpBeforeChallenge: Optional[int] = gu.int_or_none(progressionDatas.get("xpProgressions", [{}, {}])[0].get("xp"))
-        self.xpAfterChallenge: Optional[int] = gu.int_or_none(progressionDatas.get("xpProgressions", [{}, {}])[1].get("xp"))
+        self.xpBeforeChallenge: Optional[int] = gu.int_or_none(
+            progressionDatas.get("xpProgressions", [{}, {}])[0].get("xp")
+        )
+        self.xpAfterChallenge: Optional[int] = gu.int_or_none(
+            progressionDatas.get("xpProgressions", [{}, {}])[1].get("xp")
+        )
         self.xpGained: Optional[int] = self.xpAfterChallenge - self.xpBeforeChallenge
         self.levelBeforeChallenge: GeoguessrLevel = GeoguessrLevel(
             progressionDatas.get("xpProgressions", [{}, {}])[0].get("currentLevel")
@@ -399,6 +463,7 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
             progressionDatas.get("xpProgressions", [{}, {}])[1].get("currentTitle")
         )
 
+
 class GeoguessrChallengePlayerTotalResult(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
         self.totalScore: GeoguessrScore = GeoguessrScore(datas.get("totalScore"))
@@ -410,12 +475,15 @@ class GeoguessrChallengePlayerTotalResult(GeoguessrStr):
             GeoguessrPlayerGuesses(guess, i + 1) for i, guess in enumerate(datas.get("guesses")) if guess is not None
         ]
 
+
 class GeoguessrChallengeResult(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
         gameDatas: Optional[dict] = datas.get("game")
         if gameDatas is None:
             raise ValueError("The game key is missing in the data.")
-        self.player: GeoguessrScorePlayerInfo = GeoguessrScorePlayerInfo(gameDatas.get("player"), gameDatas.get("progressChange"))
+        self.player: GeoguessrScorePlayerInfo = GeoguessrScorePlayerInfo(
+            gameDatas.get("player"), gameDatas.get("progressChange")
+        )
         self.type: Optional[str] = gu.str_or_none(gameDatas.get("type"))
         self.mode: Optional[str] = gu.str_or_none(gameDatas.get("mode"))
         self.state: Optional[str] = gu.str_or_none(gameDatas.get("state"))
@@ -426,9 +494,14 @@ class GeoguessrChallengeResult(GeoguessrStr):
         self.panoramaprovider: Optional[int] = gu.int_or_none(gameDatas.get("panoramaprovider"))
         self.bounds: GeoguessrGameBounds = GeoguessrGameBounds(gameDatas.get("bounds"))
         self.rounds: list[GeoguessrChallengeRound] = [
-            GeoguessrChallengeRound(round, i + 1) for i, round in enumerate(gameDatas.get("rounds")) if round is not None
+            GeoguessrChallengeRound(round, i + 1)
+            for i, round in enumerate(gameDatas.get("rounds"))
+            if round is not None
         ]
-        self.playerTotalScore: GeoguessrChallengePlayerTotalResult = GeoguessrChallengePlayerTotalResult(gameDatas.get("player"))
+        self.playerTotalScore: GeoguessrChallengePlayerTotalResult = GeoguessrChallengePlayerTotalResult(
+            gameDatas.get("player")
+        )
+
 
 class GeoguessMapAvatar(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -436,6 +509,7 @@ class GeoguessMapAvatar(GeoguessrStr):
         self.decoration: Optional[str] = gu.str_or_none(datas.get("decoration"))
         self.ground: Optional[str] = gu.str_or_none(datas.get("ground"))
         self.landscape: Optional[str] = gu.str_or_none(datas.get("landscape"))
+
 
 class GeoguessrMap(GeoguessrStr):
     def __init__(self, datas: dict) -> None:
@@ -452,7 +526,9 @@ class GeoguessrMap(GeoguessrStr):
         self.customCoordinates: Optional[Any] = datas.get("customCoordinates")
         self.coordinatesCount: Optional[str] = gu.str_or_none(datas.get("coordinateCount"))
         self.regions: Optional[Any] = datas.get("regions")
-        self.creator: Optional[GeoguessrProfile] = GeoguessrProfile(datas.get("creator")) if datas.get("creator") is not None else None
+        self.creator: Optional[GeoguessrProfile] = (
+            GeoguessrProfile(datas.get("creator")) if datas.get("creator") is not None else None
+        )
         self.createdAt: Optional[datetime] = gu.datetime_or_none(datas.get("createdAt"))
         self.updatedAt: Optional[datetime] = gu.datetime_or_none(datas.get("updatedAt"))
         self.numFinishedGames: Optional[int] = gu.int_or_none(datas.get("numFinishedGames"))
@@ -473,6 +549,7 @@ class GeoguessrMap(GeoguessrStr):
         self.collaborators: Optional[Any] = datas.get("collaborators")
         self.flair: Optional[int] = gu.int_or_none(datas.get("flair"))
         self.mapSize: Optional[dict] = datas.get("mapSize")
+
 
 class GeoguessrDuel(GeoguessrStr):
     """Represents a Geoguessr duel game.
@@ -505,9 +582,15 @@ class GeoguessrDuel(GeoguessrStr):
         self.optionsMaxroundtime: Optional[int] = gu.int_or_none(datas.get("optionsMaxroundtime"))
         self.optionsMaxnumberofrounds: Optional[int] = gu.int_or_none(datas.get("optionsMaxnumberofrounds"))
         self.optionsHealingrounds: list = datas.get("optionsHealingrounds")
-        self.optionsMovementoptionsForbidmoving: Optional[bool] = gu.bool_or_none(datas.get("optionsMovementoptionsForbidmoving"))
-        self.optionsMovementoptionsForbidzooming: Optional[bool] = gu.bool_or_none(datas.get("optionsMovementoptionsForbidzooming"))
-        self.optionsMovementoptionsForbidrotating: Optional[bool] = gu.bool_or_none(datas.get("optionsMovementoptionsForbidrotating"))
+        self.optionsMovementoptionsForbidmoving: Optional[bool] = gu.bool_or_none(
+            datas.get("optionsMovementoptionsForbidmoving")
+        )
+        self.optionsMovementoptionsForbidzooming: Optional[bool] = gu.bool_or_none(
+            datas.get("optionsMovementoptionsForbidzooming")
+        )
+        self.optionsMovementoptionsForbidrotating: Optional[bool] = gu.bool_or_none(
+            datas.get("optionsMovementoptionsForbidrotating")
+        )
         self.optionsMapslug: Optional[str] = gu.str_or_none(datas.get("optionsMapslug"))
         self.optionsIsrated: Optional[bool] = gu.bool_or_none(datas.get("optionsIsrated"))
         self.optionsMapName: Optional[str] = gu.str_or_none(datas.get("optionsMapName"))
@@ -518,7 +601,9 @@ class GeoguessrDuel(GeoguessrStr):
         self.optionsMapBoundsMaxLng: Optional[float] = gu.float_or_none(datas.get("optionsMapBoundsMaxLng"))
         self.optionsMapMaxerrordistance: Optional[int] = gu.int_or_none(datas.get("optionsMapMaxerrordistance"))
         self.optionsDuelroundoptions: list = datas.get("optionsDuelroundoptions")
-        self.optionsRoundswithoutdamagemultiplier: Optional[int] = gu.int_or_none(datas.get("optionsRoundswithoutdamagemultiplier"))
+        self.optionsRoundswithoutdamagemultiplier: Optional[int] = gu.int_or_none(
+            datas.get("optionsRoundswithoutdamagemultiplier")
+        )
         self.optionsDisablemultipliers: Optional[bool] = gu.bool_or_none(datas.get("optionsDisablemultipliers"))
         self.optionsMultiplierincrement: Optional[int] = gu.int_or_none(datas.get("optionsMultiplierincrement"))
         self.optionsDisablehealing: Optional[bool] = gu.bool_or_none(datas.get("optionsDisablehealing"))
@@ -540,6 +625,7 @@ class GeoguessrDuel(GeoguessrStr):
         self.resultWinningteamid: Optional[str] = gu.str_or_none(datas.get("resultWinningteamid"))
         self.resultWinnerstyle: Optional[str] = gu.str_or_none(datas.get("resultWinnerstyle"))
 
+
 class GeoguessrActivities(GeoguessrStr):
     """Represents Geoguessr activities data.
 
@@ -554,6 +640,7 @@ class GeoguessrActivities(GeoguessrStr):
             entries (list): List of activity entries.
         """
         self.entries = entries
+
 
 class GeoguessrUserELO(GeoguessrStr):
     """Represents Geoguessr user ELO ratings.
@@ -583,6 +670,7 @@ class GeoguessrUserELO(GeoguessrStr):
         self.gameModeRatingsNmpzduels: Optional[int] = gu.int_or_none(datas.get("gameModeRatingsNmpzduels"))
         self.gameModeRatingsNomoveduels: Optional[int] = gu.int_or_none(datas.get("gameModeRatingsNomoveduels"))
 
+
 class GeoguessrStatsRankedTeamDuelsStandard(GeoguessrStr):
     """Represents ranked team duels standard statistics."""
 
@@ -590,6 +678,7 @@ class GeoguessrStatsRankedTeamDuelsStandard(GeoguessrStr):
         self.numGamesPlayed: Optional[int] = gu.int_or_none(datas.get("numGamesPlayed"))
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
         self.winRatio: Optional[float] = gu.float_or_none(datas.get("winRatio"))
+
 
 class GeoguessrStatsRankedTeamDuelsNoMove(GeoguessrStr):
     """Represents ranked team duels no move statistics."""
@@ -599,6 +688,7 @@ class GeoguessrStatsRankedTeamDuelsNoMove(GeoguessrStr):
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
         self.winRatio: Optional[float] = gu.float_or_none(datas.get("winRatio"))
 
+
 class GeoguessrStatsRankedTeamDuelsNmpz(GeoguessrStr):
     """Represents ranked team duels NMPZ statistics."""
 
@@ -607,6 +697,7 @@ class GeoguessrStatsRankedTeamDuelsNmpz(GeoguessrStr):
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
         self.winRatio: Optional[float] = gu.float_or_none(datas.get("winRatio"))
 
+
 class GeoguessrStatsRankedTeamDuelsTotal(GeoguessrStr):
     """Represents ranked team duels total statistics."""
 
@@ -614,6 +705,7 @@ class GeoguessrStatsRankedTeamDuelsTotal(GeoguessrStr):
         self.numGamesPlayed: Optional[int] = gu.int_or_none(datas.get("numGamesPlayed"))
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
         self.winRatio: Optional[float] = gu.float_or_none(datas.get("winRatio"))
+
 
 class GeoguessrStatsBattleRoyaleDistance(GeoguessrStr):
     """Represents battle royale distance statistics."""
@@ -626,6 +718,7 @@ class GeoguessrStatsBattleRoyaleDistance(GeoguessrStr):
         self.avgGuessDistance: Optional[float] = gu.float_or_none(datas.get("avgGuessDistance"))
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
 
+
 class GeoguessrStatsBattleRoyaleCountry(GeoguessrStr):
     """Represents battle royale country statistics."""
 
@@ -637,6 +730,7 @@ class GeoguessrStatsBattleRoyaleCountry(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.avgCorrectGuesses: Optional[float] = gu.float_or_none(datas.get("avgCorrectGuesses"))
 
+
 class GeoguessrStatsBattleRoyaleMedals(GeoguessrStr):
     """Represents battle royale medals statistics."""
 
@@ -644,6 +738,7 @@ class GeoguessrStatsBattleRoyaleMedals(GeoguessrStr):
         self.medalCountGold: Optional[int] = gu.int_or_none(datas.get("medalCountGold"))
         self.medalCountSilver: Optional[int] = gu.int_or_none(datas.get("medalCountSilver"))
         self.medalCountBronze: Optional[int] = gu.int_or_none(datas.get("medalCountBronze"))
+
 
 class GeoguessrStatsCompetitiveCityStreaks(GeoguessrStr):
     """Represents competitive city streaks statistics."""
@@ -656,6 +751,7 @@ class GeoguessrStatsCompetitiveCityStreaks(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.avgCorrectGuesses: Optional[float] = gu.float_or_none(datas.get("avgCorrectGuesses"))
 
+
 class GeoguessrStatsCompetitiveStreaksMedals(GeoguessrStr):
     """Represents competitive streaks medals statistics."""
 
@@ -663,6 +759,7 @@ class GeoguessrStatsCompetitiveStreaksMedals(GeoguessrStr):
         self.medalCountGold: Optional[int] = gu.int_or_none(datas.get("medalCountGold"))
         self.medalCountSilver: Optional[int] = gu.int_or_none(datas.get("medalCountSilver"))
         self.medalCountBronze: Optional[int] = gu.int_or_none(datas.get("medalCountBronze"))
+
 
 class GeoguessrStatsDuels(GeoguessrStr):
     """Represents duels statistics."""
@@ -676,6 +773,7 @@ class GeoguessrStatsDuels(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsDuelsNoMove(GeoguessrStr):
     """Represents duels no move statistics."""
 
@@ -687,6 +785,7 @@ class GeoguessrStatsDuelsNoMove(GeoguessrStr):
         self.avgGuessDistance: Optional[float] = gu.float_or_none(datas.get("avgGuessDistance"))
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
+
 
 class GeoguessrStatsDuelsNmpz(GeoguessrStr):
     """Represents duels NMPZ statistics."""
@@ -700,6 +799,7 @@ class GeoguessrStatsDuelsNmpz(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsDuelsTotal(GeoguessrStr):
     """Represents duels total statistics."""
 
@@ -712,6 +812,7 @@ class GeoguessrStatsDuelsTotal(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsDuelsMedals(GeoguessrStr):
     """Represents duels medals statistics."""
 
@@ -719,6 +820,7 @@ class GeoguessrStatsDuelsMedals(GeoguessrStr):
         self.medalCountGold: Optional[int] = gu.int_or_none(datas.get("medalCountGold"))
         self.medalCountSilver: Optional[int] = gu.int_or_none(datas.get("medalCountSilver"))
         self.medalCountBronze: Optional[int] = gu.int_or_none(datas.get("medalCountBronze"))
+
 
 class GeoguessrStatsUnrankedDuels(GeoguessrStr):
     """Represents unranked duels statistics."""
@@ -732,6 +834,7 @@ class GeoguessrStatsUnrankedDuels(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsUnrankedDuelsNoMove(GeoguessrStr):
     """Represents unranked duels no move statistics."""
 
@@ -743,6 +846,7 @@ class GeoguessrStatsUnrankedDuelsNoMove(GeoguessrStr):
         self.avgGuessDistance: Optional[float] = gu.float_or_none(datas.get("avgGuessDistance"))
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
+
 
 class GeoguessrStatsUnrankedDuelsNmpz(GeoguessrStr):
     """Represents unranked duels NMPZ statistics."""
@@ -756,6 +860,7 @@ class GeoguessrStatsUnrankedDuelsNmpz(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsUnrankedDuelsTotal(GeoguessrStr):
     """Represents unranked duels total statistics."""
 
@@ -768,6 +873,7 @@ class GeoguessrStatsUnrankedDuelsTotal(GeoguessrStr):
         self.numGuesses: Optional[int] = gu.int_or_none(datas.get("numGuesses"))
         self.numFlawlessWins: Optional[int] = gu.int_or_none(datas.get("numFlawlessWins"))
 
+
 class GeoguessrStatsLifeTimeXpProgression(GeoguessrStr):
     """Represents lifetime XP progression statistics."""
 
@@ -777,6 +883,7 @@ class GeoguessrStatsLifeTimeXpProgression(GeoguessrStr):
         self.nextLevel: GeoguessrLevel = GeoguessrLevel(datas.get("nextLevel"))
         self.currentTitle: GeoguessrXpTitle = GeoguessrXpTitle(datas.get("currentTitle"))
 
+
 class GeoguessrStatsTotalMedals(GeoguessrStr):
     """Represents total medals statistics."""
 
@@ -784,6 +891,7 @@ class GeoguessrStatsTotalMedals(GeoguessrStr):
         self.medalCountGold: Optional[int] = gu.int_or_none(datas.get("medalCountGold"))
         self.medalCountSilver: Optional[int] = gu.int_or_none(datas.get("medalCountSilver"))
         self.medalCountBronze: Optional[int] = gu.int_or_none(datas.get("medalCountBronze"))
+
 
 class GeoguessrStatsTeamDuels(GeoguessrStr):
     """Represents team duels statistics."""
@@ -793,12 +901,14 @@ class GeoguessrStatsTeamDuels(GeoguessrStr):
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
         self.winRatio: Optional[float] = gu.float_or_none(datas.get("winRatio"))
 
+
 class GeoguessrStatsTeamDuelsQuickplay(GeoguessrStr):
     """Represents team duels quickplay statistics."""
 
     def __init__(self, datas: dict) -> None:
         self.numGamesPlayed: Optional[int] = gu.int_or_none(datas.get("numGamesPlayed"))
         self.numWins: Optional[int] = gu.int_or_none(datas.get("numWins"))
+
 
 class GeoguessrStatsParty(GeoguessrStr):
     """Represents party statistics."""
