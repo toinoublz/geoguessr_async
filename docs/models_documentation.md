@@ -462,3 +462,132 @@ print(profile.to_tree(2))  # Avec indentation personnalisée
 - Les données manquantes sont gérées gracieusement avec des valeurs `None` via les utilitaires `geo_utils`
 - Les dates sont automatiquement converties en objets `datetime`
 - Les classes utilisent les utilitaires de `geo_utils` pour la conversion sécurisée des types
+
+## GeoguessrDuelData Classes
+
+### GeoguessrDuelData
+Représente les données complètes d'un duel Geoguessr avec toutes les informations de jeu, équipes, manches, et replays.
+
+**Attributs :**
+- `gameId` (str): Identifiant unique du jeu
+- `context` (Any): Contexte du jeu
+- `teams` (list[GeoguessrDuelTeam]): Liste des équipes (bleue/rouge)
+- `rounds` (list[GeoguessrDuelRound]): Liste des manches du duel
+- `totalRoundCount` (int): Nombre total de manches
+- `status` (str): Statut du jeu
+- `version` (int): Version du jeu
+- `options` (GeoguessrDuelOptions): Options de configuration du duel
+- `initialHealth` (int): Points de vie initiaux
+- `maxNumberOfRounds` (int): Nombre maximum de manches
+- `result` (GeoguessrDuelResult): Résultat final du duel
+- `gameServerNodeId` (str): ID du serveur de jeu
+- `tournamentId` (str): ID du tournoi
+- `playersId` (list[str]): Liste des IDs des joueurs
+- `replays` (dict[str, list[GeoguessrDuelReplay]]): Replays des joueurs par manche
+
+**Méthodes :**
+- `set_replays(session)`: Récupère les replays de manière asynchrone
+
+### GeoguessrDuelTeam
+Représente une équipe dans un duel.
+
+**Attributs :**
+- `id` (str): Identifiant de l'équipe
+- `name` (str): Nom de l'équipe (ex: "Blue", "Red")
+- `healthAtEnd` (int): Points de vie à la fin
+- `players` (list[GeoguessrDuelPlayer]): Joueurs de l'équipe
+- `roundResults` (list[GeoguessrDuelTeamRoundResult]): Résultats par manche
+- `isMultiplierActive` (bool): Si le multiplicateur est actif
+- `multiplierAtEnd` (float): Multiplicateur à la fin
+
+### GeoguessrDuelPlayer
+Représente un joueur dans un duel.
+
+**Attributs :**
+- `playerId` (str): Identifiant du joueur
+- `guesses` (list[GeoguessrDuelPlayerGuess]): Suppositions du joueur
+- `rating` (int): Rating du joueur
+- `countryCode` (str): Code pays du joueur
+- `progressChange` (GeoguessrDuelProgressChange): Progression du joueur
+- `helpRequested` (bool): Si aide demandée
+- `isSteam` (bool): Si joueur Steam
+
+### GeoguessrDuelPlayerGuess
+Représente une supposition de joueur avec parsing des Big Numbers.
+
+**Attributs :**
+- `score` (float): Score obtenu (avec parsing Big Number)
+- `distanceInKm` (float): Distance en km (avec parsing Big Number)
+- `timeInMs` (int): Temps en millisecondes
+- `guessPoint` (GeoguessrDuelCoordinate): Coordonnées de la supposition
+- `locationPoint` (GeoguessrDuelCoordinate): Coordonnées réelles
+
+### GeoguessrDuelProgressChange
+Représente la progression complète d'un joueur.
+
+**Attributs :**
+- `xpAtStart` (GeoguessrDuelXpProgression): XP au début
+- `xpAtEnd` (GeoguessrDuelXpProgression): XP à la fin
+- `awardedXp` (GeoguessrDuelAwardedXp): XP awardés
+- `medal` (str): Médaille obtenue
+- `competitiveProgress` (Any): Progression compétitive
+- `rankedSystemProgress` (GeoguessrDuelRankedSystemProgress): Progression classée
+- `rankedTeamDuelsProgress` (Any): Progression duels en équipe
+- `quickplayDuelsProgress` (Any): Progression duels rapides
+
+### GeoguessrDuelReplay
+Représente un replay de joueur avec tous les mouvements et actions.
+
+**Attributs :**
+- `datas` (list[GeoguessrDuelReplayStep]): Liste des étapes du replay
+
+**Types (Enum) :**
+- `PANOPOSITION`: Position dans le panorama
+- `PANOPOV`: Point de vue du panorama
+- `PANOZOOM`: Zoom du panorama
+- `MAPZOOM`: Zoom de la carte
+- `MAPPOSITION`: Position sur la carte
+- `GUESSWITHLATLNG`: Supposition avec coordonnées
+- `PINPOSITION`: Position de l'épingle
+- `TIMER`: Timer
+- `MAPDISPLAY`: Affichage de la carte
+
+### GeoguessrDuelReplayStep
+Représente une étape individuelle d'un replay.
+
+**Attributs :**
+- `time` (datetime): Timestamp de l'action
+- `type` (GeoguessrDuelReplay.Type): Type d'action
+- `payload` (Union[...]): Données spécifiques au type d'action
+
+### Classes de Payload
+- `GeoguessrDuelReplayPanoPositionPayload`: Position panorama (lat, lng, panoId)
+- `GeoguessrDuelReplayPanoPovPayload`: Point de vue panorama (heading, pitch, zoom)
+- `GeoguessrDuelReplayPanoZoomPayload`: Zoom panorama (zoom)
+- `GeoguessrDuelReplayMapZoomPayload`: Zoom carte (zoom)
+- `GeoguessrDuelReplayMapPositionPayload`: Position carte (lat, lng)
+- `GeoguessrDuelReplayGuessWithLatLngPayload`: Supposition (lat, lng)
+- `GeoguessrDuelReplayPinPositionPayload`: Position épingle (lat, lng)
+- `GeoguessrDuelReplayTimerPayload`: Timer (time)
+- `GeoguessrDuelReplayMapDisplayPayload`: Affichage carte (isActive, isSticky, size)
+
+### Autres classes de duel
+- `GeoguessrDuelTeamRoundResult`: Résultat d'une manche pour une équipe
+- `GeoguessrDuelRound`: Informations sur une manche
+- `GeoguessrDuelPanorama`: Données du panorama
+- `GeoguessrDuelXpProgression`: Progression XP
+- `GeoguessrDuelAwardedXp`: XP awardés
+- `GeoguessrDuelXpAward`: Récompense XP individuelle
+- `GeoguessrDuelRankedSystemProgress`: Progression système classé
+- `GeoguessrDuelOptions`: Options du duel
+- `GeoguessrDuelMap`: Carte du duel
+- `GeoguessrDuelMapBounds`: Limites de la carte
+- `GeoguessrDuelCoordinate`: Coordonnées géographiques
+- `GeoguessrDuelGameContext`: Contexte de jeu
+- `GeoguessrDuelResult`: Résultat final
+
+### Fonctionnalités spéciales
+- **Parsing des Big Numbers**: Gestion automatique du format `{"value": "66.11n", "type": "Big Number"}`
+- **Replays asynchrones**: Récupération automatique des replays avec `set_replays()`
+- **Arborescence améliorée**: Support des dictionnaires dans `to_tree()` pour un affichage structuré
+- **Types forts**: Utilisation exhaustive des types pour une meilleure robustesse
