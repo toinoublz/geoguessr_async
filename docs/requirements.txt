@@ -1,0 +1,10 @@
+# Documentation build requirements
+sphinx>=9.0.0
+sphinx-rtd-theme>=3.0.0
+sphinx-autodoc-typehints>=3.0.0
+sphinxcontrib-napoleon>=0.7
+
+# Additional requirements for type hints and code analysis
+mypy>=1.0.0
+types-requests>=2.31.0
+types-aiohttp>=3.9.0
