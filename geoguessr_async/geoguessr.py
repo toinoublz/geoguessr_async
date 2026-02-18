@@ -11,7 +11,7 @@ from geoguessr_async.models import (
     GeoguessrActivities,
     GeoguessrChallenge,
     GeoguessrChallengeResult,
-    GeoguessrDuel,
+    GeoguessrDuelData,
     GeoguessrMap,
     GeoguessrProfile,
     GeoguessrStats,
@@ -329,7 +329,11 @@ class Geoguessr:
         async with (await self.session).get(f"https://game-server.geoguessr.com/api/duels/{duelToken}") as r:
             js = await r.json()
 
-        return GeoguessrDuel(js)
+        data = GeoguessrDuelData(js)
+
+        await data.set_replays(await self.session)
+
+        return data
 
     async def get_ranked_duel_activity(self):
         """
