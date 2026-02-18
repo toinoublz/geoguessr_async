@@ -35,11 +35,12 @@ Représente le profil d'un utilisateur Geoguessr.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `nick` | `Optional[str]` | Pseudonyme de l'utilisateur |
-| `created` | `datetime` | Date de création du compte |
-| `isProUser` | `Optional[bool]` | Statut compte premium |
-| `isVerified` | `Optional[bool]` | Compte vérifié |
-| `id` | `Optional[str]` | ID unique de l'utilisateur |
+| `nick` | `str` | Pseudonyme de l'utilisateur |
+| `createdAt` | `datetime` | Date de création du compte |
+| `isProUser` | `bool` | Statut compte premium |
+| `isVerified` | `bool` | Compte vérifié |
+| `id` | `str` | ID unique de l'utilisateur |
+| `url` | `str` | URL du profil |
 | `countryCode` | `Optional[str]` | Code pays |
 | `stats` | `Optional[GeoguessrStats]` | Statistiques du joueur |
 
@@ -50,7 +51,15 @@ Représente le profil d'un utilisateur Geoguessr.
 | `battleRoyaleLevel` | `Optional[int]` | Niveau Battle Royale |
 | `battleRoyaleDivision` | `Optional[int]` | Division Battle Royale |
 | `progress` | `GeoguessrLevelProgress` | Progression XP |
-| `competitive` | `GeoguessrCompetitive` | Statistiques compétitives |
+| `competitive` | `Optional[GeoguessrCompetitive]` | Statistiques compétitives |
+
+#### Attributs de compte
+
+| Attribut | Type | Description |
+|----------|------|-------------|
+| `isBanned` | `bool` | Compte banni |
+| `chatBan` | `bool` | Banni du chat |
+| `isBotUser` | `bool` | Compte bot |
 
 #### Méthodes
 
@@ -125,13 +134,13 @@ Représente les classements ELO d'un utilisateur.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `divisionNumber` | `Optional[int]` | Numéro de division |
-| `divisionName` | `Optional[str]` | Nom de la division |
-| `rating` | `Optional[int]` | Classement ELO |
-| `tier` | `Optional[str]` | Niveau (tier) |
-| `gameModeRatingsStandardduels` | `Optional[int]` | ELO duels standard |
-| `gameModeRatingsNmpzduels` | `Optional[int]` | ELO duels NMPZ |
-| `gameModeRatingsNomoveduels` | `Optional[int]` | ELO duels sans mouvement |
+| `divisionNumber` | `int` | Numéro de division |
+| `divisionName` | `str` | Nom de la division |
+| `rating` | `int` | Classement ELO |
+| `tier` | `str` | Niveau (tier) |
+| `gameModeRatingsStandardduels` | `int` | ELO duels standard |
+| `gameModeRatingsNmpzduels` | `int` | ELO duels NMPZ |
+| `gameModeRatingsNomoveduels` | `int` | ELO duels sans mouvement |
 
 ---
 
@@ -143,15 +152,17 @@ Représente un défi Geoguessr.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `token` | `Optional[str]` | Token unique du défi |
-| `mapSlug` | `Optional[str]` | Identifiant de la carte |
-| `roundCount` | `Optional[int]` | Nombre de manches |
-| `timeLimit` | `Optional[int]` | Limite de temps (secondes) |
-| `forbidMoving` | `Optional[bool]` | Interdit le mouvement |
-| `forbidZooming` | `Optional[bool]` | Interdit le zoom |
-| `forbidRotating` | `Optional[bool]` | Interdit la rotation |
+| `token` | `str` | Token unique du défi |
+| `mapSlug` | `str` | Identifiant de la carte |
+| `roundCount` | `int` | Nombre de manches |
+| `timeLimit` | `int` | Limite de temps (secondes) |
+| `forbidMoving` | `bool` | Interdit le mouvement |
+| `forbidZooming` | `bool` | Interdit le zoom |
+| `forbidRotating` | `bool` | Interdit la rotation |
 | `numberOfParticipants` | `Optional[int]` | Nombre de participants |
-| `gameMode` | `Optional[str]` | Mode de jeu |
+| `gameMode` | `str` | Mode de jeu |
+| `challengeType` | `int` | Type de défi |
+| `locationOrder` | `int` | Ordre des localisations |
 
 ---
 
@@ -163,12 +174,14 @@ Représente une carte Geoguessr.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `id` | `Optional[str]` | ID unique de la carte |
-| `name` | `Optional[str]` | Nom de la carte |
-| `slug` | `Optional[str]` | Slug de la carte |
+| `id` | `str` | ID unique de la carte |
+| `name` | `str` | Nom de la carte |
+| `slug` | `str` | Slug de la carte |
 | `description` | `Optional[str]` | Description |
-| `published` | `Optional[bool]` | Statut publication |
-| `banned` | `Optional[bool]` | Carte bannie |
+| `url` | `str` | URL de la carte |
+| `playUrl` | `str` | URL de jeu |
+| `published` | `bool` | Statut publication |
+| `banned` | `bool` | Carte bannie |
 | `coordinatesCount` | `Optional[str]` | Nombre de coordonnées |
 | `creator` | `Optional[GeoguessrProfile]` | Créateur de la carte |
 
@@ -176,11 +189,25 @@ Représente une carte Geoguessr.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `difficulty` | `Optional[str]` | Difficulté |
-| `difficultyLevel` | `Optional[int]` | Niveau de difficulté |
+| `difficulty` | `str` | Difficulté |
+| `difficultyLevel` | `int` | Niveau de difficulté |
 | `averageScore` | `Optional[int]` | Score moyen |
 | `numFinishedGames` | `Optional[int]` | Nombre de parties terminées |
-| `likes` | `Optional[int]` | Nombre de likes |
+| `likes` | `int` | Nombre de likes |
+| `deleted` | `bool` | Carte supprimée |
+| `free` | `bool` | Carte gratuite |
+| `inExplorerMode` | `bool` | Mode exploration |
+| `maxErrorDistance` | `int` | Distance d'erreur max |
+| `locationSelectionMode` | `int` | Mode sélection localisation |
+| `tags` | `list` | Étiquettes |
+| `collaborators` | `Any` | Collaborateurs |
+
+#### Attributs de dates
+
+| Attribut | Type | Description |
+|----------|------|-------------|
+| `createdAt` | `datetime` | Date de création |
+| `updatedAt` | `datetime` | Date de mise à jour |
 
 ---
 
@@ -240,13 +267,13 @@ Représente une manche de défi.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `number` | `Optional[int]` | Numéro de la manche |
-| `lat` | `Optional[float]` | Latitude |
-| `long` | `Optional[float]` | Longitude |
+| `number` | `int` | Numéro de la manche |
+| `lat` | `float` | Latitude |
+| `long` | `float` | Longitude |
 | `panoId` | `Optional[str]` | ID panorama |
-| `heading` | `Optional[float]` | Orientation |
-| `pitch` | `Optional[float]` | Inclinaison |
-| `zoom` | `Optional[float]` | Niveau de zoom |
+| `heading` | `float` | Orientation |
+| `pitch` | `float` | Inclinaison |
+| `zoom` | `float` | Niveau de zoom |
 | `startTime` | `datetime` | Heure de début |
 
 ### GeoguessrPlayerGuesses
@@ -257,14 +284,18 @@ Représente les suppositions d'un joueur.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `number` | `Optional[int]` | Numéro de la manche |
-| `lat` | `Optional[float]` | Latitude supposée |
-| `long` | `Optional[float]` | Longitude supposée |
-| `timedOut` | `Optional[bool]` | Temps écoulé |
-| `timedOutWithGuess` | `Optional[bool]` | Temps écoulé avec supposition |
-| `skippedRound` | `Optional[bool]` | Manche sautée |
+| `number` | `int` | Numéro de la manche |
+| `lat` | `float` | Latitude supposée |
+| `long` | `float` | Longitude supposée |
+| `timedOut` | `bool` | Temps écoulé |
+| `timedOutWithGuess` | `bool` | Temps écoulé avec supposition |
+| `skippedRound` | `bool` | Manche sautée |
 | `roundScore` | `GeoguessrScore` | Score de la manche |
+| `roundScoreInPercentage` | `int` | Score en pourcentage |
+| `roundScoreInPoints` | `int` | Score en points |
 | `distance` | `GeoguessrDistance` | Distance |
+| `distanceInMeters` | `float` | Distance en mètres |
+| `stepsCount` | `int` | Nombre de pas |
 | `time` | `GeoguessrTime` | Temps |
 
 ---
@@ -279,7 +310,7 @@ Représente un score.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `amount` | `Optional[float]` | Montant du score |
+| `amount` | `float` | Montant du score |
 | `unit` | `Optional[str]` | Unité du score |
 | `percentage` | `Optional[float]` | Pourcentage |
 
@@ -291,9 +322,9 @@ Représente des mesures de distance.
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `meters` | `Optional[float]` | Distance en mètres |
-| `kilometers` | `Optional[float]` | Distance en kilomètres |
-| `miles` | `Optional[float]` | Distance en miles |
+| `meters` | `float` | Distance en mètres |
+| `kilometers` | `float` | Distance en kilomètres |
+| `miles` | `float` | Distance en miles |
 
 ### GeoguessrTime
 
@@ -325,7 +356,6 @@ Représente les activités d'un utilisateur.
 
 | Classe | Description |
 |--------|-------------|
-| `GeoguessrLevelProgress` | Progression de niveau XP |
 | `GeoguessrLevel` | Informations de niveau |
 | `GeoguessrXpTitle` | Titre XP |
 | `GeoguessrCompetitionMedals` | Médailles de compétition |
@@ -333,19 +363,29 @@ Représente les activités d'un utilisateur.
 | `GeoguessrDivision` | Division compétitive |
 | `GeoguessrCompetitive` | Statistiques compétitives (déprécié) |
 
+#### Attributs des classes de niveau
+
+| Classe | Attributs principaux |
+|--------|-------------------|
+| `GeoguessrLevel` | `level: int`, `xpStart: int` |
+| `GeoguessrXpTitle` | `id: int`, `tierId: int`, `minimumLevel: int`, `name: str` |
+| `GeoguessrScorePlayerInfo` | `isLeader: bool`, `id: str`, `nick: str`, `isVerified: bool` |
+| `GeoguessrGameBounds` | `minLat: float`, `minLng: float`, `maxLat: float`, `maxLng: float` |
+| `GeoguessMapAvatar` | `background: str`, `decoration: str`, `ground: str`, `landscape: str` |
+
 ### Classes de statistiques détaillées
 
 Chaque mode de jeu possède sa propre classe de statistiques avec les attributs communs :
 
 | Attribut commun | Type | Description |
 |-----------------|------|-------------|
-| `numGamesPlayed` | `Optional[int]` | Nombre de parties jouées |
-| `numWins` | `Optional[int]` | Nombre de victoires |
-| `winRatio` | `Optional[float]` | Ratio de victoires |
-| `avgPosition` | `Optional[float]` | Position moyenne |
-| `avgGuessDistance` | `Optional[float]` | Distance moyenne de supposition |
-| `numGuesses` | `Optional[int]` | Nombre de suppositions |
-| `numFlawlessWins` | `Optional[int]` | Victoires parfaites |
+| `numGamesPlayed` | `int` | Nombre de parties jouées |
+| `numWins` | `int` | Nombre de victoires |
+| `winRatio` | `float` | Ratio de victoires |
+| `avgPosition` | `float` | Position moyenne |
+| `avgGuessDistance` | `float` | Distance moyenne de supposition |
+| `numGuesses` | `int` | Nombre de suppositions |
+| `numFlawlessWins` | `int` | Victoires parfaites |
 
 ### Classes de médailles
 
@@ -360,6 +400,15 @@ Chaque classe de médailles contient :
 - `medalCountGold`: Nombre de médailles d'or
 - `medalCountSilver`: Nombre de médailles d'argent  
 - `medalCountBronze`: Nombre de médailles de bronze
+
+### Classes de progression
+
+| Classe | Description | Attributs principaux |
+|--------|-------------|-------------------|
+| `GeoguessrStatsLifeTimeXpProgression` | Progression XP vie entière | `xp: int` |
+| `GeoguessrStatsTeamDuels` | Duels équipe | `numGamesPlayed: int`, `numWins: int`, `winRatio: float` |
+| `GeoguessrStatsTeamDuelsQuickplay` | Duels équipe rapide | `numGamesPlayed: int`, `numWins: int` |
+| `GeoguessrStatsParty` | Statistiques party | `total: int`, `duels: int`, `teamDuels: int`, etc. |
 
 ---
 
@@ -408,7 +457,8 @@ print(profile.to_tree(2))  # Avec indentation personnalisée
 
 ## Notes
 
-- Tous les attributs sont optionnels (`Optional[T]`) car les données de l'API peuvent varier
-- Les classes utilisent les utilitaires de `geo_utils` pour la conversion sécurisée des types
+- Les attributs essentiels sont maintenant typés comme non-optionnels (`str`, `int`, `float`, `bool`, `datetime`)
+- Les attributs qui peuvent réellement être absents de l'API restent `Optional[T]`
+- Les données manquantes sont gérées gracieusement avec des valeurs `None` via les utilitaires `geo_utils`
 - Les dates sont automatiquement converties en objets `datetime`
-- Les données manquantes sont gérées gracieusement avec des valeurs `None`
+- Les classes utilisent les utilitaires de `geo_utils` pour la conversion sécurisée des types
