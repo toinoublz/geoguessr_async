@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, Optional
 
 
-def flatten_dict(d: dict, parentKey: str = "", separator: str = ""):
+def flatten_dict(d: dict[Any, Any], parentKey: str = "", separator: str = ""):
     """
     Flattens a nested dictionary into a single-level dictionary.
 
