@@ -5,11 +5,5 @@ sphinx-autodoc-typehints>=3.0.0
 
 # Additional requirements for type hints and code analysis
 mypy>=1.0.0
-asyncio
-json
-logging
-datetime
-typing
-urllib
 aiohttp
 
