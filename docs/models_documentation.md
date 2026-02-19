@@ -398,7 +398,7 @@ Chaque mode de jeu possède sa propre classe de statistiques avec les attributs 
 
 Chaque classe de médailles contient :
 - `medalCountGold`: Nombre de médailles d'or
-- `medalCountSilver`: Nombre de médailles d'argent  
+- `medalCountSilver`: Nombre de médailles d'argent
 - `medalCountBronze`: Nombre de médailles de bronze
 
 ### Classes de progression
@@ -591,3 +591,88 @@ Représente une étape individuelle d'un replay.
 - **Replays asynchrones**: Récupération automatique des replays avec `set_replays()`
 - **Arborescence améliorée**: Support des dictionnaires dans `to_tree()` pour un affichage structuré
 - **Types forts**: Utilisation exhaustive des types pour une meilleure robustesse
+
+## GeoguessrClub Classes
+
+### GeoguessrClub
+Représente un club Geoguessr avec tous ses membres, statistiques et configuration.
+
+**Attributs :**
+- `clubId` (str): Identifiant unique du club
+- `name` (str): Nom du club
+- `members` (list[GeoguessrClubMember]): Liste des membres du club
+- `joinRule` (int): Règle d'adhésion
+- `tag` (str): Tag du club
+- `description` (Optional[str]): Description du club
+- `createdAt` (datetime): Date de création du club
+- `language` (str): Langue du club
+- `memberCount` (int): Nombre de membres actuels
+- `maxMemberCount` (int): Nombre maximum de membres
+- `level` (int): Niveau du club
+- `xp` (int): XP total du club
+- `labels` (list[str]): Étiquettes du club
+- `logo` (GeoguessrClubLogo): Configuration du logo
+- `stats` (GeoguessrClubStats): Statistiques du club
+- `backgroundUrl` (str): URL de l'image de fond
+
+### GeoguessrClubMember
+Représente les informations utilisateur d'un membre de club.
+
+**Attributs :**
+- `userId` (str): Identifiant de l'utilisateur
+- `nick` (str): Pseudonyme
+- `avatar` (str): URL de l'avatar
+- `fullbodyAvatar` (str): URL de l'avatar complet
+- `borderUrl` (Optional[str]): URL de la bordure
+- `isVerified` (bool): Si le compte est vérifié
+- `flair` (int): Flair du joueur
+- `countryCode` (str): Code pays
+- `tierId` (int): Niveau tier
+- `clubUserType` (int): Type d'utilisateur dans le club
+- `role` (GeoguessrClubMember.Role): Rôle dans le club (ADMIN/MEMBER)
+- `joinedAt` (datetime): Date d'adhésion
+- `xp` (int): XP total du membre
+- `weeklyXp` (int): XP hebdomadaire
+
+**Types (Enum) :**
+- `ADMIN`: Administrateur du club
+- `MEMBER`: Membre du club
+
+### GeoguessrClubLogo
+Représente la configuration du logo d'un club.
+
+**Attributs :**
+- `logoIconId` (int): ID de l'icône du logo
+- `logoIconSize` (int): Taille de l'icône du logo
+- `logoIconOpacity` (int): Opacité de l'icône du logo
+- `logoIconColorId` (int): ID de couleur de l'icône du logo
+- `backgroundIconId` (int): ID de l'icône de fond
+- `backgroundIconSize` (int): Taille de l'icône de fond
+- `backgroundIconOpacity` (int): Opacité de l'icône de fond
+- `backgroundIconColorId` (int): ID de couleur de l'icône de fond
+- `backgroundColorId` (int): ID de couleur de fond
+
+### GeoguessrClubStats
+Représente les statistiques complètes d'un club Geoguessr.
+
+**Attributs :**
+- `clubId` (str): Identifiant du club
+- `totalXp` (int): XP total du club
+- `changePercentXp` (float): Pourcentage de changement de l'XP
+- `totalGamesPlayed` (int): Nombre total de parties jouées
+- `changePercentGamesPlayed` (float): Pourcentage de changement des parties
+- `totalWins` (int): Nombre total de victoires
+- `changePercentWins` (float): Pourcentage de changement des victoires
+- `totalPerfectGuesses` (int): Nombre total de suppositions parfaites
+- `changePercentPerfectGuesses` (float): Pourcentage de changement des suppositions parfaites
+- `globalXpRank` (int): Classement XP global
+- `totalClubs` (int): Nombre total de clubs
+- `averageDivision` (GeoguessrClubDivision): Division moyenne
+
+### GeoguessrClubDivision
+Représente la division moyenne d'un club.
+
+**Attributs :**
+- `number` (int): Numéro de la division
+- `name` (str): Nom de la division
+- `tier` (int): Niveau de la division

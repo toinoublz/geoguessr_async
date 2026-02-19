@@ -398,7 +398,7 @@ Each game mode has its own statistics class with common attributes:
 
 Each medal class contains:
 - `medalCountGold`: Number of gold medals
-- `medalCountSilver`: Number of silver medals  
+- `medalCountSilver`: Number of silver medals
 - `medalCountBronze`: Number of bronze medals
 
 ### Progression Classes
@@ -494,11 +494,11 @@ Represents a team in a duel.
 **Attributes:**
 - `id` (str): Team identifier
 - `name` (str): Team name (e.g., "Blue", "Red")
-- `healthAtEnd` (int): Health points at the end
+- `healthAtEnd` (int): Health points at end
 - `players` (list[GeoguessrDuelPlayer]): Team players
 - `roundResults` (list[GeoguessrDuelTeamRoundResult]): Round results
 - `isMultiplierActive` (bool): If multiplier is active
-- `multiplierAtEnd` (float): Multiplier at the end
+- `multiplierAtEnd` (float): Multiplier at end
 
 ### GeoguessrDuelPlayer
 Represents a player in a duel.
@@ -585,6 +585,100 @@ Represents an individual replay step.
 - `GeoguessrDuelCoordinate`: Geographic coordinates
 - `GeoguessrDuelGameContext`: Game context
 - `GeoguessrDuelResult`: Final result
+
+### Special Features
+- **Big Number Parsing**: Automatic handling of `{"value": "66.11n", "type": "Big Number"}` format
+- **Asynchronous Replays**: Automatic replay retrieval with `set_replays()`
+- **Enhanced Tree**: Dictionary support in `to_tree()` for structured display
+- **Strong Types**: Comprehensive type usage for better robustness
+
+## GeoguessrClub Classes
+
+### GeoguessrClub
+Represents a Geoguessr club with all its members, statistics, and configuration.
+
+**Attributes:**
+- `clubId` (str): Unique club identifier
+- `name` (str): Club name
+- `members` (list[GeoguessrClubMember]): List of club members
+- `joinRule` (int): Join rule
+- `tag` (str): Club tag
+- `description` (Optional[str]): Club description
+- `createdAt` (datetime): Club creation date
+- `language` (str): Club language
+- `memberCount` (int): Current member count
+- `maxMemberCount` (int): Maximum member count
+- `level` (int): Club level
+- `xp` (int): Club total XP
+- `labels` (list[str]): Club labels
+- `logo` (GeoguessrClubLogo): Club logo configuration
+- `stats` (GeoguessrClubStats): Club statistics
+- `backgroundUrl` (str): Background image URL
+
+**Methods:**
+- `set_replays(session)`: Asynchronously retrieves replays
+
+### GeoguessrClubMember
+Represents user information for a club member.
+
+**Attributes:**
+- `userId` (str): User identifier
+- `nick` (str): Nickname
+- `avatar` (str): Avatar URL
+- `fullbodyAvatar` (str): Full body avatar URL
+- `borderUrl` (Optional[str]): Border URL
+- `isVerified` (bool): If account is verified
+- `flair` (int): User flair
+- `countryCode` (str): Country code
+- `tierId` (int): Tier level
+- `clubUserType` (int): Club user type
+- `role` (GeoguessrClubMember.Role): Role in club (ADMIN/MEMBER)
+- `joinedAt` (datetime): Join date
+- `xp` (int): Total XP
+- `weeklyXp` (int): Weekly XP
+
+**Types (Enum):**
+- `ADMIN`: Club administrator
+- `MEMBER`: Club member
+
+### GeoguessrClubLogo
+Represents a Geoguessr club logo.
+
+**Attributes:**
+- `logoIconId` (int): Logo icon ID
+- `logoIconSize` (int): Logo icon size
+- `logoIconOpacity` (int): Logo icon opacity
+- `logoIconColorId` (int): Logo icon color ID
+- `backgroundIconId` (int): Background icon ID
+- `backgroundIconSize` (int): Background icon size
+- `backgroundIconOpacity` (int): Background icon opacity
+- `backgroundIconColorId` (int): Background icon color ID
+- `backgroundColorId` (int): Background color ID
+
+### GeoguessrClubStats
+Represents Geoguessr club statistics.
+
+**Attributes:**
+- `clubId` (str): Club identifier
+- `totalXp` (int): Total XP
+- `changePercentXp` (float): XP change percentage
+- `totalGamesPlayed` (int): Total games played
+- `changePercentGamesPlayed` (float): Games played change percentage
+- `totalWins` (int): Total wins
+- `changePercentWins` (float): Wins change percentage
+- `totalPerfectGuesses` (int): Total perfect guesses
+- `changePercentPerfectGuesses` (float): Perfect guesses change percentage
+- `globalXpRank` (int): Global XP rank
+- `totalClubs` (int): Total clubs
+- `averageDivision` (GeoguessrClubDivision): Average division
+
+### GeoguessrClubDivision
+Represents a club's average division.
+
+**Attributes:**
+- `number` (int): Division number
+- `name` (str): Division name
+- `tier` (int): Division tier
 
 ### Special Features
 - **Big Number Parsing**: Automatic handling of `{"value": "66.11n", "type": "Big Number"}` format

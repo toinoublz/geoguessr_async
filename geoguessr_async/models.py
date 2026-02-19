@@ -36,6 +36,8 @@ class GeoguessrStr:
                         lines.append(item.to_tree(indent + 2))
                     else:
                         lines.append(f"{'    ' * (indent + 2)}{item!r}")
+                    lines.append(f"{'    ' * (indent + 1)}--")
+                lines.pop()
 
             elif isinstance(value, dict):
                 lines.append(f"{attrSpaces}{name} ({value.__class__.__name__}):")
@@ -855,7 +857,7 @@ class GeoguessrStatsTeamDuelsQuickplay(GeoguessrStr):
 
 
 class GeoguessrDuelData(GeoguessrStr):
-    """Représente les données complètes d'un duel Geoguessr."""
+    """Represents complete Geoguessr duel data."""
 
     def __init__(self, datas: dict) -> None:
         """Initialize GeoguessrDuelData.
@@ -926,50 +928,25 @@ class GeoguessrDuelReplayStep(GeoguessrStr):
                 GeoguessrDuelReplayTimerPayload,
             ]
         ] = None
-        payloadType = (
-            GeoguessrDuelReplayPanoPositionPayload
-            if self.type == GeoguessrDuelReplay.Type.PANOPOSITION
-            else (
-                GeoguessrDuelReplayPanoPovPayload
-                if self.type == GeoguessrDuelReplay.Type.PANOPOV
-                else (
-                    GeoguessrDuelReplayPanoZoomPayload
-                    if self.type == GeoguessrDuelReplay.Type.PANOZOOM
-                    else (
-                        GeoguessrDuelReplayMapZoomPayload
-                        if self.type == GeoguessrDuelReplay.Type.MAPZOOM
-                        else (
-                            GeoguessrDuelReplayMapPositionPayload
-                            if self.type == GeoguessrDuelReplay.Type.MAPPOSITION
-                            else (
-                                GeoguessrDuelReplayGuessWithLatLngPayload
-                                if self.type == GeoguessrDuelReplay.Type.GUESSWITHLATLNG
-                                else (
-                                    GeoguessrDuelReplayPinPositionPayload
-                                    if self.type == GeoguessrDuelReplay.Type.PINPOSITION
-                                    else (
-                                        GeoguessrDuelReplayTimerPayload
-                                        if self.type == GeoguessrDuelReplay.Type.TIMER
-                                        else (
-                                            GeoguessrDuelReplayMapDisplayPayload
-                                            if self.type == GeoguessrDuelReplay.Type.MAPDISPLAY
-                                            else None
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
+        payloadTypes = {
+            GeoguessrDuelReplay.Type.PANOPOSITION: GeoguessrDuelReplayPanoPositionPayload,
+            GeoguessrDuelReplay.Type.PANOPOV: GeoguessrDuelReplayPanoPovPayload,
+            GeoguessrDuelReplay.Type.PANOZOOM: GeoguessrDuelReplayPanoZoomPayload,
+            GeoguessrDuelReplay.Type.MAPZOOM: GeoguessrDuelReplayMapZoomPayload,
+            GeoguessrDuelReplay.Type.MAPPOSITION: GeoguessrDuelReplayMapPositionPayload,
+            GeoguessrDuelReplay.Type.GUESSWITHLATLNG: GeoguessrDuelReplayGuessWithLatLngPayload,
+            GeoguessrDuelReplay.Type.PINPOSITION: GeoguessrDuelReplayPinPositionPayload,
+            GeoguessrDuelReplay.Type.TIMER: GeoguessrDuelReplayTimerPayload,
+            GeoguessrDuelReplay.Type.MAPDISPLAY: GeoguessrDuelReplayMapDisplayPayload,
+        }
+        payloadType = payloadTypes.get(self.type)
 
         if payloadType is not None:
             self.payload = payloadType(datas.get("payload"))
 
 
 class GeoguessrDuelReplayPanoPositionPayload(GeoguessrStr):
-    """Représente les données de payload de type PanoPosition."""
+    """Represents PanoPosition type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.lat: dict = datas.get("lat")
@@ -978,7 +955,7 @@ class GeoguessrDuelReplayPanoPositionPayload(GeoguessrStr):
 
 
 class GeoguessrDuelReplayPanoPovPayload(GeoguessrStr):
-    """Représente les données de payload de type PanoPov."""
+    """Represents PanoPov type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.heading: float = gu.float_or_none(datas.get("heading"))
@@ -986,21 +963,21 @@ class GeoguessrDuelReplayPanoPovPayload(GeoguessrStr):
 
 
 class GeoguessrDuelReplayPanoZoomPayload(GeoguessrStr):
-    """Représente les données de payload de type PanoZoom."""
+    """Represents PanoZoom type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.zoom: float = gu.float_or_none(datas.get("zoom"))
 
 
 class GeoguessrDuelReplayMapZoomPayload(GeoguessrStr):
-    """Représente les données de payload de type MapZoom."""
+    """Represents MapZoom type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.zoom: int = gu.int_or_none(datas.get("zoom"))
 
 
 class GeoguessrDuelReplayMapPositionPayload(GeoguessrStr):
-    """Représente les données de payload de type MapPosition."""
+    """Represents MapPosition type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.lat: float = gu.float_or_none(datas.get("lat"))
@@ -1008,7 +985,7 @@ class GeoguessrDuelReplayMapPositionPayload(GeoguessrStr):
 
 
 class GeoguessrDuelReplayGuessWithLatLngPayload(GeoguessrStr):
-    """Représente les données de payload de type GuessWithLatLng."""
+    """Represents GuessWithLatLng type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.lat: float = gu.float_or_none(datas.get("lat"))
@@ -1016,7 +993,7 @@ class GeoguessrDuelReplayGuessWithLatLngPayload(GeoguessrStr):
 
 
 class GeoguessrDuelReplayPinPositionPayload(GeoguessrStr):
-    """Représente les données de payload de type PinPosition."""
+    """Represents PinPosition type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.lat: float = gu.float_or_none(datas.get("lat"))
@@ -1024,14 +1001,14 @@ class GeoguessrDuelReplayPinPositionPayload(GeoguessrStr):
 
 
 class GeoguessrDuelReplayTimerPayload(GeoguessrStr):
-    """Représente les données de payload de type Timer."""
+    """Represents Timer type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.time: int = gu.int_or_none(datas.get("time"))
 
 
 class GeoguessrDuelReplayMapDisplayPayload(GeoguessrStr):
-    """Représente les données de payload de type MapDisplay."""
+    """Represents MapDisplay type payload data."""
 
     def __init__(self, datas: dict) -> None:
         self.isActive: bool = gu.bool_or_none(datas.get("isActive"))
@@ -1040,7 +1017,7 @@ class GeoguessrDuelReplayMapDisplayPayload(GeoguessrStr):
 
 
 class GeoguessrDuelTeam(GeoguessrStr):
-    """Représente une équipe dans un duel."""
+    """Represents a team in a duel."""
 
     def __init__(self, datas: dict) -> None:
         self.id: str = gu.str_or_none(datas.get("id"))
@@ -1055,7 +1032,7 @@ class GeoguessrDuelTeam(GeoguessrStr):
 
 
 class GeoguessrDuelPlayer(GeoguessrStr):
-    """Représente un joueur dans un duel."""
+    """Represents a player in a duel."""
 
     def __init__(self, datas: dict) -> None:
         self.playerId: str = gu.str_or_none(datas.get("playerId"))
@@ -1070,7 +1047,7 @@ class GeoguessrDuelPlayer(GeoguessrStr):
 
 
 class GeoguessrDuelPlayerGuess(GeoguessrStr):
-    """Représente une supposition d'un joueur dans un duel."""
+    """Represents a player's guess in a duel."""
 
     def __init__(self, datas: dict) -> None:
         self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
@@ -1091,7 +1068,7 @@ class GeoguessrDuelPlayerGuess(GeoguessrStr):
 
 
 class GeoguessrDuelTeamRoundResult(GeoguessrStr):
-    """Représente le résultat d'une manche pour une équipe."""
+    """Represents round result for a team."""
 
     def __init__(self, datas: dict) -> None:
         self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
@@ -1105,7 +1082,7 @@ class GeoguessrDuelTeamRoundResult(GeoguessrStr):
 
 
 class GeoguessrDuelRound(GeoguessrStr):
-    """Représente une manche de duel."""
+    """Represents a duel round."""
 
     def __init__(self, datas: dict) -> None:
         self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
@@ -1120,7 +1097,7 @@ class GeoguessrDuelRound(GeoguessrStr):
 
 
 class GeoguessrDuelPanorama(GeoguessrStr):
-    """Représente les données de panorama d'une manche."""
+    """Represents round panorama data."""
 
     def __init__(self, datas: dict) -> None:
         self.panoId: str = gu.str_or_none(datas.get("panoId"))
@@ -1141,7 +1118,7 @@ class GeoguessrDuelPanorama(GeoguessrStr):
 
 
 class GeoguessrDuelProgressChange(GeoguessrStr):
-    """Représente la progression d'un joueur."""
+    """Represents a player's progression."""
 
     def __init__(self, datas: dict) -> None:
         self.xpAtStart: GeoguessrDuelXpProgression = (
@@ -1161,7 +1138,7 @@ class GeoguessrDuelProgressChange(GeoguessrStr):
 
 
 class GeoguessrDuelXpProgression(GeoguessrStr):
-    """Représente la progression XP."""
+    """Represents XP progression."""
 
     def __init__(self, datas: dict) -> None:
         self.xp: int = gu.int_or_none(datas.get("xp"))
@@ -1171,7 +1148,7 @@ class GeoguessrDuelXpProgression(GeoguessrStr):
 
 
 class GeoguessrDuelAwardedXp(GeoguessrStr):
-    """Représente les XP awardés."""
+    """Represents awarded XP."""
 
     def __init__(self, datas: dict) -> None:
         self.totalAwardedXp: int = gu.int_or_none(datas.get("totalAwardedXp"))
@@ -1179,7 +1156,7 @@ class GeoguessrDuelAwardedXp(GeoguessrStr):
 
 
 class GeoguessrDuelXpAward(GeoguessrStr):
-    """Représente une récompense XP."""
+    """Represents an XP reward."""
 
     def __init__(self, datas: dict) -> None:
         self.xp: int = gu.int_or_none(datas.get("xp"))
@@ -1188,7 +1165,7 @@ class GeoguessrDuelXpAward(GeoguessrStr):
 
 
 class GeoguessrDuelRankedSystemProgress(GeoguessrStr):
-    """Représente la progression du système classé."""
+    """Represents ranked system progression."""
 
     def __init__(self, datas: dict) -> None:
         self.points: dict = datas.get("points", {})
@@ -1211,7 +1188,7 @@ class GeoguessrDuelRankedSystemProgress(GeoguessrStr):
 
 
 class GeoguessrDuelOptions(GeoguessrStr):
-    """Représente les options d'un duel."""
+    """Represents duel options."""
 
     def __init__(self, datas: dict) -> None:
         self.initialHealth: int = gu.int_or_none(datas.get("initialHealth"))
@@ -1251,7 +1228,7 @@ class GeoguessrDuelOptions(GeoguessrStr):
 
 
 class GeoguessrMovementOptions(GeoguessrStr):
-    """Représente les options de mouvement."""
+    """Represents movement options."""
 
     def __init__(self, datas: dict) -> None:
         self.forbidMoving: bool = gu.bool_or_none(datas.get("forbidMoving"))
@@ -1260,7 +1237,7 @@ class GeoguessrMovementOptions(GeoguessrStr):
 
 
 class GeoguessrDuelMap(GeoguessrStr):
-    """Représente la carte d'un duel."""
+    """Represents duel map."""
 
     def __init__(self, datas: dict) -> None:
         self.name: str = gu.str_or_none(datas.get("name"))
@@ -1270,7 +1247,7 @@ class GeoguessrDuelMap(GeoguessrStr):
 
 
 class GeoguessrDuelMapBounds(GeoguessrStr):
-    """Représente les limites d'une carte."""
+    """Represents map bounds."""
 
     def __init__(self, datas: dict) -> None:
         self.min: GeoguessrDuelCoordinate = GeoguessrDuelCoordinate(datas.get("min", {}))
@@ -1278,7 +1255,7 @@ class GeoguessrDuelMapBounds(GeoguessrStr):
 
 
 class GeoguessrDuelCoordinate(GeoguessrStr):
-    """Représente une coordonnée géographique."""
+    """Represents a geographic coordinate."""
 
     def __init__(self, datas: dict) -> None:
         self.lat: float = self._parse_big_number(datas.get("lat"))
@@ -1294,7 +1271,7 @@ class GeoguessrDuelCoordinate(GeoguessrStr):
 
 
 class GeoguessrDuelGameContext(GeoguessrStr):
-    """Représente le contexte de jeu."""
+    """Represents game context."""
 
     def __init__(self, datas: dict) -> None:
         self.type: str = gu.str_or_none(datas.get("type"))
@@ -1302,7 +1279,7 @@ class GeoguessrDuelGameContext(GeoguessrStr):
 
 
 class GeoguessrDuelResult(GeoguessrStr):
-    """Représente le résultat d'un duel."""
+    """Represents duel result."""
 
     def __init__(self, datas: dict) -> None:
         self.isDraw: bool = gu.bool_or_none(datas.get("isDraw"))
@@ -1323,3 +1300,95 @@ class GeoguessrStatsParty(GeoguessrStr):
         self.liveChallenges: int = gu.int_or_none(datas.get("liveChallenges"))
         self.bullseye: int = gu.int_or_none(datas.get("bullseye"))
         self.quizzes: int = gu.int_or_none(datas.get("quizzes"))
+
+
+class GeoguessrClub(GeoguessrStr):
+    """Represents a Geoguessr club."""
+
+    def __init__(self, datas: dict) -> None:
+        self.clubId: str = gu.str_or_none(datas.get("clubId"))
+        self.name: str = gu.str_or_none(datas.get("name"))
+        self.members: list[GeoguessrClubMember] = [GeoguessrClubMember(member) for member in datas.get("members", [])]
+        self.joinRule: int = gu.int_or_none(datas.get("joinRule"))
+        self.tag: str = gu.str_or_none(datas.get("tag"))
+        self.description: Optional[str] = gu.str_or_none(datas.get("description"))
+        self.createdAt: datetime = (
+            datetime.strptime(datas.get("createdAt").split(".")[0], "%Y-%m-%dT%H:%M:%S")
+            if datas.get("createdAt")
+            else None
+        )
+        self.language: str = gu.str_or_none(datas.get("language"))
+        self.memberCount: int = gu.int_or_none(datas.get("memberCount"))
+        self.maxMemberCount: int = gu.int_or_none(datas.get("maxMemberCount"))
+        self.level: int = gu.int_or_none(datas.get("level"))
+        self.xp: int = gu.int_or_none(datas.get("xp"))
+        self.labels: list[str] = datas.get("labels", [])
+        self.logo: GeoguessrClubLogo = GeoguessrClubLogo(datas.get("logo", {}))
+        self.stats: GeoguessrClubStats = GeoguessrClubStats(datas.get("stats", {}))
+        self.backgroundUrl: str = gu.str_or_none(datas.get("backgroundUrl"))
+
+
+class GeoguessrClubMember(GeoguessrStr):
+    """Represents user information for a club member."""
+
+    class Role(Enum):
+        ADMIN = 1
+        MEMBER = 2
+
+    def __init__(self, datas: dict) -> None:
+        self.userId: str = gu.str_or_none(datas.get("user", {}).get("userId"))
+        self.nick: str = gu.str_or_none(datas.get("user", {}).get("nick"))
+        self.avatar: str = gu.str_or_none(datas.get("user", {}).get("avatar"))
+        self.fullbodyAvatar: str = gu.str_or_none(datas.get("user", {}).get("fullbodyAvatar"))
+        self.borderUrl: Optional[str] = gu.str_or_none(datas.get("user", {}).get("borderUrl"))
+        self.isVerified: bool = gu.bool_or_none(datas.get("user", {}).get("isVerified"))
+        self.flair: int = gu.int_or_none(datas.get("user", {}).get("flair"))
+        self.countryCode: str = gu.str_or_none(datas.get("user", {}).get("countryCode"))
+        self.tierId: int = gu.int_or_none(datas.get("user", {}).get("tierId"))
+        self.clubUserType: int = gu.int_or_none(datas.get("user", {}).get("clubUserType"))
+        self.role: GeoguessrClubMember.Role = GeoguessrClubMember.Role(gu.int_or_none(datas.get("role")))
+        self.joinedAt: datetime = gu.datetime_or_none(datas.get("joinedAt"))
+        self.xp: int = gu.int_or_none(datas.get("xp"))
+        self.weeklyXp: int = gu.int_or_none(datas.get("weeklyXp"))
+
+
+class GeoguessrClubLogo(GeoguessrStr):
+    """Represents a Geoguessr club logo."""
+
+    def __init__(self, datas: dict) -> None:
+        self.logoIconId: int = gu.int_or_none(datas.get("logoIconId"))
+        self.logoIconSize: int = gu.int_or_none(datas.get("logoIconSize"))
+        self.logoIconOpacity: int = gu.int_or_none(datas.get("logoIconOpacity"))
+        self.logoIconColorId: int = gu.int_or_none(datas.get("logoIconColorId"))
+        self.backgroundIconId: int = gu.int_or_none(datas.get("backgroundIconId"))
+        self.backgroundIconSize: int = gu.int_or_none(datas.get("backgroundIconSize"))
+        self.backgroundIconOpacity: int = gu.int_or_none(datas.get("backgroundIconOpacity"))
+        self.backgroundIconColorId: int = gu.int_or_none(datas.get("backgroundIconColorId"))
+        self.backgroundColorId: int = gu.int_or_none(datas.get("backgroundColorId"))
+
+
+class GeoguessrClubStats(GeoguessrStr):
+    """Represents Geoguessr club statistics."""
+
+    def __init__(self, datas: dict) -> None:
+        self.clubId: str = gu.str_or_none(datas.get("clubId"))
+        self.totalXp: int = gu.int_or_none(datas.get("totalXp"))
+        self.changePercentXp: float = gu.float_or_none(datas.get("changePercentXp"))
+        self.totalGamesPlayed: int = gu.int_or_none(datas.get("totalGamesPlayed"))
+        self.changePercentGamesPlayed: float = gu.float_or_none(datas.get("changePercentGamesPlayed"))
+        self.totalWins: int = gu.int_or_none(datas.get("totalWins"))
+        self.changePercentWins: float = gu.float_or_none(datas.get("changePercentWins"))
+        self.totalPerfectGuesses: int = gu.int_or_none(datas.get("totalPerfectGuesses"))
+        self.changePercentPerfectGuesses: float = gu.float_or_none(datas.get("changePercentPerfectGuesses"))
+        self.globalXpRank: int = gu.int_or_none(datas.get("globalXpRank"))
+        self.totalClubs: int = gu.int_or_none(datas.get("totalClubs"))
+        self.averageDivision: GeoguessrClubDivision = GeoguessrClubDivision(datas.get("averageDivision", {}))
+
+
+class GeoguessrClubDivision(GeoguessrStr):
+    """Represents a club's average division."""
+
+    def __init__(self, datas: dict) -> None:
+        self.number: int = gu.int_or_none(datas.get("number"))
+        self.name: str = gu.str_or_none(datas.get("name"))
+        self.tier: int = gu.int_or_none(datas.get("tier"))
