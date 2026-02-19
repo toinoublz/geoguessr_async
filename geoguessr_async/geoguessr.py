@@ -11,6 +11,7 @@ from geoguessr_async.models import (
     GeoguessrActivities,
     GeoguessrChallenge,
     GeoguessrChallengeResult,
+    GeoguessrClub,
     GeoguessrDuelData,
     GeoguessrMap,
     GeoguessrProfile,
@@ -334,6 +335,21 @@ class Geoguessr:
         await data.set_replays(await self.session)
 
         return data
+
+    async def get_club_info(self, clubId: str):
+        """
+        Gets information about a club.
+
+        Parameters:
+            clubId (str): The ID of the club to get information about.
+
+        Returns:
+            GeoguessrClub: An object containing information about the club.
+        """
+        async with (await self.session).get(f"https://www.geoguessr.com/api/v4/clubs/{clubId}") as r:
+            js = await r.json()
+
+        return GeoguessrClub(js)
 
     async def get_ranked_duel_activity(self):
         """
