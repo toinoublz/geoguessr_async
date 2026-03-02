@@ -175,18 +175,21 @@ class Geoguessr:
         if roundNumber != 4:
             _ = await (await self.session).get(f"https://www.geoguessr.com/api/v3/games/{gameToken}?client=web")
 
-    async def get_challenge_score(self, challengeUrl: str):
+    async def get_challenge_score(self, challengeUrl: str, expose_seed_quitters: bool = False):
         """Get scores on a standard challenge
 
         Args:
             challenge_url (str): The URL of the challenge you want to get results of
+            expose_seed_quitters (bool): Expose the scores of players who did not finish this challenge
 
         Returns:
             list[GeoguessrScore]: A list of different scores for the challenge
         """
         challengeToken = challengeUrl.split("/")[-1] if "/" in challengeUrl else challengeUrl
 
-        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5"
+        min_rounds = 1 if expose_seed_quitters else 5
+
+        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds={min_rounds}"
         async with (await self.session).get(link) as r:
             js = await r.json()
 
@@ -199,7 +202,7 @@ class Geoguessr:
         paginationToken = js["paginationToken"]
 
         while paginationToken is not None:
-            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5&paginationToken={parse.quote(paginationToken)}"
+            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds={min_rounds}&paginationToken={parse.quote(paginationToken)}"
             async with (await self.session).get(link) as r:
                 js = await r.json()
 
