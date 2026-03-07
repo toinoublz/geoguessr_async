@@ -175,18 +175,27 @@ class Geoguessr:
         if roundNumber != 4:
             _ = await (await self.session).get(f"https://www.geoguessr.com/api/v3/games/{gameToken}?client=web")
 
-    async def get_challenge_score(self, challengeUrl: str):
+    async def get_challenge_score(self, challengeUrl: str, minRounds: Optional[int] = None):
         """Get scores on a standard challenge
 
         Args:
             challenge_url (str): The URL of the challenge you want to get results of
+            minRounds (Optional[int]): The minimum number of rounds to consider. Defaults to None (all rounds).
 
         Returns:
             list[GeoguessrScore]: A list of different scores for the challenge
         """
         challengeToken = challengeUrl.split("/")[-1] if "/" in challengeUrl else challengeUrl
 
-        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5"
+        challengeInfo = await self.get_challenge_infos(challengeToken)
+        roundCount = challengeInfo.roundCount
+
+        if minRounds is None:
+            minRounds = roundCount
+        elif minRounds > roundCount:
+            raise ValueError(f"minRounds ({minRounds}) cannot be greater than roundCount ({roundCount})")
+
+        link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds={minRounds}"
         async with (await self.session).get(link) as r:
             js = await r.json()
 
@@ -199,7 +208,7 @@ class Geoguessr:
         paginationToken = js["paginationToken"]
 
         while paginationToken is not None:
-            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds=5&paginationToken={parse.quote(paginationToken)}"
+            link = f"https://geoguessr.com/api/v3/results/highscores/{challengeToken}?friends=false&limit=26&minRounds={minRounds}&paginationToken={parse.quote(paginationToken)}"
             async with (await self.session).get(link) as r:
                 js = await r.json()
 
