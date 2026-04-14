@@ -240,20 +240,8 @@ class Geoguessr:
             if seconds == 0
             else f"{(str(int(seconds / 60)) + ' min ') if int(seconds / 60) != 0 else ''}{(str(int(seconds % 60)) + ' sec') if int(seconds % 60) != 0 else ''}".strip()
         )
-        move = not js["challenge"]["forbidMoving"]
-        pan = not js["challenge"]["forbidRotating"]
-        zoom = not js["challenge"]["forbidZooming"]
 
-        js["mode"] = "Unknown"
-
-        if move and pan and zoom:
-            js["mode"] = "Move"
-        elif not move and pan and zoom:
-            js["mode"] = "No Move"
-        elif not (move or pan or zoom):
-            js["mode"] = "NMPZ"
-
-        return GeoguessrChallenge(js)
+        return GeoguessrChallenge(js["challenge"])
 
     async def get_map_infos(self, mapUrl: str):
         """Get informations about a map
