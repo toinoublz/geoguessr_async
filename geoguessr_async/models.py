@@ -468,7 +468,7 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
         self.flair: Optional[int] = gu.int_or_none(playerDatas.get("flair"))
         self.countryCode: Optional[str] = gu.str_or_none(playerDatas.get("countryCode"))
         self.pinUrl: Optional[str] = gu.str_or_none(playerDatas.get("pin", {}).get("url"))
-        if progressionDatas.get("xpProgressions"):
+        if progressionDatas and progressionDatas.get("xpProgressions"):
             self.xpBeforeChallenge: Optional[int] = gu.int_or_none(
                 progressionDatas.get("xpProgressions", [{}, {}])[0].get("xp")
             )
@@ -516,7 +516,7 @@ class GeoguessrChallengeResult(GeoguessrStr):
         if gameDatas is None:
             raise ValueError("The game key is missing in the data.")
         self.player: GeoguessrScorePlayerInfo = GeoguessrScorePlayerInfo(
-            gameDatas.get("player"), gameDatas.get("progressChange")
+            gameDatas.get("player"), gameDatas.get("progressChange", {})
         )
         self.type: str = gu.str_or_none(gameDatas.get("type"))
         self.mode: str = gu.str_or_none(gameDatas.get("mode"))
