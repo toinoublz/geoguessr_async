@@ -1,0 +1,6 @@
+
+
+class UserUnknown(Exception):
+    """Raised when the user is unknown or not found"""
+    def __init__(self, message):
+        self.message = message
