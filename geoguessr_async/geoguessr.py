@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional, cast
 from urllib import parse
 
 import aiohttp
@@ -27,7 +27,7 @@ class Geoguessr:
     This class is used to interact with the Geoguess API/
     """
 
-    def __init__(self, ncfa) -> None:
+    def __init__(self, ncfa: str) -> None:
         self._ncfa = ncfa
         self.headers = {
             "Content-Type": "application/json",
@@ -340,7 +340,7 @@ class Geoguessr:
 
         return GeoguessrClub(js)
 
-    async def get_ranked_duel_activity(self):
+    async def get_ranked_duel_activity(self) -> list[tuple[str, str]]:
         """
         Gets a list of ranked duel activities.
 
@@ -349,15 +349,17 @@ class Geoguessr:
         """
         if not self.activities:
             self.activities = await self.__get_activities()
-        duelList = []
+        duelList: list[tuple[str, str]] = []
         for entry in self.activities.entries:
-            if entry.get("payload") is not None:
+            if entry.get("payload"):
                 payload = json.loads(entry["payload"])
                 if entry["type"] == 6 and payload["gameMode"] == "Duels":  # Single Ranked Duel
+                    payload = cast(dict[str, Any], payload)
                     time = datetime.strptime(entry["time"][:19], "%Y-%m-%dT%H:%M:%S").strftime("%d-%m-%Y %H:%M:%S")
                     gameURL = f'https://www.geoguessr.com/duels/{payload["gameId"]}/summary'
                     duelList.append((time, gameURL))
                 elif entry["type"] == 7 and isinstance(payload, list):  # List of ranked
+                    payload = cast(list[dict[str, Any]], payload)
                     for game in payload:
                         if game["type"] == 6 and game["payload"]["gameMode"] == "Duels":  # Type 6 = Ranked
                             time = datetime.strptime(game["time"][:19], "%Y-%m-%dT%H:%M:%S").strftime(
