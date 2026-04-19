@@ -12,7 +12,8 @@ Once the package is installed, you can create a client object by passing your NC
 import asyncio
 from geoguessr_async import Geoguessr
 
-client = Geoguessr("your_ncfa_cookie")
+async with Geoguessr("your_ncfa_cookie") as client:
+    await client.do_stuff()
 ```
 
 *To get your NCFA cookie, login to geoguessr, open your dev tools (`Ctrl+Shift+I`), go to Application/Storage/Cookies and copy the value of `_ncfa`.*
