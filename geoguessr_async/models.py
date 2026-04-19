@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import aiohttp
 
@@ -8,7 +8,7 @@ import geoguessr_async.geo_utils as gu
 
 
 class GeoguessrStr:
-    def to_tree(self, indent=0):
+    def to_tree(self, indent: int=0):
         """Convert the object to a tree-like string representation.
 
         Args:
@@ -17,7 +17,7 @@ class GeoguessrStr:
         Returns:
             str: Tree-like string representation of the object.
         """
-        lines = []
+        lines: list[str] = []
 
         for name, value in self.__dict__.items():
             attrSpaces = "    " * indent
@@ -25,14 +25,15 @@ class GeoguessrStr:
             if isinstance(value, (int, float, str, bool, type(None))):
                 lines.append(f"{attrSpaces}{name} ({value.__class__.__name__}) = {value!r}")
 
-            elif hasattr(value, "to_tree"):
+            elif isinstance(value, GeoguessrStr):
                 lines.append(f"{attrSpaces}{name} ({value.__class__.__name__}):")
                 lines.append(value.to_tree(indent + 2))
 
             elif isinstance(value, list):
+                value = cast(list[Any], value)
                 lines.append(f"{attrSpaces}{name} ({value.__class__.__name__}):")
                 for item in value:
-                    if hasattr(item, "to_tree"):
+                    if isinstance(item, GeoguessrStr):
                         lines.append(item.to_tree(indent + 2))
                     else:
                         lines.append(f"{'    ' * (indent + 2)}{item!r}")
@@ -40,12 +41,14 @@ class GeoguessrStr:
                 lines.pop()
 
             elif isinstance(value, dict):
+                value = cast(dict[str, Any], value)
                 lines.append(f"{attrSpaces}{name} ({value.__class__.__name__}):")
                 for key, item in value.items():
                     if hasattr(item, "to_tree"):
                         lines.append(f"{'    ' * (indent + 2)}{key!r}:")
                         lines.append(item.to_tree(indent + 3))
                     elif isinstance(item, list):
+                        item = cast(list[Any], item)
                         lines.append(f"{'    ' * (indent + 2)}{key!r} ({item.__class__.__name__}):")
                         for listItem in item:
                             if hasattr(listItem, "to_tree"):
@@ -73,74 +76,75 @@ class GeoguessrStats(GeoguessrStr):
         # ... other stats attributes
     """
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         """Initialize GeoguessrStats.
 
         Args:
-            datas (dict): Raw stats data from API.
+            datas (dict[str, Any]): Raw stats data from API.
         """
         # Ranked Team Duels
-        self.rankedTeamDuelsStandard: GeoguessrStatsRankedTeamDuelsStandard = GeoguessrStatsRankedTeamDuelsStandard(
-            datas.get("rankedTeamDuelsStandard", {})
-        )
-        self.rankedTeamDuelsNoMove: GeoguessrStatsRankedTeamDuelsNoMove = GeoguessrStatsRankedTeamDuelsNoMove(
-            datas.get("rankedTeamDuelsNoMove", {})
-        )
-        self.rankedTeamDuelsNmpz: GeoguessrStatsRankedTeamDuelsNmpz = GeoguessrStatsRankedTeamDuelsNmpz(
-            datas.get("rankedTeamDuelsNmpz", {})
-        )
-        self.rankedTeamDuelsTotal: GeoguessrStatsRankedTeamDuelsTotal = GeoguessrStatsRankedTeamDuelsTotal(
-            datas.get("rankedTeamDuelsTotal", {})
-        )
+        self.rankedTeamDuelsStandard: Optional[GeoguessrStatsRankedTeamDuelsStandard] = GeoguessrStatsRankedTeamDuelsStandard(
+            datas["rankedTeamDuelsStandard"]
+        ) if datas.get("rankedTeamDuelsStandard") else None
+        self.rankedTeamDuelsNoMove: Optional[GeoguessrStatsRankedTeamDuelsNoMove] = GeoguessrStatsRankedTeamDuelsNoMove(
+            datas["rankedTeamDuelsNoMove"]
+        ) if datas.get("rankedTeamDuelsNoMove") else None
+        self.rankedTeamDuelsNmpz: Optional[GeoguessrStatsRankedTeamDuelsNmpz] = GeoguessrStatsRankedTeamDuelsNmpz(
+            datas["rankedTeamDuelsNmpz"]
+        ) if datas.get("rankedTeamDuelsNmpz") else None
+        self.rankedTeamDuelsTotal: Optional[GeoguessrStatsRankedTeamDuelsTotal] = GeoguessrStatsRankedTeamDuelsTotal(
+            datas["rankedTeamDuelsTotal"]
+        ) if datas.get("rankedTeamDuelsTotal") else None
 
         # Battle Royale
-        self.battleRoyaleDistance: GeoguessrStatsBattleRoyaleDistance = GeoguessrStatsBattleRoyaleDistance(
-            datas.get("battleRoyaleDistance", {})
-        )
-        self.battleRoyaleCountry: GeoguessrStatsBattleRoyaleCountry = GeoguessrStatsBattleRoyaleCountry(
-            datas.get("battleRoyaleCountry", {})
-        )
-        self.battleRoyaleMedals: GeoguessrStatsBattleRoyaleMedals = GeoguessrStatsBattleRoyaleMedals(
-            datas.get("battleRoyaleMedals", {})
-        )
+        self.battleRoyaleDistance: Optional[GeoguessrStatsBattleRoyaleDistance] = GeoguessrStatsBattleRoyaleDistance(
+            datas["battleRoyaleDistance"]
+        ) if datas.get("battleRoyaleDistance") else None
+        self.battleRoyaleCountry: Optional[GeoguessrStatsBattleRoyaleCountry] = GeoguessrStatsBattleRoyaleCountry(
+            datas["battleRoyaleCountry"]
+        ) if datas.get("battleRoyaleCountry") else None
+        self.battleRoyaleMedals: Optional[GeoguessrStatsBattleRoyaleMedals] = GeoguessrStatsBattleRoyaleMedals(
+            datas["battleRoyaleMedals"]
+        ) if datas.get("battleRoyaleMedals") else None
 
         # Competitive
-        self.competitiveCityStreaks: GeoguessrStatsCompetitiveCityStreaks = GeoguessrStatsCompetitiveCityStreaks(
-            datas.get("competitiveCityStreaks", {})
-        )
-        self.competitiveStreaksMedals: GeoguessrStatsCompetitiveStreaksMedals = GeoguessrStatsCompetitiveStreaksMedals(
-            datas.get("competitiveStreaksMedals", {})
-        )
+        self.competitiveCityStreaks: Optional[GeoguessrStatsCompetitiveCityStreaks] = GeoguessrStatsCompetitiveCityStreaks(
+            datas["competitiveCityStreaks"]
+        ) if datas.get("competitiveCityStreaks") else None
+        self.competitiveStreaksMedals: Optional[GeoguessrStatsCompetitiveStreaksMedals] = GeoguessrStatsCompetitiveStreaksMedals(
+            datas["competitiveStreaksMedals"]
+        ) if datas.get("competitiveStreaksMedals") else None
 
         # Duels
-        self.duels: GeoguessrStatsDuels = GeoguessrStatsDuels(datas.get("duels", {}))
-        self.duelsNoMove: GeoguessrStatsDuelsNoMove = GeoguessrStatsDuelsNoMove(datas.get("duelsNoMove", {}))
-        self.duelsNmpz: GeoguessrStatsDuelsNmpz = GeoguessrStatsDuelsNmpz(datas.get("duelsNmpz", {}))
-        self.duelsTotal: GeoguessrStatsDuelsTotal = GeoguessrStatsDuelsTotal(datas.get("duelsTotal", {}))
-        self.duelsMedals: GeoguessrStatsDuelsMedals = GeoguessrStatsDuelsMedals(datas.get("duelsMedals", {}))
+        self.duels: Optional[GeoguessrStatsDuels] = GeoguessrStatsDuels(datas["duels"]) if datas.get("duels") else None
+        self.duelsNoMove: Optional[GeoguessrStatsDuelsNoMove] = GeoguessrStatsDuelsNoMove(datas["duelsNoMove"]) if datas.get("duelsNoMove") else None
+        self.duelsNmpz: Optional[GeoguessrStatsDuelsNmpz] = GeoguessrStatsDuelsNmpz(datas["duelsNmpz"]) if datas.get("duelsNmpz") else None
+        self.duelsTotal: Optional[GeoguessrStatsDuelsTotal] = GeoguessrStatsDuelsTotal(datas["duelsTotal"]) if datas.get("duelsTotal") else None
+        self.duelsMedals: Optional[GeoguessrStatsDuelsMedals] = GeoguessrStatsDuelsMedals(datas["duelsMedals"]) if datas.get("duelsMedals") else None
 
         # Unranked Duels
-        self.unrankedDuels: GeoguessrStatsUnrankedDuels = GeoguessrStatsUnrankedDuels(datas.get("unrankedDuels", {}))
-        self.unrankedDuelsNoMove: GeoguessrStatsUnrankedDuelsNoMove = GeoguessrStatsUnrankedDuelsNoMove(
-            datas.get("unrankedDuelsNoMove", {})
-        )
-        self.unrankedDuelsNmpz: GeoguessrStatsUnrankedDuelsNmpz = GeoguessrStatsUnrankedDuelsNmpz(
-            datas.get("unrankedDuelsNmpz", {})
-        )
-        self.unrankedDuelsTotal: GeoguessrStatsUnrankedDuelsTotal = GeoguessrStatsUnrankedDuelsTotal(
-            datas.get("unrankedDuelsTotal", {})
-        )
+        self.unrankedDuels: Optional[GeoguessrStatsUnrankedDuels] = GeoguessrStatsUnrankedDuels(datas["unrankedDuels"]) if datas.get("unrankedDuels") else None
+        self.unrankedDuelsNoMove: Optional[GeoguessrStatsUnrankedDuelsNoMove] = GeoguessrStatsUnrankedDuelsNoMove(
+            datas["unrankedDuelsNoMove"]
+        ) if datas.get("unrankedDuelsNoMove") else None
+        self.unrankedDuelsNmpz: Optional[GeoguessrStatsUnrankedDuelsNmpz] = GeoguessrStatsUnrankedDuelsNmpz(
+            datas["unrankedDuelsNmpz"]
+        ) if datas.get("unrankedDuelsNmpz") else None
+        self.unrankedDuelsTotal: Optional[GeoguessrStatsUnrankedDuelsTotal] = GeoguessrStatsUnrankedDuelsTotal(
+            datas["unrankedDuelsTotal"]
+        ) if datas.get("unrankedDuelsTotal") else None
 
         # Progression & Stats
-        self.lifeTimeXpProgression: GeoguessrStatsLifeTimeXpProgression = GeoguessrStatsLifeTimeXpProgression(
-            datas.get("lifeTimeXpProgression", {})
-        )
-        self.totalMedals: GeoguessrStatsTotalMedals = GeoguessrStatsTotalMedals(datas.get("totalMedals", {}))
-        self.teamDuels: GeoguessrStatsTeamDuels = GeoguessrStatsTeamDuels(datas.get("teamDuels", {}))
-        self.teamDuelsQuickplay: GeoguessrStatsTeamDuelsQuickplay = GeoguessrStatsTeamDuelsQuickplay(
-            datas.get("teamDuelsQuickplay", {})
-        )
-        self.party: GeoguessrStatsParty = GeoguessrStatsParty(datas.get("party", {}))
+        self.lifeTimeXpProgression: Optional[GeoguessrStatsLifeTimeXpProgression] = GeoguessrStatsLifeTimeXpProgression(
+            datas["lifeTimeXpProgression"]
+        ) if datas.get("lifeTimeXpProgression") else None
+
+        self.totalMedals: Optional[GeoguessrStatsTotalMedals] = GeoguessrStatsTotalMedals(datas["totalMedals"]) if datas.get("totalMedals") else None
+        self.teamDuels: Optional[GeoguessrStatsTeamDuels] = GeoguessrStatsTeamDuels(datas["teamDuels"]) if datas.get("teamDuels") else None
+        self.teamDuelsQuickplay: Optional[GeoguessrStatsTeamDuelsQuickplay] = GeoguessrStatsTeamDuelsQuickplay(
+            datas["teamDuelsQuickplay"]
+        ) if datas.get("teamDuelsQuickplay") else None
+        self.party: Optional[GeoguessrStatsParty] = GeoguessrStatsParty(datas["party"]) if datas.get("party") else None
 
         # Direct stats
         self.quickplayFlawlessVictories: Optional[int] = gu.int_or_none(datas.get("quickplayFlawlessVictories"))
@@ -148,7 +152,7 @@ class GeoguessrStats(GeoguessrStr):
 
 
 class GeoguessrCompetitionMedals(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         self.bronze: Optional[int] = gu.int_or_none(datas.get("bronze"))
         self.silver: Optional[int] = gu.int_or_none(datas.get("silver"))
         self.gold: Optional[int] = gu.int_or_none(datas.get("gold"))
@@ -156,7 +160,7 @@ class GeoguessrCompetitionMedals(GeoguessrStr):
 
 
 class GeoguessrPin(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         self.url: Optional[str] = gu.str_or_none(datas.get("pin", {}).get("url"))
         self.anchor: Optional[str] = gu.str_or_none(datas.get("pin", {}).get("anchor"))
         self.isDefault: Optional[bool] = gu.bool_or_none(datas.get("pin", {}).get("isDefault"))
@@ -166,7 +170,7 @@ class GeoguessrPin(GeoguessrStr):
 
 
 class GeoguessrDivision(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         self.type: Optional[int] = gu.int_or_none(datas.get("type"))
         self.startRating: Optional[int] = gu.int_or_none(datas.get("startRating"))
         self.endRating: Optional[int] = gu.int_or_none(datas.get("endRating"))
@@ -175,23 +179,23 @@ class GeoguessrDivision(GeoguessrStr):
 class GeoguessrCompetitive(GeoguessrStr):
     """Deprecated"""
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         self.elo: Optional[int] = gu.int_or_none(datas.get("elo"))
         self.rating: Optional[int] = gu.int_or_none(datas.get("rating"))
         self.lastRatingChange: Optional[int] = gu.int_or_none(datas.get("lastRatingChange"))
-        self.division: GeoguessrDivision = GeoguessrDivision(datas.get("division"))
+        self.division: GeoguessrDivision = GeoguessrDivision(datas.get("division", {}))
         self.onLeaderboard: Optional[bool] = gu.bool_or_none(datas.get("onLeaderboard"))
 
 
 class GeoguessrLevelProgress(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         self.level: Optional[int] = gu.int_or_none(datas.get("level"))
         self.xp: Optional[int] = gu.int_or_none(datas.get("xp"))
         self.levelXpStart: Optional[int] = gu.int_or_none(datas.get("levelXp"))
         self.nextLevelXp: Optional[int] = gu.int_or_none(datas.get("nextLevelXp"))
         self.nextLevel: Optional[int] = gu.int_or_none(datas.get("nextLevel"))
-        self.title: GeoguessrXpTitle = GeoguessrXpTitle(datas.get("title"))
-        self.competitionMedals: GeoguessrCompetitionMedals = GeoguessrCompetitionMedals(datas.get("competitionMedals"))
+        self.title: Optional[GeoguessrXpTitle] = GeoguessrXpTitle(datas["title"]) if datas.get("title") else None
+        self.competitionMedals: Optional[GeoguessrCompetitionMedals] = GeoguessrCompetitionMedals(datas["competitionMedals"]) if datas.get("competitionMedals") else None
 
 
 class GeoguessrProfile(GeoguessrStr):
@@ -204,51 +208,37 @@ class GeoguessrProfile(GeoguessrStr):
         # ... other profile attributes
     """
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         """Initialize GeoguessrProfile.
 
         Args:
-            datas (dict): Raw profile data from API.
+            datas (dict[str, Any]): Raw profile data from API.
         """
-        self.nick: str = gu.str_or_none(datas.get("nick"))
-        self.createdAt: datetime = datetime.strptime(datas.get("created").split(".")[0], "%Y-%m-%dT%H:%M:%S")
-        self.isProUser: bool = gu.bool_or_none(datas.get("isProUser"))
+        self.nick: str = datas["nick"]
+        self.createdAt: datetime = gu.to_datetime(datas["created"])
+        self.isProUser: bool = datas["isProUser"]
         self.type: Optional[str] = gu.str_or_none(datas.get("type"))
-        self.isVerified: bool = gu.bool_or_none(datas.get("isVerified"))
+        self.isVerified: bool =datas["isVerified"]
         self.pin: GeoguessrPin = GeoguessrPin(datas)
         self.color: Optional[int] = gu.int_or_none(datas.get("color"))
-        self.url: str = gu.str_or_none(datas.get("url"))
-        self.id: str = gu.str_or_none(datas.get("id"))
+        self.url: str = datas["url"]
+        self.id: str = datas["id"]
         self.countryCode: Optional[str] = gu.str_or_none(datas.get("countryCode"))
         self.battleRoyaleLevel: Optional[int] = gu.int_or_none(datas.get("br", {}).get("level"))
         self.battleRoyaleDivision: Optional[int] = gu.int_or_none(datas.get("br", {}).get("division"))
         self.streakProgress: Optional[Any] = datas.get("streakProgress")
         self.explorerProgress: Optional[Any] = datas.get("explorerProgress")
         self.dailyChallengeProgress: Optional[int] = gu.int_or_none(datas.get("dailyChallengeProgress"))
-        self.progress: GeoguessrLevelProgress = GeoguessrLevelProgress(datas.get("progress"))
-        self.competitive: Optional[GeoguessrCompetitive] = (
-            GeoguessrCompetitive(datas.get("competitive")) if datas.get("competitive") else None
-        )
-        self.lastNameChange: datetime = datetime.strptime(
-            datas.get("lastNameChange").split(".")[0], "%Y-%m-%dT%H:%M:%S"
-        )
-        self.lastNickOrCountryChange: datetime = datetime.strptime(
-            datas.get("lastNickOrCountryChange").split(".")[0], "%Y-%m-%dT%H:%M:%S"
-        )
-        self.isBanned: bool = gu.bool_or_none(datas.get("isBanned"))
-        self.chatBan: bool = gu.bool_or_none(datas.get("chatBan"))
-        self.nameChangeAvailableAt: Optional[datetime] = (
-            datetime.strptime(datas.get("nameChangeAvailableAt").split(".")[0], "%Y-%m-%dT%H:%M:%S")
-            if datas.get("nameChangeAvailableAt")
-            else None
-        )
+        self.progress: Optional[GeoguessrLevelProgress] = GeoguessrLevelProgress(datas["progress"]) if datas.get("progress") else None
+        self.competitive: Optional[GeoguessrCompetitive] = GeoguessrCompetitive(datas["competitive"]) if datas.get("competitive") else None
+        self.lastNameChange: datetime = gu.to_datetime(datas["lastNameChange"])
+        self.lastNickOrCountryChange: datetime = gu.to_datetime(datas["lastNickOrCountryChange"])
+        self.isBanned: bool = datas["isBanned"]
+        self.chatBan: bool = datas["chatBan"]
+        self.nameChangeAvailableAt: Optional[datetime] = gu.datetime_or_none(datas.get("nameChangeAvailableAt"))
         self.avatarUrl: Optional[str] = datas.get("avatar", {}).get("fullbodypath")
-        self.isBotUser: bool = gu.bool_or_none(datas.get("isBotUser"))
-        self.suspendedUntil: Optional[datetime] = (
-            datetime.strptime(datas.get("suspendedUntil").split(".")[0], "%Y-%m-%dT%H:%M:%S")
-            if datas.get("suspendedUntil")
-            else None
-        )
+        self.isBotUser: bool = datas["isBotUser"]
+        self.suspendedUntil: Optional[datetime] = gu.datetime_or_none(datas.get("suspendedUntil"))
         self.wallet: Optional[int] = gu.int_or_none(datas.get("wallet"))
         self.flair: Optional[int] = gu.int_or_none(datas.get("flair"))
         self.isCreator: Optional[bool] = gu.bool_or_none(datas.get("isCreator"))
@@ -271,25 +261,25 @@ class GeoguessrChallenge(GeoguessrStr):
         # ... other challenge attributes
     """
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         """Initialize GeoguessrChallenge.
 
         Args:
-            datas (dict): Raw challenge data from API.
+            datas (dict[str, Any]): Raw challenge data from API.
         """
-        self.token: str = gu.str_or_none(datas.get("token"))
-        self.mapSlug: str = gu.str_or_none(datas.get("mapSlug"))
-        self.roundCount: int = gu.int_or_none(datas.get("roundCount"))
-        self.timeLimit: int = gu.int_or_none(datas.get("timeLimit"))
+        self.token: str = datas["token"]
+        self.mapSlug: str = datas["mapSlug"]
+        self.roundCount: int = datas["roundCount"]
+        self.timeLimit: int = datas["timeLimit"]
         self.movementOptions: GeoguessrMovementOptions = GeoguessrMovementOptions(datas)
-        self.guessMapType: str = gu.str_or_none(datas.get("guessMapType"))
+        self.guessMapType: str = datas["guessMapType"]
         self.numberOfParticipants: Optional[int] = gu.int_or_none(datas.get("numberOfParticipants"))
-        self.gameMode: str = gu.str_or_none(datas.get("gameMode"))
-        self.challengeType: int = gu.int_or_none(datas.get("challengeType"))
+        self.gameMode: str = datas["gameMode"]
+        self.challengeType: int = datas["challengeType"]
         self.streakType: Optional[str] = gu.str_or_none(datas.get("streakType"))
         self.accessLevel: Optional[int] = gu.int_or_none(datas.get("accessLevel"))
-        self.locationOrder: int = gu.int_or_none(datas.get("locationOrder"))
-        self.timeLimitStr = (
+        self.locationOrder: int = datas["locationOrder"]
+        self.timeLimitStr: str = (
             "No time limit"
             if self.timeLimit == 0
             else f"{(str(int(self.timeLimit / 60)) + ' min ') if int(self.timeLimit / 60) != 0 else ''}{(str(int(self.timeLimit % 60)) + ' sec') if int(self.timeLimit % 60) != 0 else ''}".strip()
@@ -306,22 +296,22 @@ class GeoguessrChallengeRound(GeoguessrStr):
         # ... other round attributes
     """
 
-    def __init__(self, roundData: dict, roundNumber: Optional[int]) -> None:
+    def __init__(self, roundData: dict[str, Any], roundNumber: int) -> None:
         """Initialize GeoguessrChallengeRound.
 
         Args:
-            roundData (dict): Raw round data from API.
+            roundData (dict[str, Any]): Raw round data from API.
             roundNumber (int): Round number (1-based).
         """
         self.number: int = roundNumber
-        self.lat: float = gu.float_or_none(roundData.get("lat"))
-        self.long: float = gu.float_or_none(roundData.get("lng"))
+        self.lat: float = roundData["lat"]
+        self.long: float = roundData["lng"]
         self.panoId: Optional[str] = gu.str_or_none(roundData.get("panoId"))
-        self.heading: float = gu.float_or_none(roundData.get("heading"))
-        self.pitch: float = gu.float_or_none(roundData.get("pitch"))
-        self.zoom: float = gu.float_or_none(roundData.get("zoom"))
+        self.heading: float = roundData["heading"]
+        self.pitch: float = roundData["pitch"]
+        self.zoom: float = roundData["zoom"]
         self.streakLocationCode: Optional[str] = roundData.get("streakLocationCode")
-        self.startTime: datetime = datetime.strptime(roundData.get("startTime", "").split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        self.startTime: datetime = gu.to_datetime(roundData["startTime"])
 
 
 class GeoguessrScore(GeoguessrStr):
@@ -333,13 +323,13 @@ class GeoguessrScore(GeoguessrStr):
         percentage (float): Score percentage.
     """
 
-    def __init__(self, scoreData: dict) -> None:
+    def __init__(self, scoreData: dict[str, Any]) -> None:
         """Initialize GeoguessrScore.
 
         Args:
-            scoreData (dict): Raw score data from API.
+            scoreData (dict[str, Any]): Raw score data from API.
         """
-        self.amount: float = gu.float_or_none(scoreData.get("amount"))
+        self.amount: float = float(scoreData["amount"])
         self.unit: Optional[str] = gu.str_or_none(scoreData.get("unit"))
         self.percentage: Optional[float] = gu.float_or_none(scoreData.get("percentage"))
 
@@ -353,16 +343,14 @@ class GeoguessrDistance(GeoguessrStr):
         miles (float): Distance in miles.
     """
 
-    def __init__(self, distanceData: dict) -> None:
+    def __init__(self, distanceData: dict[str, Any]) -> None:
         """Initialize GeoguessrDistance.
 
         Args:
-            distanceData (dict): Raw distance data from API.
+            distanceData (dict[str, Any]): Raw distance data from API.
         """
-        metersDistance: dict = distanceData.get("meters", {})
-        self.meters: float = gu.float_or_none(metersDistance.get("amount")) * (
-            1000 if metersDistance.get("unit") == "km" else 1
-        )
+        metersDistance: dict[str, Any] = distanceData["meters"]
+        self.meters: float = float(metersDistance["amount"]) * (1000 if metersDistance["unit"] == "km" else 1)
         self.kilometers: float = self.meters / 1000
         self.miles: float = self.meters / 1609.34
 
@@ -414,59 +402,59 @@ class GeoguessrPlayerGuesses(GeoguessrStr):
         # ... other guess attributes
     """
 
-    def __init__(self, guessData: dict[str, str], roundNumber: Optional[int]) -> None:
+    def __init__(self, guessData: dict[str, Any], roundNumber: int) -> None:
         """Initialize GeoguessrPlayerGuesses.
 
         Args:
-            guessData (dict): Raw guess data from API.
+            guessData (dict[str, Any]): Raw guess data from API.
             roundNumber (int): Round number (1-based).
         """
         self.number: int = roundNumber
-        self.lat: float = gu.float_or_none(guessData.get("lat"))
-        self.long: float = gu.float_or_none(guessData.get("lng"))
-        self.timedOut: bool = gu.bool_or_none(guessData.get("timedOut"))
-        self.timedOutWithGuess: bool = gu.bool_or_none(guessData.get("timedOutWithGuess"))
-        self.skippedRound: bool = gu.bool_or_none(guessData.get("skippedRound"))
-        self.roundScore: GeoguessrScore = GeoguessrScore(guessData.get("roundScore"))
-        self.roundScoreInPercentage: int = gu.int_or_none(guessData.get("roundScoreInPercentage"))
-        self.roundScoreInPoints: int = gu.int_or_none(guessData.get("roundScoreInPoints"))
-        self.distance: GeoguessrDistance = GeoguessrDistance(guessData.get("distance"))
-        self.distanceInMeters: float = gu.float_or_none(guessData.get("distanceInMeters"))
-        self.stepsCount: int = gu.int_or_none(guessData.get("stepsCount"))
-        self.streakLocationCode: Optional[str] = guessData.get("streakLocationCode")
+        self.lat: float = float(guessData["lat"])
+        self.long: float = float(guessData["lng"])
+        self.timedOut: bool = guessData["timedOut"]
+        self.timedOutWithGuess: bool = guessData["timedOutWithGuess"]
+        self.skippedRound: bool = guessData["skippedRound"]
+        self.roundScore: GeoguessrScore = GeoguessrScore(guessData["roundScore"])
+        self.roundScoreInPercentage: int = guessData["roundScoreInPercentage"]
+        self.roundScoreInPoints: int = guessData["roundScoreInPoints"]
+        self.distance: GeoguessrDistance = GeoguessrDistance(guessData["distance"])
+        self.distanceInMeters: float = guessData["distanceInMeters"]
+        self.stepsCount: int = guessData["stepsCount"]
+        self.streakLocationCode: Optional[str] = gu.str_or_none(guessData.get("streakLocationCode"))
         self.time: GeoguessrTime = GeoguessrTime(guessData.get("time"))
 
 
 class GeoguessrGameBounds(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.minLat: float = gu.float_or_none(datas.get("min", {}).get("lat"))
-        self.minLng: float = gu.float_or_none(datas.get("min", {}).get("lng"))
-        self.maxLat: float = gu.float_or_none(datas.get("max", {}).get("lat"))
-        self.maxLng: float = gu.float_or_none(datas.get("max", {}).get("lng"))
+    def __init__(self, datas: dict[str, dict[str, float]]) -> None:
+        self.minLat: float = datas["min"]["lat"]
+        self.minLng: float = datas["min"]["lng"]
+        self.maxLat: float = datas["max"]["lat"]
+        self.maxLng: float = datas["max"]["lng"]
 
 
 class GeoguessrLevel(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.level: int = gu.int_or_none(datas.get("level"))
-        self.xpStart: int = gu.int_or_none(datas.get("xpStart"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.level: int = datas["level"]
+        self.xpStart: int = datas["xpStart"]
 
 
 class GeoguessrXpTitle(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.id: int = gu.int_or_none(datas.get("id"))
-        self.tierId: int = gu.int_or_none(datas.get("tierId"))
-        self.minimumLevel: int = gu.int_or_none(datas.get("minimumLevel", None))
-        self.name: str = gu.str_or_none(datas.get("name"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.id: int = datas["id"]
+        self.tierId: int = datas["tierId"]
+        self.minimumLevel: int = datas.get("minimumLevel", 0)
+        self.name: str = datas.get("name", "")
 
 
 class GeoguessrScorePlayerInfo(GeoguessrStr):
-    def __init__(self, playerDatas: dict, progressionDatas: dict) -> None:
-        self.isLeader: bool = gu.bool_or_none(playerDatas.get("isLeader"))
-        self.id: str = gu.str_or_none(playerDatas.get("id"))
-        self.nick: str = gu.str_or_none(playerDatas.get("nick"))
-        self.isVerified: bool = gu.bool_or_none(playerDatas.get("isVerified"))
+    def __init__(self, playerDatas: dict[str, Any], progressionDatas: dict[str, Any]) -> None:
+        self.isLeader: bool = playerDatas.get("isLeader", False)
+        self.id: str = playerDatas["id"]
+        self.nick: str = playerDatas["nick"]
+        self.isVerified: bool = playerDatas.get("isVerified", False)
         self.flair: Optional[int] = gu.int_or_none(playerDatas.get("flair"))
-        self.countryCode: Optional[str] = gu.str_or_none(playerDatas.get("countryCode"))
+        self.countryCode: Optional[str] = playerDatas.get("countryCode", "")
         self.pinUrl: Optional[str] = gu.str_or_none(playerDatas.get("pin", {}).get("url"))
         if progressionDatas and progressionDatas.get("xpProgressions"):
             self.xpBeforeChallenge: Optional[int] = gu.int_or_none(
@@ -475,114 +463,250 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
             self.xpAfterChallenge: Optional[int] = gu.int_or_none(
                 progressionDatas.get("xpProgressions", [{}, {}])[1].get("xp")
             )
-            self.xpGained: Optional[int] = self.xpAfterChallenge - self.xpBeforeChallenge
-            self.levelBeforeChallenge: GeoguessrLevel = GeoguessrLevel(
+            self.xpGained: Optional[int] = self.xpAfterChallenge - self.xpBeforeChallenge if self.xpAfterChallenge is not None and self.xpBeforeChallenge else None
+            self.levelBeforeChallenge: Optional[GeoguessrLevel] = GeoguessrLevel(
                 progressionDatas.get("xpProgressions", [{}, {}])[0].get("currentLevel")
-            )
-            self.levelAfterChallenge: GeoguessrLevel = GeoguessrLevel(
+            ) if isinstance(progressionDatas.get("xpProgressions", [{}, {}])[0].get("currentLevel"), dict) else None
+            self.levelAfterChallenge: Optional[GeoguessrLevel] = GeoguessrLevel(
                 progressionDatas.get("xpProgressions", [{}, {}])[1].get("currentLevel")
-            )
-            self.titleBeforeChallenge: GeoguessrXpTitle = GeoguessrXpTitle(
+            ) if isinstance(progressionDatas.get("xpProgressions", [{}, {}])[1].get("currentLevel"), dict) else None
+            self.titleBeforeChallenge: Optional[GeoguessrXpTitle] = GeoguessrXpTitle(
                 progressionDatas.get("xpProgressions", [{}, {}])[0].get("currentTitle")
-            )
-            self.titleAfterChallenge: GeoguessrXpTitle = GeoguessrXpTitle(
+            ) if isinstance(progressionDatas.get("xpProgressions", [{}, {}])[0].get("currentTitle"), dict) else None
+            self.titleAfterChallenge: Optional[GeoguessrXpTitle] = GeoguessrXpTitle(
                 progressionDatas.get("xpProgressions", [{}, {}])[1].get("currentTitle")
-            )
+            ) if isinstance(progressionDatas.get("xpProgressions", [{}, {}])[1].get("currentTitle"), dict) else None
         else:
             self.xpBeforeChallenge: Optional[int] = None
             self.xpAfterChallenge: Optional[int] = None
             self.xpGained: Optional[int] = None
-            self.levelBeforeChallenge: GeoguessrLevel = GeoguessrLevel({})
-            self.levelAfterChallenge: GeoguessrLevel = GeoguessrLevel({})
-            self.titleBeforeChallenge: GeoguessrXpTitle = GeoguessrXpTitle({})
-            self.titleAfterChallenge: GeoguessrXpTitle = GeoguessrXpTitle({})
+            self.levelBeforeChallenge: Optional[GeoguessrLevel] = None
+            self.levelAfterChallenge: Optional[GeoguessrLevel] = None
+            self.titleBeforeChallenge: Optional[GeoguessrXpTitle] = None
+            self.titleAfterChallenge: Optional[GeoguessrXpTitle] = None
 
 
 class GeoguessrChallengePlayerTotalResult(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.totalScore: GeoguessrScore = GeoguessrScore(datas.get("totalScore"))
-        self.totalDistance: GeoguessrDistance = GeoguessrDistance(datas.get("totalDistance"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.totalScore: GeoguessrScore = GeoguessrScore(datas["totalScore"])
+        self.totalDistance: GeoguessrDistance = GeoguessrDistance(datas["totalDistance"])
         self.totalStepsCount: Optional[int] = gu.int_or_none(datas.get("totalStepsCount"))
         self.totalTime: GeoguessrTime = GeoguessrTime(seconds=datas.get("totalTime"))
         self.totalStreak: Optional[int] = gu.int_or_none(datas.get("totalStreak"))
         self.guesses: list[GeoguessrPlayerGuesses] = [
-            GeoguessrPlayerGuesses(guess, i + 1) for i, guess in enumerate(datas.get("guesses")) if guess is not None
+            GeoguessrPlayerGuesses(guess, i + 1) for i, guess in enumerate(datas.get("guesses", [])) if guess is not None
         ]
 
 
 class GeoguessrChallengeResult(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        gameDatas: Optional[dict] = datas.get("game")
+    def __init__(self, datas: dict[str, Any]) -> None:
+        gameDatas: Optional[dict[str, Any]] = datas.get("game")
         if gameDatas is None:
             raise ValueError("The game key is missing in the data.")
         self.player: GeoguessrScorePlayerInfo = GeoguessrScorePlayerInfo(
-            gameDatas.get("player"), gameDatas.get("progressChange", {})
+            gameDatas.get("player", {}), gameDatas.get("progressChange", {})
         )
-        self.type: str = gu.str_or_none(gameDatas.get("type"))
-        self.mode: str = gu.str_or_none(gameDatas.get("mode"))
+        self.token: str = gameDatas["token"]
+        self.type: str = gameDatas["type"]
+        self.mode: str = gameDatas["mode"]
         self.state: Optional[str] = gu.str_or_none(gameDatas.get("state"))
-        self.roundCount: int = gu.int_or_none(gameDatas.get("roundCount"))
+        self.roundCount: int = gameDatas["roundCount"]
         self.streakType: Optional[str] = gu.str_or_none(gameDatas.get("streakType"))
-        self.map: str = gu.str_or_none(gameDatas.get("map"))
-        self.mapname: str = gu.str_or_none(gameDatas.get("mapName"))
+        self.map: str = gameDatas["map"]
+        self.mapname: str = gameDatas["mapName"]
         self.panoramaprovider: Optional[int] = gu.int_or_none(gameDatas.get("panoramaprovider"))
-        self.bounds: GeoguessrGameBounds = GeoguessrGameBounds(gameDatas.get("bounds"))
+        self.bounds: GeoguessrGameBounds = GeoguessrGameBounds(gameDatas["bounds"])
         self.rounds: list[GeoguessrChallengeRound] = [
             GeoguessrChallengeRound(round, i + 1)
-            for i, round in enumerate(gameDatas.get("rounds"))
+            for i, round in enumerate(gameDatas.get("rounds", []))
             if round is not None
         ]
         self.playerTotalScore: GeoguessrChallengePlayerTotalResult = GeoguessrChallengePlayerTotalResult(
-            gameDatas.get("player")
+            gameDatas.get("player", {})
         )
+        self.replays: list[GeoguessrChallengeReplay] = []
+
+    async def set_replays(self, session: aiohttp.ClientSession) -> None:
+        """Get the replays of the player's challenge."""
+        for roundNumber in range(self.roundCount):
+            async with session.get(
+                f"https://www.geoguessr.com/api/v4/replays/{self.player.id}/{self.token}/{roundNumber+1}"
+            ) as r:
+                try:
+                    self.replays.append(GeoguessrChallengeReplay(await r.json()))
+                except Exception:
+                    self.replays.append(GeoguessrChallengeReplay([]))
+
+class GeoguessrChallengeReplay(GeoguessrStr):
+    """Represente a player replay in a duel."""
+
+    class Type(Enum):
+        """Type of replay."""
+
+        PANOPOSITION = "PanoPosition"
+        PANOPOV = "PanoPov"
+        PANOZOOM = "PanoZoom"
+        MAPZOOM = "MapZoom"
+        MAPPOSITION = "MapPosition"
+        GUESSWITHLATLNG = "GuessWithLatLng"
+        PINPOSITION = "PinPosition"
+        TIMER = "Timer"
+        MAPDISPLAY = "MapDisplay"
+
+    def __init__(self, datas: list[dict[str, Any]]) -> None:
+        self.datas: list[GeoguessrChallengeReplayStep] = [GeoguessrChallengeReplayStep(step) for step in datas]
+
+
+class GeoguessrChallengeReplayStep(GeoguessrStr):
+
+    class GeoguessrChallengeReplayPanoPositionPayload(GeoguessrStr):
+        """Represents PanoPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: dict[str, float] = datas["lat"]
+            self.lng: dict[str, float] = datas["lng"]
+            self.panoId: str = datas["panoId"]
+
+
+    class GeoguessrChallengeReplayPanoPovPayload(GeoguessrStr):
+        """Represents PanoPov type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.heading: float = datas["heading"]
+            self.pitch: float = datas["pitch"]
+
+
+    class GeoguessrChallengeReplayPanoZoomPayload(GeoguessrStr):
+        """Represents PanoZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: float = datas["zoom"]
+
+
+    class GeoguessrChallengeReplayMapZoomPayload(GeoguessrStr):
+        """Represents MapZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: int = datas["zoom"]
+
+
+    class GeoguessrChallengeReplayMapPositionPayload(GeoguessrStr):
+        """Represents MapPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayGuessWithLatLngPayload(GeoguessrStr):
+        """Represents GuessWithLatLng type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayPinPositionPayload(GeoguessrStr):
+        """Represents PinPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayTimerPayload(GeoguessrStr):
+        """Represents Timer type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.time: int = datas["time"]
+
+
+    class GeoguessrChallengeReplayMapDisplayPayload(GeoguessrStr):
+        """Represents MapDisplay type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.isActive: bool = datas["isActive"]
+            self.isSticky: bool = datas["isSticky"]
+            self.size: int = datas["size"]
+
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.time: datetime = datetime.fromtimestamp(float(datas["time"]) / 1000)
+        self.type: GeoguessrChallengeReplay.Type = GeoguessrChallengeReplay.Type(datas.get("type"))
+        self.payload: Union[
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPovPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoZoomPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapZoomPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayGuessWithLatLngPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPinPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayTimerPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapDisplayPayload
+            ]
+
+        payloadTypes = {
+            GeoguessrChallengeReplay.Type.PANOPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPositionPayload,
+            GeoguessrChallengeReplay.Type.PANOPOV: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPovPayload,
+            GeoguessrChallengeReplay.Type.PANOZOOM: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoZoomPayload,
+            GeoguessrChallengeReplay.Type.MAPZOOM: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapZoomPayload,
+            GeoguessrChallengeReplay.Type.MAPPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapPositionPayload,
+            GeoguessrChallengeReplay.Type.GUESSWITHLATLNG: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayGuessWithLatLngPayload,
+            GeoguessrChallengeReplay.Type.PINPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPinPositionPayload,
+            GeoguessrChallengeReplay.Type.TIMER: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayTimerPayload,
+            GeoguessrChallengeReplay.Type.MAPDISPLAY: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapDisplayPayload,
+        }
+        payloadType = payloadTypes.get(self.type)
+
+        if payloadType is not None:
+            self.payload = payloadType(datas["payload"])
 
 
 class GeoguessMapAvatar(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.background: str = gu.str_or_none(datas.get("background"))
-        self.decoration: str = gu.str_or_none(datas.get("decoration"))
-        self.ground: str = gu.str_or_none(datas.get("ground"))
-        self.landscape: str = gu.str_or_none(datas.get("landscape"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.background: str = datas["background"]
+        self.decoration: str = datas["decoration"]
+        self.ground: str = datas["ground"]
+        self.landscape: str = datas["landscape"]
 
 
 class GeoguessrMap(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.id: str = gu.str_or_none(datas.get("id"))
-        self.name: str = gu.str_or_none(datas.get("name"))
-        self.slug: str = gu.str_or_none(datas.get("slug"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.id: str = datas["id"]
+        self.name: str = datas["name"]
+        self.slug: str = datas["slug"]
         self.description: Optional[str] = gu.str_or_none(datas.get("description"))
-        self.url: str = gu.str_or_none(datas.get("url"))
-        self.playUrl: str = gu.str_or_none(datas.get("playUrl"))
-        self.published: bool = gu.bool_or_none(datas.get("published"))
-        self.banned: bool = gu.bool_or_none(datas.get("banned"))
+        self.url: str = datas["url"]
+        self.playUrl: str = datas["playUrl"]
+        self.published: bool = datas["published"]
+        self.banned: bool = datas["banned"]
         self.backGround: Optional[str] = gu.str_or_none(datas.get("images", {}).get("backgroundLarge"))
-        self.bounds: GeoguessrGameBounds = GeoguessrGameBounds(datas.get("bounds"))
+        self.bounds: GeoguessrGameBounds = GeoguessrGameBounds(datas["bounds"])
         self.customCoordinates: Optional[Any] = datas.get("customCoordinates")
         self.coordinatesCount: Optional[str] = gu.str_or_none(datas.get("coordinateCount"))
         self.regions: Optional[Any] = datas.get("regions")
         self.creator: Optional[GeoguessrProfile] = (
-            GeoguessrProfile(datas.get("creator")) if datas.get("creator") is not None else None
+            GeoguessrProfile(datas.get("creator", {})) if datas.get("creator") else None
         )
-        self.createdAt: datetime = gu.datetime_or_none(datas.get("createdAt"))
-        self.updatedAt: datetime = gu.datetime_or_none(datas.get("updatedAt"))
+        self.createdAt: datetime = gu.to_datetime(datas["createdAt"])
+        self.updatedAt: datetime = gu.to_datetime(datas["updatedAt"])
         self.numFinishedGames: Optional[int] = gu.int_or_none(datas.get("numFinishedGames"))
         self.likedByUser: Optional[Any] = datas.get("likedByUser")
         self.averageScore: Optional[int] = gu.int_or_none(datas.get("averageScore"))
-        self.avatar: GeoguessMapAvatar = GeoguessMapAvatar(datas.get("avatar")) if datas.get("avatar") else None
-        self.difficulty: str = gu.str_or_none(datas.get("difficulty"))
-        self.difficultyLevel: int = gu.int_or_none(datas.get("difficultyLevel"))
-        self.highscore: Any = datas.get("highscore")
-        self.deleted: bool = gu.bool_or_none(datas.get("deleted"))
-        self.free: bool = gu.bool_or_none(datas.get("free"))
+        self.avatar: GeoguessMapAvatar = GeoguessMapAvatar(datas["avatar"])
+        self.difficulty: str = datas["difficulty"]
+        self.difficultyLevel: int = datas["difficultyLevel"]
+        self.highscore: Any = datas["highscore"]
+        self.deleted: bool = datas["deleted"]
+        self.free: bool = datas["free"]
         self.panoramaprovider: Optional[str] = gu.str_or_none(datas.get("panoramaProvider"))
-        self.inExplorerMode: bool = gu.bool_or_none(datas.get("inExplorerMode"))
-        self.maxErrorDistance: int = gu.int_or_none(datas.get("maxErrorDistance"))
-        self.likes: int = gu.int_or_none(datas.get("likes"))
-        self.locationSelectionMode: int = gu.int_or_none(datas.get("locationSelectionMode"))
-        self.tags: list = datas.get("tags")
-        self.collaborators: Any = datas.get("collaborators")
+        self.inExplorerMode: bool = datas["inExplorerMode"]
+        self.maxErrorDistance: int = datas["maxErrorDistance"]
+        self.likes: int = datas["likes"]
+        self.locationSelectionMode: int = datas["locationSelectionMode"]
+        self.tags: list[Any] = datas["tags"]
+        self.collaborators: Any = datas["collaborators"]
         self.flair: Optional[int] = gu.int_or_none(datas.get("flair"))
-        self.mapSize: Optional[dict] = datas.get("mapSize")
+        self.mapSize: Optional[dict[str, Any]] = datas.get("mapSize")
 
 
 class GeoguessrActivities(GeoguessrStr):
@@ -592,7 +716,7 @@ class GeoguessrActivities(GeoguessrStr):
         entries (list): List of activity entries.
     """
 
-    def __init__(self, entries: list) -> None:
+    def __init__(self, entries: list[Any]) -> None:
         """Initialize GeoguessrActivities.
 
         Args:
@@ -614,293 +738,297 @@ class GeoguessrUserELO(GeoguessrStr):
         gameModeRatingsNomoveduels (int): No-move duels rating.
     """
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         """Initialize GeoguessrUserELO.
 
         Args:
-            datas (dict): Raw ELO data from API.
+            datas (dict[str, Any]): Raw ELO data from API.
         """
-        datas = gu.flatten_dict(datas)
-        self.divisionNumber: int = gu.int_or_none(datas.get("divisionNumber"))
-        self.divisionName: str = gu.str_or_none(datas.get("divisionName"))
-        self.rating: int = gu.int_or_none(datas.get("rating"))
-        self.tier: str = gu.str_or_none(datas.get("tier"))
-        self.gameModeRatingsStandardduels: int = gu.int_or_none(datas.get("gameModeRatingsStandardduels"))
-        self.gameModeRatingsNmpzduels: int = gu.int_or_none(datas.get("gameModeRatingsNmpzduels"))
-        self.gameModeRatingsNomoveduels: int = gu.int_or_none(datas.get("gameModeRatingsNomoveduels"))
+        self.divisionNumber: Optional[int] = gu.int_or_none(datas.get("divisionNumber"))
+        self.divisionName: Optional[str] = gu.str_or_none(datas.get("divisionName"))
+        self.rating: Optional[int] = gu.int_or_none(datas.get("rating"))
+        self.tier: Optional[str] = gu.str_or_none(datas.get("tier"))
+        self.gameModeRatingsStandardduels: Optional[int] = gu.int_or_none(datas.get("gameModeRatings", {}).get("standardDuels"))
+        self.gameModeRatingsNmpzduels: Optional[int] = gu.int_or_none(datas.get("gameModeRatings", {}).get("nmpzDuels"))
+        self.gameModeRatingsNomoveduels: Optional[int] = gu.int_or_none(datas.get("gameModeRatings", {}).get("noMoveDuels"))
+        self.guessedFirstRate: Optional[int] = gu.int_or_none(datas.get("guessedFirstRate"))
+        self.winStreak: Optional[int] = gu.int_or_none(datas.get("winStreak"))
+        self.latestGamesVictory: Optional[list[bool]] = datas.get("latestGames")
+        self.bestCountries: Optional[list[str]] = datas.get("bestCountries")
+        self.worstCountries: Optional[list[str]] = datas.get("worstCountries")
 
 
 class GeoguessrStatsRankedTeamDuelsStandard(GeoguessrStr):
     """Represents ranked team duels standard statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
 
 
 class GeoguessrStatsRankedTeamDuelsNoMove(GeoguessrStr):
     """Represents ranked team duels no move statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
 
 
 class GeoguessrStatsRankedTeamDuelsNmpz(GeoguessrStr):
     """Represents ranked team duels NMPZ statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
 
 
 class GeoguessrStatsRankedTeamDuelsTotal(GeoguessrStr):
     """Represents ranked team duels total statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
 
 
 class GeoguessrStatsBattleRoyaleDistance(GeoguessrStr):
     """Represents battle royale distance statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
 
 
 class GeoguessrStatsBattleRoyaleCountry(GeoguessrStr):
     """Represents battle royale country statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.avgCorrectGuesses: float = gu.float_or_none(datas.get("avgCorrectGuesses"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.avgCorrectGuesses: float = datas["avgCorrectGuesses"]
 
 
 class GeoguessrStatsBattleRoyaleMedals(GeoguessrStr):
     """Represents battle royale medals statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.medalCountGold: int = gu.int_or_none(datas.get("medalCountGold"))
-        self.medalCountSilver: int = gu.int_or_none(datas.get("medalCountSilver"))
-        self.medalCountBronze: int = gu.int_or_none(datas.get("medalCountBronze"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.medalCountGold: int = datas["medalCountGold"]
+        self.medalCountSilver: int = datas["medalCountSilver"]
+        self.medalCountBronze: int = datas["medalCountBronze"]
 
 
 class GeoguessrStatsCompetitiveCityStreaks(GeoguessrStr):
     """Represents competitive city streaks statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.avgCorrectGuesses: float = gu.float_or_none(datas.get("avgCorrectGuesses"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.avgCorrectGuesses: float = datas["avgCorrectGuesses"]
 
 
 class GeoguessrStatsCompetitiveStreaksMedals(GeoguessrStr):
     """Represents competitive streaks medals statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.medalCountGold: int = gu.int_or_none(datas.get("medalCountGold"))
-        self.medalCountSilver: int = gu.int_or_none(datas.get("medalCountSilver"))
-        self.medalCountBronze: int = gu.int_or_none(datas.get("medalCountBronze"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.medalCountGold: int = datas["medalCountGold"]
+        self.medalCountSilver: int = datas["medalCountSilver"]
+        self.medalCountBronze: int = datas["medalCountBronze"]
 
 
 class GeoguessrStatsDuels(GeoguessrStr):
     """Represents duels statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsDuelsNoMove(GeoguessrStr):
     """Represents duels no move statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsDuelsNmpz(GeoguessrStr):
     """Represents duels NMPZ statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsDuelsTotal(GeoguessrStr):
     """Represents duels total statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsDuelsMedals(GeoguessrStr):
     """Represents duels medals statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.medalCountGold: int = gu.int_or_none(datas.get("medalCountGold"))
-        self.medalCountSilver: int = gu.int_or_none(datas.get("medalCountSilver"))
-        self.medalCountBronze: int = gu.int_or_none(datas.get("medalCountBronze"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.medalCountGold: int = datas["medalCountGold"]
+        self.medalCountSilver: int = datas["medalCountSilver"]
+        self.medalCountBronze: int = datas["medalCountBronze"]
 
 
 class GeoguessrStatsUnrankedDuels(GeoguessrStr):
     """Represents unranked duels statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsUnrankedDuelsNoMove(GeoguessrStr):
     """Represents unranked duels no move statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsUnrankedDuelsNmpz(GeoguessrStr):
     """Represents unranked duels NMPZ statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsUnrankedDuelsTotal(GeoguessrStr):
     """Represents unranked duels total statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.avgPosition: float = gu.float_or_none(datas.get("avgPosition"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
-        self.avgGuessDistance: float = gu.float_or_none(datas.get("avgGuessDistance"))
-        self.numGuesses: int = gu.int_or_none(datas.get("numGuesses"))
-        self.numFlawlessWins: int = gu.int_or_none(datas.get("numFlawlessWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.avgPosition: float = datas["avgPosition"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
+        self.avgGuessDistance: float = datas["avgGuessDistance"]
+        self.numGuesses: int = datas["numGuesses"]
+        self.numFlawlessWins: int = datas["numFlawlessWins"]
 
 
 class GeoguessrStatsLifeTimeXpProgression(GeoguessrStr):
     """Represents lifetime XP progression statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.xp: int = gu.int_or_none(datas.get("xp"))
-        self.currentLevel: GeoguessrLevel = GeoguessrLevel(datas.get("currentLevel"))
-        self.nextLevel: GeoguessrLevel = GeoguessrLevel(datas.get("nextLevel"))
-        self.currentTitle: GeoguessrXpTitle = GeoguessrXpTitle(datas.get("currentTitle"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.xp: int = datas["xp"]
+        self.currentLevel: GeoguessrLevel = GeoguessrLevel(datas["currentLevel"])
+        self.nextLevel: GeoguessrLevel = GeoguessrLevel(datas["nextLevel"])
+        self.currentTitle: GeoguessrXpTitle = GeoguessrXpTitle(datas["currentTitle"])
 
 
 class GeoguessrStatsTotalMedals(GeoguessrStr):
     """Represents total medals statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.medalCountGold: int = gu.int_or_none(datas.get("medalCountGold"))
-        self.medalCountSilver: int = gu.int_or_none(datas.get("medalCountSilver"))
-        self.medalCountBronze: int = gu.int_or_none(datas.get("medalCountBronze"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.medalCountGold: int = datas["medalCountGold"]
+        self.medalCountSilver: int = datas["medalCountSilver"]
+        self.medalCountBronze: int = datas["medalCountBronze"]
 
 
 class GeoguessrStatsTeamDuels(GeoguessrStr):
     """Represents team duels statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
-        self.winRatio: float = gu.float_or_none(datas.get("winRatio"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
+        self.winRatio: float = datas["winRatio"]
 
 
 class GeoguessrStatsTeamDuelsQuickplay(GeoguessrStr):
     """Represents team duels quickplay statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.numGamesPlayed: int = gu.int_or_none(datas.get("numGamesPlayed"))
-        self.numWins: int = gu.int_or_none(datas.get("numWins"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.numGamesPlayed: int = datas["numGamesPlayed"]
+        self.numWins: int = datas["numWins"]
 
 
 class GeoguessrDuelData(GeoguessrStr):
     """Represents complete Geoguessr duel data."""
 
-    def __init__(self, datas: dict) -> None:
+    def __init__(self, datas: dict[str, Any]) -> None:
         """Initialize GeoguessrDuelData.
 
         Args:
-            datas (dict): Raw duel data from API.
+            datas (dict[str, Any]): Raw duel data from API.
         """
-        self.gameId: str = gu.str_or_none(datas.get("gameId"))
+        self.gameId: str = datas["gameId"]
         self.context: Optional[Any] = datas.get("context")
         self.teams: list[GeoguessrDuelTeam] = [GeoguessrDuelTeam(team) for team in datas.get("teams", [])]
         self.rounds: list[GeoguessrDuelRound] = [GeoguessrDuelRound(round) for round in datas.get("rounds", [])]
-        self.totalRoundCount: int = gu.int_or_none(datas.get("currentRoundNumber"))
-        self.status: str = gu.str_or_none(datas.get("status"))
-        self.version: int = gu.int_or_none(datas.get("version"))
-        self.options: GeoguessrDuelOptions = GeoguessrDuelOptions(datas.get("options", {}))
-        self.initialHealth: int = gu.int_or_none(datas.get("initialHealth"))
-        self.maxNumberOfRounds: int = gu.int_or_none(datas.get("maxNumberOfRounds"))
-        self.result: GeoguessrDuelResult = GeoguessrDuelResult(datas.get("result", {}))
-        self.isPaused: bool = gu.bool_or_none(datas.get("isPaused"))
-        self.gameServerNodeId: str = gu.str_or_none(datas.get("gameServerNodeId"))
-        self.tournamentId: str = gu.str_or_none(datas.get("tournamentId"))
+        self.totalRoundCount: int = datas["currentRoundNumber"]
+        self.status: str = datas["status"]
+        self.version: int = datas["version"]
+        self.options: GeoguessrDuelOptions = GeoguessrDuelOptions(datas["options"])
+        self.initialHealth: int = datas["initialHealth"]
+        self.maxNumberOfRounds: int = datas["maxNumberOfRounds"]
+        self.result: GeoguessrDuelResult = GeoguessrDuelResult(datas["result"])
+        self.isPaused: bool = datas["isPaused"]
+        self.gameServerNodeId: str = datas["gameServerNodeId"]
+        self.tournamentId: Optional[str] = gu.str_or_none(datas.get("tournamentId"))
         self.playersId = [player.playerId for team in self.teams for player in team.players]
-        self.replays: Optional[dict[str, list[GeoguessrDuelReplay]]] = {playerId: [] for playerId in self.playersId}
+        self.replays: dict[str, list[GeoguessrDuelReplay]] = {playerId: [] for playerId in self.playersId}
 
     async def set_replays(self, session: aiohttp.ClientSession) -> None:
         """Get the replays of the duel."""
         for playerId in self.playersId:
-            for i in range(self.totalRoundCount):
+            for roundNumber in range(self.totalRoundCount):
                 async with session.get(
-                    f"https://game-server.geoguessr.com/api/replays/{playerId}/{self.gameId}/{i+1}"
+                    f"https://game-server.geoguessr.com/api/replays/{playerId}/{self.gameId}/{roundNumber+1}"
                 ) as r:
                     self.replays[playerId].append(GeoguessrDuelReplay(await r.json()))
 
@@ -921,231 +1049,242 @@ class GeoguessrDuelReplay(GeoguessrStr):
         TIMER = "Timer"
         MAPDISPLAY = "MapDisplay"
 
-    def __init__(self, datas: dict) -> None:
-        self.datas: list[GeoguessrDuelReplayStep] = [GeoguessrDuelReplayStep(step) for step in datas]
+    def __init__(self, datas: dict[str, dict[str, Any]]) -> None:
+        self.datas: list[GeoguessrDuelReplayStep] = [GeoguessrDuelReplayStep(step) for step in datas.values()]
 
 
 class GeoguessrDuelReplayStep(GeoguessrStr):
-    def __init__(self, datas: dict) -> None:
-        self.time: datetime = datetime.fromtimestamp(float(datas.get("time")) / 1000)
+
+    class GeoguessrDuelReplayPanoPositionPayload(GeoguessrStr):
+        """Represents PanoPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: dict[str, float] = datas["lat"]
+            self.lng: dict[str, float] = datas["lng"]
+            self.panoId: str = datas["panoId"]
+
+
+    class GeoguessrDuelReplayPanoPovPayload(GeoguessrStr):
+        """Represents PanoPov type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.heading: float = datas["heading"]
+            self.pitch: float = datas["pitch"]
+
+
+    class GeoguessrDuelReplayPanoZoomPayload(GeoguessrStr):
+        """Represents PanoZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: float = datas["zoom"]
+
+
+    class GeoguessrDuelReplayMapZoomPayload(GeoguessrStr):
+        """Represents MapZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: int = datas["zoom"]
+
+
+    class GeoguessrDuelReplayMapPositionPayload(GeoguessrStr):
+        """Represents MapPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrDuelReplayGuessWithLatLngPayload(GeoguessrStr):
+        """Represents GuessWithLatLng type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrDuelReplayPinPositionPayload(GeoguessrStr):
+        """Represents PinPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrDuelReplayTimerPayload(GeoguessrStr):
+        """Represents Timer type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.time: int = datas["time"]
+
+
+    class GeoguessrDuelReplayMapDisplayPayload(GeoguessrStr):
+        """Represents MapDisplay type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.isActive: bool = datas["isActive"]
+            self.isSticky: bool = datas["isSticky"]
+            self.size: int = datas["size"]
+
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.time: datetime = datetime.fromtimestamp(float(datas["time"]) / 1000)
         self.type: GeoguessrDuelReplay.Type = GeoguessrDuelReplay.Type(datas.get("type"))
-        self.payload: Optional[
-            Union[
-                GeoguessrDuelReplayPanoPositionPayload,
-                GeoguessrDuelReplayPanoPovPayload,
-                GeoguessrDuelReplayPanoZoomPayload,
-                GeoguessrDuelReplayMapZoomPayload,
-                GeoguessrDuelReplayMapPositionPayload,
-                GeoguessrDuelReplayGuessWithLatLngPayload,
-                GeoguessrDuelReplayPinPositionPayload,
-                GeoguessrDuelReplayTimerPayload,
+        self.payload: Union[
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoPositionPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoPovPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoZoomPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayMapZoomPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayMapPositionPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayGuessWithLatLngPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayPinPositionPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayTimerPayload,
+                GeoguessrDuelReplayStep.GeoguessrDuelReplayMapDisplayPayload
             ]
-        ] = None
+
         payloadTypes = {
-            GeoguessrDuelReplay.Type.PANOPOSITION: GeoguessrDuelReplayPanoPositionPayload,
-            GeoguessrDuelReplay.Type.PANOPOV: GeoguessrDuelReplayPanoPovPayload,
-            GeoguessrDuelReplay.Type.PANOZOOM: GeoguessrDuelReplayPanoZoomPayload,
-            GeoguessrDuelReplay.Type.MAPZOOM: GeoguessrDuelReplayMapZoomPayload,
-            GeoguessrDuelReplay.Type.MAPPOSITION: GeoguessrDuelReplayMapPositionPayload,
-            GeoguessrDuelReplay.Type.GUESSWITHLATLNG: GeoguessrDuelReplayGuessWithLatLngPayload,
-            GeoguessrDuelReplay.Type.PINPOSITION: GeoguessrDuelReplayPinPositionPayload,
-            GeoguessrDuelReplay.Type.TIMER: GeoguessrDuelReplayTimerPayload,
-            GeoguessrDuelReplay.Type.MAPDISPLAY: GeoguessrDuelReplayMapDisplayPayload,
+            GeoguessrDuelReplay.Type.PANOPOSITION: GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoPositionPayload,
+            GeoguessrDuelReplay.Type.PANOPOV: GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoPovPayload,
+            GeoguessrDuelReplay.Type.PANOZOOM: GeoguessrDuelReplayStep.GeoguessrDuelReplayPanoZoomPayload,
+            GeoguessrDuelReplay.Type.MAPZOOM: GeoguessrDuelReplayStep.GeoguessrDuelReplayMapZoomPayload,
+            GeoguessrDuelReplay.Type.MAPPOSITION: GeoguessrDuelReplayStep.GeoguessrDuelReplayMapPositionPayload,
+            GeoguessrDuelReplay.Type.GUESSWITHLATLNG: GeoguessrDuelReplayStep.GeoguessrDuelReplayGuessWithLatLngPayload,
+            GeoguessrDuelReplay.Type.PINPOSITION: GeoguessrDuelReplayStep.GeoguessrDuelReplayPinPositionPayload,
+            GeoguessrDuelReplay.Type.TIMER: GeoguessrDuelReplayStep.GeoguessrDuelReplayTimerPayload,
+            GeoguessrDuelReplay.Type.MAPDISPLAY: GeoguessrDuelReplayStep.GeoguessrDuelReplayMapDisplayPayload,
         }
         payloadType = payloadTypes.get(self.type)
 
         if payloadType is not None:
-            self.payload = payloadType(datas.get("payload"))
-
-
-class GeoguessrDuelReplayPanoPositionPayload(GeoguessrStr):
-    """Represents PanoPosition type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.lat: dict = datas.get("lat")
-        self.lng: dict = datas.get("lng")
-        self.panoId: str = gu.str_or_none(datas.get("panoId"))
-
-
-class GeoguessrDuelReplayPanoPovPayload(GeoguessrStr):
-    """Represents PanoPov type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.heading: float = gu.float_or_none(datas.get("heading"))
-        self.pitch: float = gu.float_or_none(datas.get("pitch"))
-
-
-class GeoguessrDuelReplayPanoZoomPayload(GeoguessrStr):
-    """Represents PanoZoom type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.zoom: float = gu.float_or_none(datas.get("zoom"))
-
-
-class GeoguessrDuelReplayMapZoomPayload(GeoguessrStr):
-    """Represents MapZoom type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.zoom: int = gu.int_or_none(datas.get("zoom"))
-
-
-class GeoguessrDuelReplayMapPositionPayload(GeoguessrStr):
-    """Represents MapPosition type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.lat: float = gu.float_or_none(datas.get("lat"))
-        self.lng: float = gu.float_or_none(datas.get("lng"))
-
-
-class GeoguessrDuelReplayGuessWithLatLngPayload(GeoguessrStr):
-    """Represents GuessWithLatLng type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.lat: float = gu.float_or_none(datas.get("lat"))
-        self.lng: float = gu.float_or_none(datas.get("lng"))
-
-
-class GeoguessrDuelReplayPinPositionPayload(GeoguessrStr):
-    """Represents PinPosition type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.lat: float = gu.float_or_none(datas.get("lat"))
-        self.lng: float = gu.float_or_none(datas.get("lng"))
-
-
-class GeoguessrDuelReplayTimerPayload(GeoguessrStr):
-    """Represents Timer type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.time: int = gu.int_or_none(datas.get("time"))
-
-
-class GeoguessrDuelReplayMapDisplayPayload(GeoguessrStr):
-    """Represents MapDisplay type payload data."""
-
-    def __init__(self, datas: dict) -> None:
-        self.isActive: bool = gu.bool_or_none(datas.get("isActive"))
-        self.isSticky: bool = gu.bool_or_none(datas.get("isSticky"))
-        self.size: int = gu.int_or_none(datas.get("size"))
-
+            self.payload = payloadType(datas["payload"])
 
 class GeoguessrDuelTeam(GeoguessrStr):
     """Represents a team in a duel."""
 
-    def __init__(self, datas: dict) -> None:
-        self.id: str = gu.str_or_none(datas.get("id"))
-        self.name: str = gu.str_or_none(datas.get("name"))
-        self.healthAtEnd: int = gu.int_or_none(datas.get("health"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.id: str = datas["id"]
+        self.name: str = datas["name"]
+        self.healthAtEnd: int = datas["health"]
         self.players: list[GeoguessrDuelPlayer] = [GeoguessrDuelPlayer(player) for player in datas.get("players", [])]
         self.roundResults: list[GeoguessrDuelTeamRoundResult] = [
             GeoguessrDuelTeamRoundResult(result) for result in datas.get("roundResults", [])
         ]
-        self.isMultiplierActive: bool = gu.bool_or_none(datas.get("isMultiplierActive"))
-        self.multiplierAtEnd: float = gu.float_or_none(datas.get("currentMultiplier"))
+        self.isMultiplierActive: bool = datas["isMultiplierActive"]
+        self.multiplierAtEnd: float = datas["currentMultiplier"]
 
 
 class GeoguessrDuelPlayer(GeoguessrStr):
     """Represents a player in a duel."""
 
-    def __init__(self, datas: dict) -> None:
-        self.playerId: str = gu.str_or_none(datas.get("playerId"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.playerId: str = datas["playerId"]
         self.guesses: list[GeoguessrDuelPlayerGuess] = [
             GeoguessrDuelPlayerGuess(guess) for guess in datas.get("guesses", [])
         ]
-        self.rating: int = gu.int_or_none(datas.get("rating"))
-        self.countryCode: str = gu.str_or_none(datas.get("countryCode"))
-        self.progressChange: GeoguessrDuelProgressChange = GeoguessrDuelProgressChange(datas.get("progressChange", {}))
-        self.helpRequested: bool = gu.bool_or_none(datas.get("helpRequested"))
-        self.isSteam: bool = gu.bool_or_none(datas.get("isSteam"))
+        self.rating: int = datas["rating"]
+        self.countryCode: Optional[str] = gu.str_or_none(datas.get("countryCode"))
+        self.progressChange: Optional[GeoguessrDuelProgressChange] = GeoguessrDuelProgressChange(datas["progressChange"]) if datas.get("progressChange") else None
+        self.helpRequested: bool = datas["helpRequested"]
+        self.isSteam: bool = datas["isSteam"]
 
 
 class GeoguessrDuelPlayerGuess(GeoguessrStr):
     """Represents a player's guess in a duel."""
 
-    def __init__(self, datas: dict) -> None:
-        self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
-        self.lat: float = self._parse_big_number(datas.get("lat"))
-        self.lng: float = self._parse_big_number(datas.get("lng"))
-        self.distance: float = self._parse_big_number(datas.get("distance"))
-        self.created: datetime = gu.datetime_or_none(datas.get("created"))
-        self.isTeamsBestGuessOnRound: bool = gu.bool_or_none(datas.get("isTeamsBestGuessOnRound"))
-        self.score: int = gu.int_or_none(datas.get("score"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.roundNumber: int = datas["roundNumber"]
+        self.lat: float = self.__parse_big_number(datas.get("lat"))
+        self.lng: float = self.__parse_big_number(datas.get("lng"))
+        self.distance: float = self.__parse_big_number(datas.get("distance"))
+        self.created: datetime = gu.to_datetime(datas["created"])
+        self.isTeamsBestGuessOnRound: bool = datas["isTeamsBestGuessOnRound"]
+        self.score: int = datas["score"]
 
-    def _parse_big_number(self, value: Any) -> float:
+    def __parse_big_number(self, value: Any) -> float:
         """Parse Big Number format or regular number."""
-        if isinstance(value, dict) and value.get("type") == "Big Number":
-            return float(str(value.get("value", "0")).replace("n", ""))
-        elif isinstance(value, (int, float)):
+        if (
+            isinstance(value, dict) and all(key in value for key in ["type", "value"])
+            and value["type"] == "Big Number"
+        ):
+            v: dict[str, Any] = value
+            return float(str(v["value"]).replace("n", ""))
+
+        if isinstance(value, (int, float)):
             return float(value)
+
         return 0.0
 
 
 class GeoguessrDuelTeamRoundResult(GeoguessrStr):
     """Represents round result for a team."""
 
-    def __init__(self, datas: dict) -> None:
-        self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
-        self.score: int = gu.int_or_none(datas.get("score"))
-        self.healthBefore: int = gu.int_or_none(datas.get("healthBefore"))
-        self.healthAfter: int = gu.int_or_none(datas.get("healthAfter"))
-        self.bestGuess: GeoguessrDuelPlayerGuess = GeoguessrDuelPlayerGuess(datas.get("bestGuess", {}))
-        self.activeMultiplier: bool = gu.bool_or_none(datas.get("activeMultiplier"))
-        self.damageDealt: int = gu.int_or_none(datas.get("damageDealt"))
-        self.multiplier: float = gu.float_or_none(datas.get("multiplier"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.roundNumber: int = datas["roundNumber"]
+        self.score: int = datas["score"]
+        self.healthBefore: int = datas["healthBefore"]
+        self.healthAfter: int = datas["healthAfter"]
+        self.bestGuess: GeoguessrDuelPlayerGuess = GeoguessrDuelPlayerGuess(datas["bestGuess"])
+        self.activeMultiplier: bool = datas["activeMultiplier"]
+        self.damageDealt: int = datas["damageDealt"]
+        self.multiplier: float = datas["multiplier"]
 
 
 class GeoguessrDuelRound(GeoguessrStr):
     """Represents a duel round."""
 
-    def __init__(self, datas: dict) -> None:
-        self.roundNumber: int = gu.int_or_none(datas.get("roundNumber"))
-        self.panorama: GeoguessrDuelPanorama = GeoguessrDuelPanorama(datas.get("panorama", {}))
-        self.hasProcessedRoundTimeout: bool = gu.bool_or_none(datas.get("hasProcessedRoundTimeout"))
-        self.isHealingRound: bool = gu.bool_or_none(datas.get("isHealingRound"))
-        self.multiplier: float = gu.float_or_none(datas.get("multiplier"))
-        self.damageMultiplier: float = gu.float_or_none(datas.get("damageMultiplier"))
-        self.startTime: datetime = gu.datetime_or_none(datas.get("startTime"))
-        self.endTime: datetime = gu.datetime_or_none(datas.get("endTime"))
-        self.timerStartTime: datetime = gu.datetime_or_none(datas.get("timerStartTime"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.roundNumber: int = datas["roundNumber"]
+        self.panorama: GeoguessrDuelPanorama = GeoguessrDuelPanorama(datas["panorama"])
+        self.hasProcessedRoundTimeout: bool = datas["hasProcessedRoundTimeout"]
+        self.isHealingRound: bool = datas["isHealingRound"]
+        self.multiplier: float = datas["multiplier"]
+        self.damageMultiplier: float = datas["damageMultiplier"]
+        self.startTime: datetime = gu.to_datetime(datas["startTime"])
+        self.endTime: datetime = gu.to_datetime(datas["endTime"])
+        self.timerStartTime: datetime = gu.to_datetime(datas["timerStartTime"])
 
 
 class GeoguessrDuelPanorama(GeoguessrStr):
     """Represents round panorama data."""
 
-    def __init__(self, datas: dict) -> None:
-        self.panoId: str = gu.str_or_none(datas.get("panoId"))
-        self.lat: float = self._parse_big_number(datas.get("lat"))
-        self.lng: float = self._parse_big_number(datas.get("lng"))
-        self.countryCode: str = gu.str_or_none(datas.get("countryCode"))
-        self.heading: float = self._parse_big_number(datas.get("heading"))
-        self.pitch: float = self._parse_big_number(datas.get("pitch"))
-        self.zoom: int = gu.int_or_none(datas.get("zoom"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.panoId: str = datas["panoId"]
+        self.lat: float = self.__parse_big_number(datas["lat"])
+        self.lng: float = self.__parse_big_number(datas["lng"])
+        self.countryCode: str = datas["countryCode"]
+        self.heading: float = self.__parse_big_number(datas["heading"])
+        self.pitch: float = self.__parse_big_number(datas["pitch"])
+        self.zoom: int = datas["zoom"]
 
-    def _parse_big_number(self, value: Any) -> float:
+    def __parse_big_number(self, value: Any) -> float:
         """Parse Big Number format or regular number."""
-        if isinstance(value, dict) and value.get("type") == "Big Number":
-            return float(str(value.get("value", "0")).replace("n", ""))
-        elif isinstance(value, (int, float)):
+        if (
+            isinstance(value, dict) and all(key in value for key in ["type", "value"])
+            and value["type"] == "Big Number"
+        ):
+            v: dict[str, Any] = value
+            return float(str(v["value"]).replace("n", ""))
+
+        if isinstance(value, (int, float)):
             return float(value)
+
         return 0.0
 
 
 class GeoguessrDuelProgressChange(GeoguessrStr):
     """Represents a player's progression."""
 
-    def __init__(self, datas: dict) -> None:
-        self.xpAtStart: GeoguessrDuelXpProgression = (
-            GeoguessrDuelXpProgression(datas.get("xpProgressions", [])[0]) if datas.get("xpProgressions", []) else None
-        )
-        self.xpAtEnd: GeoguessrDuelXpProgression = (
-            GeoguessrDuelXpProgression(datas.get("xpProgressions", [])[1]) if datas.get("xpProgressions", []) else None
-        )
-        self.awardedXp: GeoguessrDuelAwardedXp = GeoguessrDuelAwardedXp(datas.get("awardedXp", {}))
-        self.medal: str = gu.str_or_none(datas.get("medal"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.xpAtStart: Optional[GeoguessrDuelXpProgression] = (
+            GeoguessrDuelXpProgression(datas["xpProgressions"][0])
+        ) if datas.get("xpProgressions") else None
+        self.xpAtEnd: Optional[GeoguessrDuelXpProgression] = (
+            GeoguessrDuelXpProgression(datas["xpProgressions"][1])
+        ) if datas.get("xpProgressions") else None
+        self.awardedXp: Optional[GeoguessrDuelAwardedXp] = GeoguessrDuelAwardedXp(datas["awardedXp"]) if datas.get("awardedXp") else None
+        self.medal: Optional[str] = gu.str_or_none(datas.get("medal"))
         self.competitiveProgress: Optional[Any] = datas.get("competitiveProgress")
-        self.rankedSystemProgress: GeoguessrDuelRankedSystemProgress = GeoguessrDuelRankedSystemProgress(
-            datas.get("rankedSystemProgress", {})
-        )
+        self.rankedSystemProgress: Optional[GeoguessrDuelRankedSystemProgress] = GeoguessrDuelRankedSystemProgress(
+            datas["rankedSystemProgress"]
+        ) if datas.get("rankedSystemProgress") else None
         self.rankedTeamDuelsProgress: Optional[Any] = datas.get("rankedTeamDuelsProgress")
         self.quickplayDuelsProgress: Optional[Any] = datas.get("quickplayDuelsProgress")
 
@@ -1153,192 +1292,194 @@ class GeoguessrDuelProgressChange(GeoguessrStr):
 class GeoguessrDuelXpProgression(GeoguessrStr):
     """Represents XP progression."""
 
-    def __init__(self, datas: dict) -> None:
-        self.xp: int = gu.int_or_none(datas.get("xp"))
-        self.currentLevel: GeoguessrLevel = GeoguessrLevel(datas.get("currentLevel"))
-        self.nextLevel: GeoguessrLevel = GeoguessrLevel(datas.get("nextLevel"))
-        self.currentTitle: GeoguessrXpTitle = GeoguessrXpTitle(datas.get("currentTitle"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.xp: int = datas["xp"]
+        self.currentLevel: GeoguessrLevel = GeoguessrLevel(datas["currentLevel"])
+        self.nextLevel: GeoguessrLevel = GeoguessrLevel(datas["nextLevel"])
+        self.currentTitle: GeoguessrXpTitle = GeoguessrXpTitle(datas["currentTitle"])
 
 
 class GeoguessrDuelAwardedXp(GeoguessrStr):
     """Represents awarded XP."""
 
-    def __init__(self, datas: dict) -> None:
-        self.totalAwardedXp: int = gu.int_or_none(datas.get("totalAwardedXp"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.totalAwardedXp: int = datas["totalAwardedXp"]
         self.xpAwards: list[GeoguessrDuelXpAward] = [GeoguessrDuelXpAward(award) for award in datas.get("xpAwards", [])]
 
 
 class GeoguessrDuelXpAward(GeoguessrStr):
     """Represents an XP reward."""
 
-    def __init__(self, datas: dict) -> None:
-        self.xp: int = gu.int_or_none(datas.get("xp"))
-        self.reason: str = gu.str_or_none(datas.get("reason"))
-        self.count: int = gu.int_or_none(datas.get("count"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.xp: int = datas["xp"]
+        self.reason: str = datas["reason"]
+        self.count: int = datas["count"]
 
 
 class GeoguessrDuelRankedSystemProgress(GeoguessrStr):
     """Represents ranked system progression."""
 
-    def __init__(self, datas: dict) -> None:
-        self.points: dict = datas.get("points", {})
-        self.totalWeeklyPoints: int = gu.int_or_none(datas.get("totalWeeklyPoints"))
-        self.weeklyCap: int = gu.int_or_none(datas.get("weeklyCap"))
-        self.gamesPlayedWithinWeeklyCap: int = gu.int_or_none(datas.get("gamesPlayedWithinWeeklyCap"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.points: dict[str, int] = datas["points"]
+        self.totalWeeklyPoints: int = datas["totalWeeklyPoints"]
+        self.weeklyCap: int = datas["weeklyCap"]
+        self.gamesPlayedWithinWeeklyCap: int = datas["gamesPlayedWithinWeeklyCap"]
         self.positionBefore: Optional[int] = gu.int_or_none(datas.get("positionBefore"))
         self.positionAfter: Optional[int] = gu.int_or_none(datas.get("positionAfter"))
-        self.ratingBefore: int = gu.int_or_none(datas.get("ratingBefore"))
-        self.ratingAfter: int = gu.int_or_none(datas.get("ratingAfter"))
-        self.winStreak: int = gu.int_or_none(datas.get("winStreak"))
-        self.bucketSortedBy: str = gu.str_or_none(datas.get("bucketSortedBy"))
-        self.gameMode: str = gu.str_or_none(datas.get("gameMode"))
-        self.gameModeRatingBefore: int = gu.int_or_none(datas.get("gameModeRatingBefore"))
-        self.gameModeRatingAfter: int = gu.int_or_none(datas.get("gameModeRatingAfter"))
-        self.gameModeGamesPlayed: int = gu.int_or_none(datas.get("gameModeGamesPlayed"))
-        self.gameModeGamesRequired: int = gu.int_or_none(datas.get("gameModeGamesRequired"))
-        self.placementGamesPlayed: int = gu.int_or_none(datas.get("placementGamesPlayed"))
-        self.placementGamesRequired: int = gu.int_or_none(datas.get("placementGamesRequired"))
+        self.ratingBefore: int = datas["ratingBefore"]
+        self.ratingAfter: int = datas["ratingAfter"]
+        self.winStreak: int = datas["winStreak"]
+        self.bucketSortedBy: str = datas["bucketSortedBy"]
+        self.gameMode: str = datas["gameMode"]
+        self.gameModeRatingBefore: int = datas["gameModeRatingBefore"]
+        self.gameModeRatingAfter: int = datas["gameModeRatingAfter"]
+        self.gameModeGamesPlayed: int = datas["gameModeGamesPlayed"]
+        self.gameModeGamesRequired: int = datas["gameModeGamesRequired"]
+        self.placementGamesPlayed: int = datas["placementGamesPlayed"]
+        self.placementGamesRequired: int = datas["placementGamesRequired"]
 
 
 class GeoguessrDuelOptions(GeoguessrStr):
     """Represents duel options."""
 
-    def __init__(self, datas: dict) -> None:
-        self.initialHealth: int = gu.int_or_none(datas.get("initialHealth"))
-        self.individualInitialHealth: bool = gu.bool_or_none(datas.get("individualInitialHealth"))
-        self.initialHealthTeamOne: int = gu.int_or_none(datas.get("initialHealthTeamOne"))
-        self.initialHealthTeamTwo: int = gu.int_or_none(datas.get("initialHealthTeamTwo"))
-        self.roundTime: int = gu.int_or_none(datas.get("roundTime"))
-        self.maxRoundTime: int = gu.int_or_none(datas.get("maxRoundTime"))
-        self.gracePeriodTime: int = gu.int_or_none(datas.get("gracePeriodTime"))
-        self.gameTimeOut: int = gu.int_or_none(datas.get("gameTimeOut"))
-        self.maxNumberOfRounds: int = gu.int_or_none(datas.get("maxNumberOfRounds"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.initialHealth: int = datas["initialHealth"]
+        self.individualInitialHealth: bool = datas["individualInitialHealth"]
+        self.initialHealthTeamOne: int = datas["initialHealthTeamOne"]
+        self.initialHealthTeamTwo: int = datas["initialHealthTeamTwo"]
+        self.roundTime: int = datas["roundTime"]
+        self.maxRoundTime: int = datas["maxRoundTime"]
+        self.gracePeriodTime: int = datas["gracePeriodTime"]
+        self.gameTimeOut: int = datas["gameTimeOut"]
+        self.maxNumberOfRounds: int = datas["maxNumberOfRounds"]
         self.healingRounds: list[int] = datas.get("healingRounds", [])
-        self.movementOptions: GeoguessrMovementOptions = GeoguessrMovementOptions(datas.get("movementOptions", {}))
-        self.mapSlug: str = gu.str_or_none(datas.get("mapSlug"))
-        self.isRated: bool = gu.bool_or_none(datas.get("isRated"))
-        self.map: GeoguessrDuelMap = GeoguessrDuelMap(datas.get("map", {}))
-        self.duelRoundOptions: list = datas.get("duelRoundOptions", [])
-        self.roundsWithoutDamageMultiplier: int = gu.int_or_none(datas.get("roundsWithoutDamageMultiplier"))
-        self.disableMultipliers: bool = gu.bool_or_none(datas.get("disableMultipliers"))
-        self.multiplierIncrement: int = gu.int_or_none(datas.get("multiplierIncrement"))
-        self.disableHealing: bool = gu.bool_or_none(datas.get("disableHealing"))
-        self.isTeamDuels: bool = gu.bool_or_none(datas.get("isTeamDuels"))
-        self.gameContext: GeoguessrDuelGameContext = GeoguessrDuelGameContext(datas.get("gameContext", {}))
-        self.roundStartingBehavior: str = gu.str_or_none(datas.get("roundStartingBehavior"))
-        self.flashbackRounds: list = datas.get("flashbackRounds", [])
-        self.competitiveGameMode: str = gu.str_or_none(datas.get("competitiveGameMode"))
-        self.countAllGuesses: bool = gu.bool_or_none(datas.get("countAllGuesses"))
-        self.masterControlAutoStartRounds: bool = gu.bool_or_none(datas.get("masterControlAutoStartRounds"))
-        self.consumedLocationsIdentifier: str = gu.str_or_none(datas.get("consumedLocationsIdentifier"))
-        self.useCuratedLocations: bool = gu.bool_or_none(datas.get("useCuratedLocations"))
-        self.extraWaitTimeBetweenRounds: int = gu.int_or_none(datas.get("extraWaitTimeBetweenRounds"))
-        self.roundCountdownDelay: int = gu.int_or_none(datas.get("roundCountdownDelay"))
-        self.guessMapType: str = gu.str_or_none(datas.get("guessMapType"))
+        self.movementOptions: GeoguessrMovementOptions = GeoguessrMovementOptions(datas["movementOptions"])
+        self.mapSlug: str = datas["mapSlug"]
+        self.isRated: bool = datas["isRated"]
+        self.map: GeoguessrDuelMap = GeoguessrDuelMap(datas["map"])
+        self.duelRoundOptions: list[Any] = datas["duelRoundOptions"]
+        self.roundsWithoutDamageMultiplier: int = datas["roundsWithoutDamageMultiplier"]
+        self.disableMultipliers: bool = datas["disableMultipliers"]
+        self.multiplierIncrement: int = datas["multiplierIncrement"]
+        self.disableHealing: bool = datas["disableHealing"]
+        self.isTeamDuels: bool = datas["isTeamDuels"]
+        self.gameContext: GeoguessrDuelGameContext = GeoguessrDuelGameContext(datas["gameContext"])
+        self.roundStartingBehavior: str = datas["roundStartingBehavior"]
+        self.flashbackRounds: list[Any] = datas["flashbackRounds"]
+        self.competitiveGameMode: str = datas["competitiveGameMode"]
+        self.countAllGuesses: bool = datas["countAllGuesses"]
+        self.masterControlAutoStartRounds: bool = datas["masterControlAutoStartRounds"]
+        self.consumedLocationsIdentifier: str = datas["consumedLocationsIdentifier"]
+        self.useCuratedLocations: bool = datas["useCuratedLocations"]
+        self.extraWaitTimeBetweenRounds: int = datas["extraWaitTimeBetweenRounds"]
+        self.roundCountdownDelay: int = datas["roundCountdownDelay"]
+        self.guessMapType: str = datas["guessMapType"]
         self.botBehaviors: Optional[Any] = datas.get("botBehaviors")
-        self.activeMultiplier: bool = gu.bool_or_none(datas.get("activeMultiplier"))
-        self.roundWinMultiplierIncrement: int = gu.int_or_none(datas.get("roundWinMultiplierIncrement"))
+        self.activeMultiplier: bool = datas["activeMultiplier"]
+        self.roundWinMultiplierIncrement: int = datas["roundWinMultiplierIncrement"]
 
 
 class GeoguessrMovementOptions(GeoguessrStr):
     """Represents movement options."""
 
-    def __init__(self, datas: dict) -> None:
-        self.forbidMoving: bool = gu.bool_or_none(datas.get("forbidMoving"))
-        self.forbidZooming: bool = gu.bool_or_none(datas.get("forbidZooming"))
-        self.forbidRotating: bool = gu.bool_or_none(datas.get("forbidRotating"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.forbidMoving: bool = datas["forbidMoving"]
+        self.forbidZooming: bool = datas["forbidZooming"]
+        self.forbidRotating: bool = datas["forbidRotating"]
 
 
 class GeoguessrDuelMap(GeoguessrStr):
     """Represents duel map."""
 
-    def __init__(self, datas: dict) -> None:
-        self.name: str = gu.str_or_none(datas.get("name"))
-        self.slug: str = gu.str_or_none(datas.get("slug"))
-        self.bounds: GeoguessrDuelMapBounds = GeoguessrDuelMapBounds(datas.get("bounds", {}))
-        self.maxErrorDistance: int = gu.int_or_none(datas.get("maxErrorDistance"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.name: str = datas["name"]
+        self.slug: str = datas["slug"]
+        self.bounds: GeoguessrDuelMapBounds = GeoguessrDuelMapBounds(datas["bounds"])
+        self.maxErrorDistance: int = datas["maxErrorDistance"]
 
 
 class GeoguessrDuelMapBounds(GeoguessrStr):
     """Represents map bounds."""
 
-    def __init__(self, datas: dict) -> None:
-        self.min: GeoguessrDuelCoordinate = GeoguessrDuelCoordinate(datas.get("min", {}))
-        self.max: GeoguessrDuelCoordinate = GeoguessrDuelCoordinate(datas.get("max", {}))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.min: GeoguessrDuelCoordinate = GeoguessrDuelCoordinate(datas["min"])
+        self.max: GeoguessrDuelCoordinate = GeoguessrDuelCoordinate(datas["max"])
 
 
 class GeoguessrDuelCoordinate(GeoguessrStr):
     """Represents a geographic coordinate."""
 
-    def __init__(self, datas: dict) -> None:
-        self.lat: float = self._parse_big_number(datas.get("lat"))
-        self.lng: float = self._parse_big_number(datas.get("lng"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.lat: float = self.__parse_big_number(datas["lat"])
+        self.lng: float = self.__parse_big_number(datas["lng"])
 
-    def _parse_big_number(self, value: Any) -> float:
+    def __parse_big_number(self, value: Any) -> float:
         """Parse Big Number format or regular number."""
-        if isinstance(value, dict) and value.get("type") == "Big Number":
-            return float(str(value.get("value", "0")).replace("n", ""))
-        elif isinstance(value, (int, float)):
+        if (
+            isinstance(value, dict) and all(key in value for key in ["type", "value"])
+            and value["type"] == "Big Number"
+        ):
+            v: dict[str, Any] = value
+            return float(str(v["value"]).replace("n", ""))
+
+        if isinstance(value, (int, float)):
             return float(value)
+
         return 0.0
 
 
 class GeoguessrDuelGameContext(GeoguessrStr):
     """Represents game context."""
 
-    def __init__(self, datas: dict) -> None:
-        self.type: str = gu.str_or_none(datas.get("type"))
-        self.id: str = gu.str_or_none(datas.get("id"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.type: str = datas["type"]
+        self.id: str = datas["id"]
 
 
 class GeoguessrDuelResult(GeoguessrStr):
     """Represents duel result."""
 
-    def __init__(self, datas: dict) -> None:
-        self.isDraw: bool = gu.bool_or_none(datas.get("isDraw"))
-        self.winningTeamId: str = gu.str_or_none(datas.get("winningTeamId"))
-        self.winnerStyle: str = gu.str_or_none(datas.get("winnerStyle"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.isDraw: bool = datas["isDraw"]
+        self.winningTeamId: str = datas["winningTeamId"]
+        self.winnerStyle: str = datas["winnerStyle"]
 
 
 class GeoguessrStatsParty(GeoguessrStr):
     """Represents party statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.total: int = gu.int_or_none(datas.get("total"))
-        self.duels: int = gu.int_or_none(datas.get("duels"))
-        self.teamDuels: int = gu.int_or_none(datas.get("teamDuels"))
-        self.battleRoyaleCountries: int = gu.int_or_none(datas.get("battleRoyaleCountries"))
-        self.battleRoyaleDistance: int = gu.int_or_none(datas.get("battleRoyaleDistance"))
-        self.cityStreaks: int = gu.int_or_none(datas.get("cityStreaks"))
-        self.liveChallenges: int = gu.int_or_none(datas.get("liveChallenges"))
-        self.bullseye: int = gu.int_or_none(datas.get("bullseye"))
-        self.quizzes: int = gu.int_or_none(datas.get("quizzes"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.total: int = datas["total"]
+        self.duels: int = datas["duels"]
+        self.teamDuels: int = datas["teamDuels"]
+        self.battleRoyaleCountries: int = datas["battleRoyaleCountries"]
+        self.battleRoyaleDistance: int = datas["battleRoyaleDistance"]
+        self.cityStreaks: int = datas["cityStreaks"]
+        self.liveChallenges: int = datas["liveChallenges"]
+        self.bullseye: int = datas["bullseye"]
+        self.quizzes: int = datas["quizzes"]
 
 
 class GeoguessrClub(GeoguessrStr):
     """Represents a Geoguessr club."""
 
-    def __init__(self, datas: dict) -> None:
-        self.clubId: str = gu.str_or_none(datas.get("clubId"))
-        self.name: str = gu.str_or_none(datas.get("name"))
-        self.members: list[GeoguessrClubMember] = [GeoguessrClubMember(member) for member in datas.get("members", [])]
-        self.joinRule: int = gu.int_or_none(datas.get("joinRule"))
-        self.tag: str = gu.str_or_none(datas.get("tag"))
-        self.description: Optional[str] = gu.str_or_none(datas.get("description"))
-        self.createdAt: datetime = (
-            datetime.strptime(datas.get("createdAt").split(".")[0], "%Y-%m-%dT%H:%M:%S")
-            if datas.get("createdAt")
-            else None
-        )
-        self.language: str = gu.str_or_none(datas.get("language"))
-        self.memberCount: int = gu.int_or_none(datas.get("memberCount"))
-        self.maxMemberCount: int = gu.int_or_none(datas.get("maxMemberCount"))
-        self.level: int = gu.int_or_none(datas.get("level"))
-        self.xp: int = gu.int_or_none(datas.get("xp"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.clubId: str = datas["clubId"]
+        self.name: str = datas["name"]
+        self.members: list[GeoguessrClubMember] = [GeoguessrClubMember(member) for member in datas["members"]]
+        self.joinRule: int = datas["joinRule"]
+        self.tag: str = datas["tag"]
+        self.description: Optional[str] = datas.get("description")
+        self.createdAt: datetime = gu.to_datetime(datas["createdAt"])
+        self.language: str = datas["language"]
+        self.memberCount: int = datas["memberCount"]
+        self.maxMemberCount: int = datas["maxMemberCount"]
+        self.level: int = datas["level"]
+        self.xp: int = datas["xp"]
         self.labels: list[str] = datas.get("labels", [])
-        self.logo: GeoguessrClubLogo = GeoguessrClubLogo(datas.get("logo", {}))
-        self.stats: GeoguessrClubStats = GeoguessrClubStats(datas.get("stats", {}))
-        self.backgroundUrl: str = gu.str_or_none(datas.get("backgroundUrl"))
+        self.logo: GeoguessrClubLogo = GeoguessrClubLogo(datas["logo"])
+        self.stats: GeoguessrClubStats = GeoguessrClubStats(datas["stats"])
+        self.backgroundUrl: str = datas["backgroundUrl"]
 
 
 class GeoguessrClubMember(GeoguessrStr):
@@ -1348,60 +1489,60 @@ class GeoguessrClubMember(GeoguessrStr):
         ADMIN = 1
         MEMBER = 2
 
-    def __init__(self, datas: dict) -> None:
-        self.userId: str = gu.str_or_none(datas.get("user", {}).get("userId"))
-        self.nick: str = gu.str_or_none(datas.get("user", {}).get("nick"))
-        self.avatar: str = gu.str_or_none(datas.get("user", {}).get("avatar"))
-        self.fullbodyAvatar: str = gu.str_or_none(datas.get("user", {}).get("fullbodyAvatar"))
-        self.borderUrl: Optional[str] = gu.str_or_none(datas.get("user", {}).get("borderUrl"))
-        self.isVerified: bool = gu.bool_or_none(datas.get("user", {}).get("isVerified"))
-        self.flair: int = gu.int_or_none(datas.get("user", {}).get("flair"))
-        self.countryCode: str = gu.str_or_none(datas.get("user", {}).get("countryCode"))
-        self.tierId: int = gu.int_or_none(datas.get("user", {}).get("tierId"))
-        self.clubUserType: int = gu.int_or_none(datas.get("user", {}).get("clubUserType"))
-        self.role: GeoguessrClubMember.Role = GeoguessrClubMember.Role(gu.int_or_none(datas.get("role")))
-        self.joinedAt: datetime = gu.datetime_or_none(datas.get("joinedAt"))
-        self.xp: int = gu.int_or_none(datas.get("xp"))
-        self.weeklyXp: int = gu.int_or_none(datas.get("weeklyXp"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.userId: str = datas["user"]["userId"]
+        self.nick: str = datas["user"]["nick"]
+        self.avatar: str = datas["user"]["avatar"]
+        self.fullbodyAvatar: str = datas["user"]["fullbodyAvatar"]
+        self.borderUrl: Optional[str] = datas["user"].get("borderUrl")
+        self.isVerified: bool = datas["user"].get("isVerified")
+        self.flair: int = datas["user"].get("flair")
+        self.countryCode: str = datas["user"].get("countryCode")
+        self.tierId: int = datas["user"].get("tierId")
+        self.clubUserType: int = datas["user"].get("clubUserType")
+        self.role: GeoguessrClubMember.Role = GeoguessrClubMember.Role(datas["role"])
+        self.joinedAt: datetime = datas["joinedAt"]
+        self.xp: int = datas["xp"]
+        self.weeklyXp: int = datas["weeklyXp"]
 
 
 class GeoguessrClubLogo(GeoguessrStr):
     """Represents a Geoguessr club logo."""
 
-    def __init__(self, datas: dict) -> None:
-        self.logoIconId: int = gu.int_or_none(datas.get("logoIconId"))
-        self.logoIconSize: int = gu.int_or_none(datas.get("logoIconSize"))
-        self.logoIconOpacity: int = gu.int_or_none(datas.get("logoIconOpacity"))
-        self.logoIconColorId: int = gu.int_or_none(datas.get("logoIconColorId"))
-        self.backgroundIconId: int = gu.int_or_none(datas.get("backgroundIconId"))
-        self.backgroundIconSize: int = gu.int_or_none(datas.get("backgroundIconSize"))
-        self.backgroundIconOpacity: int = gu.int_or_none(datas.get("backgroundIconOpacity"))
-        self.backgroundIconColorId: int = gu.int_or_none(datas.get("backgroundIconColorId"))
-        self.backgroundColorId: int = gu.int_or_none(datas.get("backgroundColorId"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.logoIconId: int = datas["logoIconId"]
+        self.logoIconSize: int = datas["logoIconSize"]
+        self.logoIconOpacity: int = datas["logoIconOpacity"]
+        self.logoIconColorId: int = datas["logoIconColorId"]
+        self.backgroundIconId: int = datas["backgroundIconId"]
+        self.backgroundIconSize: int = datas["backgroundIconSize"]
+        self.backgroundIconOpacity: int = datas["backgroundIconOpacity"]
+        self.backgroundIconColorId: int = datas["backgroundIconColorId"]
+        self.backgroundColorId: int = datas["backgroundColorId"]
 
 
 class GeoguessrClubStats(GeoguessrStr):
     """Represents Geoguessr club statistics."""
 
-    def __init__(self, datas: dict) -> None:
-        self.clubId: str = gu.str_or_none(datas.get("clubId"))
-        self.totalXp: int = gu.int_or_none(datas.get("totalXp"))
-        self.changePercentXp: float = gu.float_or_none(datas.get("changePercentXp"))
-        self.totalGamesPlayed: int = gu.int_or_none(datas.get("totalGamesPlayed"))
-        self.changePercentGamesPlayed: float = gu.float_or_none(datas.get("changePercentGamesPlayed"))
-        self.totalWins: int = gu.int_or_none(datas.get("totalWins"))
-        self.changePercentWins: float = gu.float_or_none(datas.get("changePercentWins"))
-        self.totalPerfectGuesses: int = gu.int_or_none(datas.get("totalPerfectGuesses"))
-        self.changePercentPerfectGuesses: float = gu.float_or_none(datas.get("changePercentPerfectGuesses"))
-        self.globalXpRank: int = gu.int_or_none(datas.get("globalXpRank"))
-        self.totalClubs: int = gu.int_or_none(datas.get("totalClubs"))
-        self.averageDivision: GeoguessrClubDivision = GeoguessrClubDivision(datas.get("averageDivision", {}))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.clubId: str = datas["clubId"]
+        self.totalXp: int = datas["totalXp"]
+        self.changePercentXp: float = datas["changePercentXp"]
+        self.totalGamesPlayed: int = datas["totalGamesPlayed"]
+        self.changePercentGamesPlayed: float = datas["changePercentGamesPlayed"]
+        self.totalWins: int = datas["totalWins"]
+        self.changePercentWins: float = datas["changePercentWins"]
+        self.totalPerfectGuesses: int = datas["totalPerfectGuesses"]
+        self.changePercentPerfectGuesses: float = datas["changePercentPerfectGuesses"]
+        self.globalXpRank: int = datas["globalXpRank"]
+        self.totalClubs: int = datas["totalClubs"]
+        self.averageDivision: GeoguessrClubDivision = GeoguessrClubDivision(datas["averageDivision"])
 
 
 class GeoguessrClubDivision(GeoguessrStr):
     """Represents a club's average division."""
 
-    def __init__(self, datas: dict) -> None:
-        self.number: int = gu.int_or_none(datas.get("number"))
-        self.name: str = gu.str_or_none(datas.get("name"))
-        self.tier: int = gu.int_or_none(datas.get("tier"))
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.number: int = datas["number"]
+        self.name: str = datas["name"]
+        self.tier: int = datas["tier"]
