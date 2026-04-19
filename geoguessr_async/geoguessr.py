@@ -1,6 +1,5 @@
 import asyncio
 import json
-import logging
 from datetime import datetime
 from typing import Any, Optional, cast
 from urllib import parse
@@ -19,12 +18,10 @@ from geoguessr_async.models import (
     GeoguessrUserELO,
 )
 
-logger = logging.getLogger(__name__)
-
 
 class Geoguessr:
     """Represents a geoguessr connection that connects to the Geoguessr API.
-    This class is used to interact with the Geoguess API/
+    This class is used to interact with the Geoguessr API/
     """
 
     def __init__(self, ncfa: str) -> None:
@@ -215,9 +212,12 @@ class Geoguessr:
             results += js["items"]
             paginationToken = js["paginationToken"]
 
-        logger.debug("Retrieved challenge scores: %s", results)
+        challengeResults = [GeoguessrChallengeResult(result) for result in results]
 
-        return [GeoguessrChallengeResult(result) for result in results]
+        for challengeResult in challengeResults:
+            await challengeResult.set_replays(await self.session)
+
+        return challengeResults
 
     async def get_challenge_infos(self, challengeUrl: str):
         """Get informations about a challenge
@@ -386,3 +386,10 @@ class Geoguessr:
                     asyncio.run(self._session.close())
             except (RuntimeError, asyncio.CancelledError):
                 pass
+
+    async def __aenter__(self):
+        return self
+
+    # pylint: disable=invalid-name
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.close()

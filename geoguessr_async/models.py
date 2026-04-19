@@ -329,7 +329,7 @@ class GeoguessrScore(GeoguessrStr):
         Args:
             scoreData (dict[str, Any]): Raw score data from API.
         """
-        self.amount: float = scoreData["amount"]
+        self.amount: float = float(scoreData["amount"])
         self.unit: Optional[str] = gu.str_or_none(scoreData.get("unit"))
         self.percentage: Optional[float] = gu.float_or_none(scoreData.get("percentage"))
 
@@ -350,7 +350,7 @@ class GeoguessrDistance(GeoguessrStr):
             distanceData (dict[str, Any]): Raw distance data from API.
         """
         metersDistance: dict[str, Any] = distanceData["meters"]
-        self.meters: float = metersDistance["amount"] * (1000 if metersDistance["unit"] == "km" else 1)
+        self.meters: float = float(metersDistance["amount"]) * (1000 if metersDistance["unit"] == "km" else 1)
         self.kilometers: float = self.meters / 1000
         self.miles: float = self.meters / 1609.34
 
@@ -410,8 +410,8 @@ class GeoguessrPlayerGuesses(GeoguessrStr):
             roundNumber (int): Round number (1-based).
         """
         self.number: int = roundNumber
-        self.lat: float = guessData["lat"]
-        self.long: float = guessData["lng"]
+        self.lat: float = float(guessData["lat"])
+        self.long: float = float(guessData["lng"])
         self.timedOut: bool = guessData["timedOut"]
         self.timedOutWithGuess: bool = guessData["timedOutWithGuess"]
         self.skippedRound: bool = guessData["skippedRound"]
@@ -488,8 +488,8 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
 
 class GeoguessrChallengePlayerTotalResult(GeoguessrStr):
     def __init__(self, datas: dict[str, Any]) -> None:
-        self.totalScore: GeoguessrScore = GeoguessrScore(datas.get("totalScore", {}))
-        self.totalDistance: GeoguessrDistance = GeoguessrDistance(datas.get("totalDistance", {}))
+        self.totalScore: GeoguessrScore = GeoguessrScore(datas["totalScore"])
+        self.totalDistance: GeoguessrDistance = GeoguessrDistance(datas["totalDistance"])
         self.totalStepsCount: Optional[int] = gu.int_or_none(datas.get("totalStepsCount"))
         self.totalTime: GeoguessrTime = GeoguessrTime(seconds=datas.get("totalTime"))
         self.totalStreak: Optional[int] = gu.int_or_none(datas.get("totalStreak"))
@@ -506,6 +506,7 @@ class GeoguessrChallengeResult(GeoguessrStr):
         self.player: GeoguessrScorePlayerInfo = GeoguessrScorePlayerInfo(
             gameDatas.get("player", {}), gameDatas.get("progressChange", {})
         )
+        self.token: str = gameDatas["token"]
         self.type: str = gameDatas["type"]
         self.mode: str = gameDatas["mode"]
         self.state: Optional[str] = gu.str_or_none(gameDatas.get("state"))
@@ -523,6 +524,141 @@ class GeoguessrChallengeResult(GeoguessrStr):
         self.playerTotalScore: GeoguessrChallengePlayerTotalResult = GeoguessrChallengePlayerTotalResult(
             gameDatas.get("player", {})
         )
+        self.replays: list[GeoguessrChallengeReplay] = []
+
+    async def set_replays(self, session: aiohttp.ClientSession) -> None:
+        """Get the replays of the player's challenge."""
+        for roundNumber in range(self.roundCount):
+            async with session.get(
+                f"https://www.geoguessr.com/api/v4/replays/{self.player.id}/{self.token}/{roundNumber+1}"
+            ) as r:
+                try:
+                    self.replays.append(GeoguessrChallengeReplay(await r.json()))
+                except Exception:
+                    self.replays.append(GeoguessrChallengeReplay([]))
+
+class GeoguessrChallengeReplay(GeoguessrStr):
+    """Represente a player replay in a duel."""
+
+    class Type(Enum):
+        """Type of replay."""
+
+        PANOPOSITION = "PanoPosition"
+        PANOPOV = "PanoPov"
+        PANOZOOM = "PanoZoom"
+        MAPZOOM = "MapZoom"
+        MAPPOSITION = "MapPosition"
+        GUESSWITHLATLNG = "GuessWithLatLng"
+        PINPOSITION = "PinPosition"
+        TIMER = "Timer"
+        MAPDISPLAY = "MapDisplay"
+
+    def __init__(self, datas: list[dict[str, Any]]) -> None:
+        self.datas: list[GeoguessrChallengeReplayStep] = [GeoguessrChallengeReplayStep(step) for step in datas]
+
+
+class GeoguessrChallengeReplayStep(GeoguessrStr):
+
+    class GeoguessrChallengeReplayPanoPositionPayload(GeoguessrStr):
+        """Represents PanoPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: dict[str, float] = datas["lat"]
+            self.lng: dict[str, float] = datas["lng"]
+            self.panoId: str = datas["panoId"]
+
+
+    class GeoguessrChallengeReplayPanoPovPayload(GeoguessrStr):
+        """Represents PanoPov type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.heading: float = datas["heading"]
+            self.pitch: float = datas["pitch"]
+
+
+    class GeoguessrChallengeReplayPanoZoomPayload(GeoguessrStr):
+        """Represents PanoZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: float = datas["zoom"]
+
+
+    class GeoguessrChallengeReplayMapZoomPayload(GeoguessrStr):
+        """Represents MapZoom type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.zoom: int = datas["zoom"]
+
+
+    class GeoguessrChallengeReplayMapPositionPayload(GeoguessrStr):
+        """Represents MapPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayGuessWithLatLngPayload(GeoguessrStr):
+        """Represents GuessWithLatLng type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayPinPositionPayload(GeoguessrStr):
+        """Represents PinPosition type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.lat: float = datas["lat"]
+            self.lng: float = datas["lng"]
+
+
+    class GeoguessrChallengeReplayTimerPayload(GeoguessrStr):
+        """Represents Timer type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.time: int = datas["time"]
+
+
+    class GeoguessrChallengeReplayMapDisplayPayload(GeoguessrStr):
+        """Represents MapDisplay type payload data."""
+
+        def __init__(self, datas: dict[str, Any]) -> None:
+            self.isActive: bool = datas["isActive"]
+            self.isSticky: bool = datas["isSticky"]
+            self.size: int = datas["size"]
+
+    def __init__(self, datas: dict[str, Any]) -> None:
+        self.time: datetime = datetime.fromtimestamp(float(datas["time"]) / 1000)
+        self.type: GeoguessrChallengeReplay.Type = GeoguessrChallengeReplay.Type(datas.get("type"))
+        self.payload: Union[
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPovPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoZoomPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapZoomPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayGuessWithLatLngPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPinPositionPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayTimerPayload,
+                GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapDisplayPayload
+            ]
+
+        payloadTypes = {
+            GeoguessrChallengeReplay.Type.PANOPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPositionPayload,
+            GeoguessrChallengeReplay.Type.PANOPOV: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoPovPayload,
+            GeoguessrChallengeReplay.Type.PANOZOOM: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPanoZoomPayload,
+            GeoguessrChallengeReplay.Type.MAPZOOM: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapZoomPayload,
+            GeoguessrChallengeReplay.Type.MAPPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapPositionPayload,
+            GeoguessrChallengeReplay.Type.GUESSWITHLATLNG: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayGuessWithLatLngPayload,
+            GeoguessrChallengeReplay.Type.PINPOSITION: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayPinPositionPayload,
+            GeoguessrChallengeReplay.Type.TIMER: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayTimerPayload,
+            GeoguessrChallengeReplay.Type.MAPDISPLAY: GeoguessrChallengeReplayStep.GeoguessrChallengeReplayMapDisplayPayload,
+        }
+        payloadType = payloadTypes.get(self.type)
+
+        if payloadType is not None:
+            self.payload = payloadType(datas["payload"])
 
 
 class GeoguessMapAvatar(GeoguessrStr):
@@ -890,9 +1026,9 @@ class GeoguessrDuelData(GeoguessrStr):
     async def set_replays(self, session: aiohttp.ClientSession) -> None:
         """Get the replays of the duel."""
         for playerId in self.playersId:
-            for i in range(self.totalRoundCount):
+            for roundNumber in range(self.totalRoundCount):
                 async with session.get(
-                    f"https://game-server.geoguessr.com/api/replays/{playerId}/{self.gameId}/{i+1}"
+                    f"https://game-server.geoguessr.com/api/replays/{playerId}/{self.gameId}/{roundNumber+1}"
                 ) as r:
                     self.replays[playerId].append(GeoguessrDuelReplay(await r.json()))
 
