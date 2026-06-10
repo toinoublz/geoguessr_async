@@ -231,7 +231,7 @@ class GeoguessrProfile(GeoguessrStr):
         self.dailyChallengeProgress: Optional[int] = gu.int_or_none(datas.get("dailyChallengeProgress"))
         self.progress: Optional[GeoguessrLevelProgress] = GeoguessrLevelProgress(datas["progress"]) if datas.get("progress") else None
         self.competitive: Optional[GeoguessrCompetitive] = GeoguessrCompetitive(datas["competitive"]) if datas.get("competitive") else None
-        self.lastNameChange: datetime = gu.to_datetime(datas["lastNameChange"])
+        self.lastNameChange: Optional[datetime] = gu.datetime_or_none(datas["lastNameChange"])
         self.lastNickOrCountryChange: datetime = gu.to_datetime(datas["lastNickOrCountryChange"])
         self.isBanned: bool = datas["isBanned"]
         self.chatBan: bool = datas["chatBan"]
