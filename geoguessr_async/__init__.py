@@ -2,6 +2,7 @@ import os
 import sys
 
 from geoguessr_async.geoguessr import *
+from geoguessr_async.models import *
 
 # Add the parent directory to the Python path
 # This allows importing the geoguessr_async module in tests
