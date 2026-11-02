@@ -293,7 +293,6 @@ Represents a player's guesses.
 | `roundScore` | `GeoguessrScore` | Round score |
 | `roundScoreInPercentage` | `int` | Score in percentage |
 | `roundScoreInPoints` | `int` | Score in points |
-| `distance` | `GeoguessrDistance` | Distance |
 | `distanceInMeters` | `float` | Distance in meters |
 | `stepsCount` | `int` | Number of steps |
 | `time` | `GeoguessrTime` | Time |
