@@ -231,8 +231,8 @@ class GeoguessrProfile(GeoguessrStr):
         self.dailyChallengeProgress: Optional[int] = gu.int_or_none(datas.get("dailyChallengeProgress"))
         self.progress: Optional[GeoguessrLevelProgress] = GeoguessrLevelProgress(datas["progress"]) if datas.get("progress") else None
         self.competitive: Optional[GeoguessrCompetitive] = GeoguessrCompetitive(datas["competitive"]) if datas.get("competitive") else None
-        self.lastNameChange: Optional[datetime] = gu.datetime_or_none(datas["lastNameChange"])
-        self.lastNickOrCountryChange: datetime = gu.to_datetime(datas["lastNickOrCountryChange"])
+        self.lastNameChange: Optional[datetime] = gu.datetime_or_none(datas.get("lastNickChange"))
+        self.lastCountryChange: Optional[datetime] = gu.datetime_or_none(datas.get("lastCountryChange"))
         self.isBanned: bool = datas["isBanned"]
         self.chatBan: bool = datas["chatBan"]
         self.nameChangeAvailableAt: Optional[datetime] = gu.datetime_or_none(datas.get("nameChangeAvailableAt"))
@@ -243,7 +243,7 @@ class GeoguessrProfile(GeoguessrStr):
         self.flair: Optional[int] = gu.int_or_none(datas.get("flair"))
         self.isCreator: Optional[bool] = gu.bool_or_none(datas.get("isCreator"))
         self.isAppAnonymous: Optional[bool] = gu.bool_or_none(datas.get("isAppAnonymous"))
-        self.steamUserType: Optional[int] = gu.int_or_none(datas.get("steamUserType"))
+        self.hasSteamAccess: Optional[bool] = gu.bool_or_none(datas.get("hasSteamAccess"))
         self.stats: Optional[GeoguessrStats] = None
 
     def add_stats(self, stats: GeoguessrStats) -> None:
@@ -334,27 +334,6 @@ class GeoguessrScore(GeoguessrStr):
         self.percentage: Optional[float] = gu.float_or_none(scoreData.get("percentage"))
 
 
-class GeoguessrDistance(GeoguessrStr):
-    """Represents distance measurements in Geoguessr.
-
-    Attributes:
-        meters (float): Distance in meters.
-        kilometers (float): Distance in kilometers.
-        miles (float): Distance in miles.
-    """
-
-    def __init__(self, distanceData: dict[str, Any]) -> None:
-        """Initialize GeoguessrDistance.
-
-        Args:
-            distanceData (dict[str, Any]): Raw distance data from API.
-        """
-        metersDistance: dict[str, Any] = distanceData["meters"]
-        self.meters: float = float(metersDistance["amount"]) * (1000 if metersDistance["unit"] == "km" else 1)
-        self.kilometers: float = self.meters / 1000
-        self.miles: float = self.meters / 1609.34
-
-
 class GeoguessrTime(GeoguessrStr):
     """Represents time measurements in Geoguessr.
 
@@ -415,10 +394,8 @@ class GeoguessrPlayerGuesses(GeoguessrStr):
         self.timedOut: bool = guessData["timedOut"]
         self.timedOutWithGuess: bool = guessData["timedOutWithGuess"]
         self.skippedRound: bool = guessData["skippedRound"]
-        self.roundScore: GeoguessrScore = GeoguessrScore(guessData["roundScore"])
         self.roundScoreInPercentage: int = guessData["roundScoreInPercentage"]
         self.roundScoreInPoints: int = guessData["roundScoreInPoints"]
-        self.distance: GeoguessrDistance = GeoguessrDistance(guessData["distance"])
         self.distanceInMeters: float = guessData["distanceInMeters"]
         self.stepsCount: int = guessData["stepsCount"]
         self.streakLocationCode: Optional[str] = gu.str_or_none(guessData.get("streakLocationCode"))
@@ -488,8 +465,8 @@ class GeoguessrScorePlayerInfo(GeoguessrStr):
 
 class GeoguessrChallengePlayerTotalResult(GeoguessrStr):
     def __init__(self, datas: dict[str, Any]) -> None:
-        self.totalScore: GeoguessrScore = GeoguessrScore(datas["totalScore"])
-        self.totalDistance: GeoguessrDistance = GeoguessrDistance(datas["totalDistance"])
+        self.totalScoreInPoints: int = datas["totalScoreInPoints"]
+        self.totalDistanceInMeters: float = datas["totalDistanceInMeters"]
         self.totalStepsCount: Optional[int] = gu.int_or_none(datas.get("totalStepsCount"))
         self.totalTime: GeoguessrTime = GeoguessrTime(seconds=datas.get("totalTime"))
         self.totalStreak: Optional[int] = gu.int_or_none(datas.get("totalStreak"))
