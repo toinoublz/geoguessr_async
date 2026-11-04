@@ -1,8 +1,7 @@
 import asyncio
 import json
-import logging
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional, cast
 from urllib import parse
 
 import aiohttp
@@ -19,15 +18,13 @@ from geoguessr_async.models import (
     GeoguessrUserELO,
 )
 
-logger = logging.getLogger(__name__)
-
 
 class Geoguessr:
     """Represents a geoguessr connection that connects to the Geoguessr API.
-    This class is used to interact with the Geoguess API/
+    This class is used to interact with the Geoguessr API/
     """
 
-    def __init__(self, ncfa) -> None:
+    def __init__(self, ncfa: str) -> None:
         self._ncfa = ncfa
         self.headers = {
             "Content-Type": "application/json",
@@ -215,9 +212,12 @@ class Geoguessr:
             results += js["items"]
             paginationToken = js["paginationToken"]
 
-        logger.debug("Retrieved challenge scores: %s", results)
+        challengeResults = [GeoguessrChallengeResult(result) for result in results]
 
-        return [GeoguessrChallengeResult(result) for result in results]
+        for challengeResult in challengeResults:
+            await challengeResult.set_replays(await self.session)
+
+        return challengeResults
 
     async def get_challenge_infos(self, challengeUrl: str):
         """Get informations about a challenge
@@ -340,7 +340,7 @@ class Geoguessr:
 
         return GeoguessrClub(js)
 
-    async def get_ranked_duel_activity(self):
+    async def get_ranked_duel_activity(self) -> list[tuple[str, str]]:
         """
         Gets a list of ranked duel activities.
 
@@ -349,15 +349,17 @@ class Geoguessr:
         """
         if not self.activities:
             self.activities = await self.__get_activities()
-        duelList = []
+        duelList: list[tuple[str, str]] = []
         for entry in self.activities.entries:
-            if entry.get("payload") is not None:
+            if entry.get("payload"):
                 payload = json.loads(entry["payload"])
                 if entry["type"] == 6 and payload["gameMode"] == "Duels":  # Single Ranked Duel
+                    payload = cast(dict[str, Any], payload)
                     time = datetime.strptime(entry["time"][:19], "%Y-%m-%dT%H:%M:%S").strftime("%d-%m-%Y %H:%M:%S")
                     gameURL = f'https://www.geoguessr.com/duels/{payload["gameId"]}/summary'
                     duelList.append((time, gameURL))
                 elif entry["type"] == 7 and isinstance(payload, list):  # List of ranked
+                    payload = cast(list[dict[str, Any]], payload)
                     for game in payload:
                         if game["type"] == 6 and game["payload"]["gameMode"] == "Duels":  # Type 6 = Ranked
                             time = datetime.strptime(game["time"][:19], "%Y-%m-%dT%H:%M:%S").strftime(
@@ -384,3 +386,10 @@ class Geoguessr:
                     asyncio.run(self._session.close())
             except (RuntimeError, asyncio.CancelledError):
                 pass
+
+    async def __aenter__(self):
+        return self
+
+    # pylint: disable=invalid-name
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.close()

@@ -2,30 +2,7 @@ from datetime import datetime
 from typing import Any, Optional
 
 
-def flatten_dict(d: dict[Any, Any], parentKey: str = "", separator: str = ""):
-    """
-    Flattens a nested dictionary into a single-level dictionary.
-
-    Args:
-        d (dict): The input dictionary to be flattened.
-        parent_key (str, optional): The parent key used for recursive calls. Defaults to ''.
-        separator (str, optional): The separator to be used between keys. Defaults to ''.
-
-    Returns:
-        dict: The flattened dictionary.
-
-    """
-    items = []
-    for k, v in d.items():
-        newKey = f"{parentKey}{separator}{k.capitalize()}" if parentKey else k
-        if isinstance(v, dict):
-            items.extend(flatten_dict(v, newKey, separator).items())
-        else:
-            items.append((newKey, v))
-    return dict(items)
-
-
-def int_or_none(value: Any) -> Optional[int]:
+def int_or_none(value: Optional[Any]) -> Optional[int]:
     """
     Safely convert a value to int, returning None if conversion fails.
 
@@ -36,12 +13,12 @@ def int_or_none(value: Any) -> Optional[int]:
         Optional[int]: The converted int value, or None if conversion fails.
     """
     try:
-        return int(value)
+        return int(value) if value is not None else None
     except (ValueError, TypeError):
         return None
 
 
-def bool_or_none(value: Any) -> Optional[bool]:
+def bool_or_none(value: Optional[Any]) -> Optional[bool]:
     """
     Safely convert a value to bool, returning None if conversion fails.
 
@@ -57,7 +34,7 @@ def bool_or_none(value: Any) -> Optional[bool]:
         return None
 
 
-def str_or_none(value: Any) -> Optional[str]:
+def str_or_none(value: Optional[Any]) -> Optional[str]:
     """
     Safely convert a value to str, returning None if conversion fails.
 
@@ -73,7 +50,7 @@ def str_or_none(value: Any) -> Optional[str]:
         return None
 
 
-def float_or_none(value: Any) -> Optional[float]:
+def float_or_none(value: Optional[Any]) -> Optional[float]:
     """
     Safely convert a value to float, returning None if conversion fails.
 
@@ -84,12 +61,12 @@ def float_or_none(value: Any) -> Optional[float]:
         Optional[float]: The converted float value, or None if conversion fails.
     """
     try:
-        return float(value)
+        return float(value) if value is not None else None
     except (ValueError, TypeError):
         return None
 
 
-def datetime_or_none(value: Any) -> Optional[datetime]:
+def datetime_or_none(value: Optional[Any]) -> Optional[datetime]:
     """
     Safely convert a value to datetime, returning None if conversion fails.
 
@@ -100,6 +77,18 @@ def datetime_or_none(value: Any) -> Optional[datetime]:
         Optional[datetime]: The converted datetime value, or None if conversion fails.
     """
     try:
-        return datetime.strptime(value.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        return datetime.strptime(value.split(".")[0], "%Y-%m-%dT%H:%M:%S") if value is not None else None
     except (ValueError, TypeError):
         return None
+
+def to_datetime(value: str) -> datetime:
+    """
+    Converts a string value to a datetime object.
+
+    Args:
+        value (str): The string value to convert.
+
+    Returns:
+        datetime: The converted datetime object.
+    """
+    return datetime.strptime(value.split(".")[0], "%Y-%m-%dT%H:%M:%S")

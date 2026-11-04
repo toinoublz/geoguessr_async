@@ -293,7 +293,6 @@ Représente les suppositions d'un joueur.
 | `roundScore` | `GeoguessrScore` | Score de la manche |
 | `roundScoreInPercentage` | `int` | Score en pourcentage |
 | `roundScoreInPoints` | `int` | Score en points |
-| `distance` | `GeoguessrDistance` | Distance |
 | `distanceInMeters` | `float` | Distance en mètres |
 | `stepsCount` | `int` | Nombre de pas |
 | `time` | `GeoguessrTime` | Temps |
